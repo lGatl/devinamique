@@ -90,9 +90,9 @@ export default class Element extends Component {
 			}}
 			>
 				<div style={{flex:1, display:"flex", flexDirection:"row"}}>
-					<div onClick = {this._onEdit} style={{flex:1, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
-												<div style={{flex:1, display:"flex", alignItems:"center",justifyContent:"center"}}>
-							<div >
+					<div onClick = {this._onEdit} style={{flex:7, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
+							<div style={{flex:1, display:"flex", alignItems:"center",justifyContent:"center"}}>
+							<div>
 								ID
 							</div>
 							
@@ -130,14 +130,15 @@ export default class Element extends Component {
 						</div>
 					
 					</div>
-						<div style={{width:150,display:"flex",justifyContent:"center",alignItems:"center"}}>
-						<Button
-							onClick={this._onLogique}
-						>Ajouter une logique
-						</Button>
+						<div style={{flex: 1,display:"flex",justifyContent:"center",alignItems:"center"}}>
+							<ShortButton
+								style={{ minHeight:40}}
+								onClick={this._onLogique}
+							> <span> + logique</span>
+							</ShortButton>
 
 					</div>
-					<div style={{width:"50px", display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
+					<div style={{width:"50px", display:"flex", flexDirection:"column", justifyContent:"space-between", marginLeft:5}}>
 						{active?<ShortButton
 							style={{backgroundColor:"red",height:50}}
 							onClick={this._onClose}

@@ -3,136 +3,332 @@ import React, {Component} from 'react';
 import { bindActionCreators }	from 'redux';
 import { connect } from 'react-redux';
 
-import { devis } from '../6_actions';
+import { devis, element, logique, entreprise, choice } from '../6_actions';
 
 import { 
-	DevisCard,
+	Element,
 	Logique,
-	Button
+	Button,
+	DevisForm,
+	DevisEdit,
+	DevisShow
 } from '../_common/4_dumbComponent';
-
-import history from "../../history";
-
 
 class Devis extends Component {
 	constructor(){
 		super()
+		/*PASSER DANS LES CONTROLE POUR ACTIVER L'EDITION LORS DE L'AJOUT => ajout dans reducer => _id dans active_*/
+
 		this.state = {
-		/*PASSER DANS LES CONTROLE POUR ACTIVER L4EDITION LORS DE L'AJOUT => ajout dans reducer => _id dans active_*/
-		/*ici change la route sur devis/_id*/
-			active_devis:-1
+			menu:1,
+			show:2,
+			active_devis:false,
+			active_element:-1,
+			active_logique:-1
 		}
 		this._devisControle = this._devisControle.bind(this)
 		this._devisEdit = this._devisEdit.bind(this)
 		this._devisSave = this._devisSave.bind(this)
 		this._devisClose = this._devisClose.bind(this)
 		this._devisDel = this._devisDel.bind(this)
-		this._devisOpen = this._devisOpen.bind(this)
 		this._devisCopy = this._devisCopy.bind(this)
-	}
 
+		this._elementControle = this._elementControle.bind(this)
+		this._elementEdit = this._elementEdit.bind(this)
+		this._elementSave = this._elementSave.bind(this)
+		this._elementClose = this._elementClose.bind(this)
+		this._elementDel = this._elementDel.bind(this)
+		this._elementCopy = this._elementCopy.bind(this)
+		this._elementAdd = this._elementAdd.bind(this)
+
+		this._logiqueControle = this._logiqueControle.bind(this)
+		this._logiqueEdit = this._logiqueEdit.bind(this)
+		this._logiqueSave = this._logiqueSave.bind(this)
+		this._logiqueClose = this._logiqueClose.bind(this)
+		this._logiqueDel = this._logiqueDel.bind(this)
+		this._logiqueCopy = this._logiqueCopy.bind(this)
+		this._logiqueAdd = this._logiqueAdd.bind(this)
+
+		this._choiceControle = this._choiceControle.bind(this)
+		this._choiceEdit = this._choiceEdit.bind(this)
+		this._choiceSave = this._choiceSave.bind(this)
+		this._choiceClose = this._choiceClose.bind(this)
+		this._choiceDel = this._choiceDel.bind(this)
+		this._choiceCopy = this._choiceCopy.bind(this)
+		this._choiceAdd = this._choiceAdd.bind(this)
+	}
 		init(){
 		return{
 			libelle:"",
-      entreprise:"",
-      client:"",
-      date:Date(Date.now()) 
+			prix:"",
+			numerique:false
 		}
 	}
 	componentDidMount() {
-		this.props.devisGet()
+		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet } = this.props;
+		devisGet1({data:{_id:devis_id}})
+		entrepriseGet()
+		elementGet({data:{devis_id}})
+		logiqueGet()
+		choiceGet()
 	}
+	//•••••••••••••••••••••••••••••••••••••••••••••••
 	_devisControle(obj) {
 		
 			let { devisControle } = this.props;
-
 			devisControle(obj);
 	}
-	_devisEdit({_id}){
-			
-			this.setState({active_devis:_id})
-	}
-	_devisOpen({_id}){
-		
-		history.push("/devis_edit/"+_id)
-						
-	}
 
-	_devisSave(){
+	_devisEdit({_id,titre,entreprise,client}){
+		let { devisControle } = this.props;
+
+			devisControle({_id,titre,entreprise,client});
+			this.setState({active_devis:true,active_element:-1,active_logique:-1})
+	}
+	_devisSave({_id}){
 		let { active_user } = this.props;
 		let { devisUp } = this.props;
-		let { controle } = this.props;
-		devisUp({data:{...controle}});
-		this.setState({active_devis:-1})
+		let { devis_controle } = this.props;
+		devisUp({data:{...devis_controle,_id}});
+		this.setState({active_devis:false})
 	}
 	_devisClose(){
-
-		this.setState({active_devis:-1})
-	}
-	_devisAdd(){
-
-		let { active_user, deviss } = this.props;
-		let { devisPost, devisControle } = this.props;
-		let { controle } = this.props;
-		devisPost({data:{...this.init(),date:Date.now(),user:active_user._id},cbk:(_id)=>{this.setState({active_devis:_id})}});
-		//devisControle(this.init());
-		//
+		this.setState({active_devis:false})
 	}
 	_devisDel({_id}){
 
 		let { devisDel } = this.props;
 		devisDel({_id});
 	}
-	_devisCopy({_id,libelle,prix,num}){
-		let { active_user, deviss } = this.props;
-		let { devisPost, devisControle } = this.props;
-		let { controle } = this.props;
-		devisPost({data:{libelle,prix,num,date:Date.now(),user:active_user._id}});
-	}
-	render(){
-		let { active_user, deviss } = this.props;
-		let { devis_controle } = this.props;
-		let { logique_controle } = this.props;
+	_devisCopy({_id,libelle,prix,num,id}){
+		/*let { active_user, deviss } = this.props;
+		let { devisPost } = this.props;
 	
-		let { libelle,prix,num } = devis_controle;
+		devisPost({data:{libelle,prix,num,date:Date.now(),user:active_user._id}});*/
+	}
+	//••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+	_elementControle(obj) {
 		
-		return (
-			<div style={{ display:"flex", flexDirection:"column",justifyContent:"flex-start", width:"100%",height:"100%"}}>
-					Devis
-					
-					<Button style={{marginBottom:"45px"}} onClick={this._devisAdd.bind(this)}>Ajouter un devis</Button>
-				<div style={{width:"100%",display:"flex",flexDirection:"column" }}>
-					<div style={{display:"flex",flexDirection:"row"}}>
-						<div style={{flex:1}}>ID</div>
-						<div style={{flex:1}}>Date</div>
-						<div style={{flex:4}}>Libellé</div>
-						<div style={{flex:1}}>Entreprise</div>
-						<div style={{flex:1}}>Client</div>
-						
-						<div style={{width:"30px"}}></div>
-					</div>
-					{
-						deviss.map(
-							(devis,i)=>{
-								let active = this.state.active_devis === devis._id?true:false
+			let { elementControle } = this.props;
 
-								return <DevisCard 
-									onOpen = {this._devisOpen}
-									onDel = {this._devisDel}
-									onClose = {this._devisClose}
-									onEdit={this._devisEdit}
-									active = {active}
-									libelle={devis.libelle}
-									entreprise={devis.entreprise}
-									client={devis.client}
-									date={devis.date}
-									key={i}
-									_id={devis._id}
-									/>}
-						).reverse()
-					}
-				</div>
-				
+			elementControle(obj);
+	}
+	_elementEdit({_id,libelle,prix,numerique,id}){
+		let { elementControle } = this.props;
+			if(this.state.active_element!==_id){
+				elementControle({_id,libelle,prix,numerique});
+				this.setState({active_element:_id,active_devis:false,active_logique:-1})
+			}
+	}
+	_elementSave({_id}){
+		let { active_user } = this.props;
+		let { elementUp } = this.props;
+		let { element_controle } = this.props;
+
+		elementUp({data:{_id,...element_controle}});
+		this.setState({active_element:-1})
+	}
+	_elementClose(){
+		this.setState({active_element:-1})
+	}
+	_elementAdd(){
+		let { active_user, elements, devis_id } = this.props;
+		let { elementPost, elementControle } = this.props;
+		let { controle } = this.props;
+		elementPost({data:{...this.init(),devis_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{this.setState({active_element:_id})}});
+		//elementControle(this.init());
+		
+	}
+	_elementDel({_id}){
+
+		let { elementDel } = this.props;
+		elementDel({_id});
+	}
+	_elementCopy({_id,libelle,prix,numerique,id}){
+		/*let { active_user, elements } = this.props;
+		let { elementPost, elementControle } = this.props;
+		let { controle } = this.props;
+		elementPost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
+	}
+	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+	_logiqueControle(obj) {
+		
+			let { logiqueControle } = this.props;
+
+			logiqueControle(obj);
+	}
+	_logiqueEdit({_id,libelle_log,prix_log,numerique_log}){
+
+		let { logiqueControle } = this.props;
+			if(this.state.active_logique!==_id){
+				logiqueControle({_id,libelle_log,prix_log,numerique_log});
+				this.setState({active_logique:_id,active_devis:false,active_element:-1})
+			}
+	}
+	_logiqueSave({_id}){
+		let { active_user } = this.props;
+		let { logiqueUp } = this.props;
+		let { logique_controle,logiques } = this.props;
+		let logique = logiques.find((logi)=>logi._id===_id)
+
+		logiqueUp({data:{_id,...logique,...logique_controle}});
+		this.setState({active_logique:-1})
+	}
+	_logiqueClose(){
+		this.setState({active_logique:-1})
+	}
+	_logiqueAdd({_id}){
+
+		let { active_user, logiques, devis_id } = this.props;
+		let { logiquePost, logiqueControle } = this.props;
+		let { controle } = this.props;
+		logiquePost({data:{...this.init(),devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
+			this.setState({active_logique:_id})
+		}});
+		//logiqueControle(this.init());
+		
+	}
+	_logiqueDel({_id}){
+
+		let { logiqueDel } = this.props;
+		logiqueDel({_id});
+	}
+	_logiqueCopy({_id,libelle,prix,numerique,id}){
+		/*let { active_user, logiques } = this.props;
+		let { logiquePost, logiqueControle } = this.props;
+		let { controle } = this.props;
+		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
+	}
+	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+		_choiceControle(obj) {
+			console.log("obj", obj);
+		
+			let { choiceControle } = this.props;
+
+			choiceControle(obj);
+	}
+	_choiceEdit({_id,libelle_log,prix_log,numerique_log}){
+
+		let { choiceControle } = this.props;
+			if(this.state.active_choice!==_id){
+				choiceControle({_id,libelle_log,prix_log,numerique_log});
+				this.setState({active_choice:_id,active_devis:false,active_element:-1})
+			}
+	}
+	_choiceSave({_id}){
+		let { active_user } = this.props;
+		let { choiceUp } = this.props;
+		let { choice_controle,choices } = this.props;
+		let choice = choices.find((logi)=>logi._id===_id)
+
+		choiceUp({data:{_id,...choice,...choice_controle}});
+		this.setState({active_choice:-1})
+	}
+	_choiceClose(){
+		this.setState({active_choice:-1})
+	}
+	_choiceAdd({_id}){
+
+		let { active_user, choices, devis_id } = this.props;
+		let { choicePost, choiceControle } = this.props;
+		let { controle } = this.props;
+		choicePost({data:{...this.init(),devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
+			this.setState({active_choice:_id})
+		}});
+		//choiceControle(this.init());
+		
+	}
+	_choiceDel({_id}){
+
+		let { choiceDel } = this.props;
+		choiceDel({_id});
+	}
+	_choiceCopy({_id,libelle,prix,numerique,id}){
+		/*let { active_user, logiques } = this.props;
+		let { logiquePost, logiqueControle } = this.props;
+		let { controle } = this.props;
+		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
+	}
+	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+	render(){
+		let { active_user, devis,
+			devis_controle,element_controle,logique_controle,choice_controle, 
+			elements, logiques,entreprises,choices } = this.props;
+
+			elements = typeof elements !== undefined && typeof elements === "object" && elements instanceof Array ? elements:[]
+			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
+	
+			let { libelle,prix,numerique } = element_controle;
+			let { titre,entreprise,client } = devis_controle;
+			let { libelle_log,prix_log,numerique_log } = logique_controle;
+
+		return (
+			<div style={{ display:"flex", flexDirection:"column", width:"100%"}}>
+					<div style={{ width:"100%", display:"flex",position:"fixed",zIndex:800,justifyContent:"flex-end"}}>
+						<div onClick={()=>{this.setState({menu:0})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>0</div>
+						<div onClick={()=>{this.setState({menu:1})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>1</div>
+						<div onClick={()=>{this.setState({menu:2})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>2</div>
+					</div>
+					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center"}}>
+					{this.state.menu===0||this.state.menu===1?<DevisEdit
+							active_user={active_user}
+							
+							entreprises={entreprises}
+							
+							devis={devis}
+							active_devis={this.state.active_devis}
+							devis_controle={devis_controle}
+							devisClose = {this._devisClose}
+							devisEdit = {this._devisEdit}
+							devisSave = {this._devisSave}
+							devisDel = {this._devisDel}
+							devisCopy = {this._devisCopy}
+							devisChange = {this._devisControle} 
+							
+							elements={elements}
+							active_element={this.state.active_element}
+							element_controle={element_controle}
+							elementClose = {this._elementClose}
+							elementEdit = {this._elementEdit}
+							elementSave = {this._elementSave}
+							elementDel = {this._elementDel}
+							elementCopy = {this._elementCopy}
+							elementAdd = {this._elementAdd}
+							elementChange = {this._elementControle} 
+							
+							logiques={logiques}
+							active_logique={this.state.active_logique}
+							logique_controle={logique_controle}
+							logiqueClose = {this._logiqueClose}
+							logiqueEdit = {this._logiqueEdit}
+							logiqueSave = {this._logiqueSave}
+							logiqueDel = {this._logiqueDel}
+							logiqueCopy = {this._logiqueCopy}
+							logiqueAdd = {this._logiqueAdd}
+							logiqueChange = {this._logiqueControle} 
+							/>: ""}
+					{this.state.menu===1||this.state.menu===2?<DevisShow 
+									menu={this.state.menu}
+									devis={devis}
+									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
+									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
+									elements={elements}
+
+									choices={logiques}
+									active_choice={this.state.active_choice}
+									choice_controle={choice_controle}
+									onClose = {this._choiceClose}
+									onEdit = {this._choiceEdit}
+									onSave = {this._choiceSave}
+									onDel = {this._choiceDel}
+									onCopy = {this._choiceCopy}
+									onAdd = {this._choiceAdd}
+									onChange = {this._choiceControle} 
+
+									/>:""}
+
+			</div>	
 			</div>
 		);
 	}
@@ -142,8 +338,15 @@ function mapStateToProps( state ){
 	return (
 		{
 			active_user: state.user.active_user,
+			element_controle: state.element.controle,
+			elements: state.element.got.data,
 			devis_controle: state.devis.controle,
-			deviss: state.devis.got.data
+			devis: state.devis.got1.data,
+			deviss: state.devis.got.data,
+			logiques: state.logique.got.data,
+			logique_controle: state.logique.controle,
+			choice_controle: state.choice.controle,
+			entreprises: state.entreprise.got.data,
 		}
 	);
 
@@ -151,11 +354,32 @@ function mapStateToProps( state ){
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
+			devisGet1: devis.get1,
 			devisControle: devis.controle,
 			devisPost: devis.post,
 			devisGet: devis.get,
 			devisUp: devis.up,
 			devisDel: devis.del,
+
+			elementControle: element.controle,
+			elementPost: element.post,
+			elementGet: element.get,
+			elementUp: element.up,
+			elementDel: element.del,
+
+			logiqueControle: logique.controle,
+			logiquePost: logique.post,
+			logiqueGet: logique.get,
+			logiqueUp: logique.up,
+			logiqueDel: logique.del,
+
+			choiceControle: choice.controle,
+			choicePost: choice.post,
+			choiceGet: choice.get,
+			choiceUp: choice.up,
+			choiceDel: choice.del,
+			
+			entrepriseGet: entreprise.get,
 
 	}, dispatch );
 }

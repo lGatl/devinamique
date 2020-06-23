@@ -26,3 +26,6 @@
 label {
   cursor:inherit!important;
 }
+span {
+  text-align: left;
+}

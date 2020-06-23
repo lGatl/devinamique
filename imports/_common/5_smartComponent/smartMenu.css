@@ -1,4 +1,7 @@
 .sm_nav {
+  position:fixed;
+  z-index: 9000;
+  width:100%;
   flex:1;
   height: 80px;
   background-color:rgb(1, 168, 251);

@@ -55,7 +55,7 @@ class App extends Component {
 							<div style={{width:"100%", display:"flex"}}>
 								<SmartMenuR/>
 							</div>
-							<div style={{display:"flex", flexDirection:"column", alignItems:"center",height:"100%"}}>
+							<div style={{marginTop:"80px",display:"flex", flexDirection:"column", alignItems:"center",height:"100%"}}>
 								<Routes />
 							</div>
 					</div>	

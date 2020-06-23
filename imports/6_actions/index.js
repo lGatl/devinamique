@@ -1,3 +1,4 @@
+import { CHOICE, choice } from './choice_action';
 import { DEVIS, devis } from './devis_action';
 import { ENTREPRISE, entreprise } from './entreprise_action';
 import { ELEMENT, element } from './element_action';
@@ -7,6 +8,6 @@ import { CONTROLE, controle } from './controle_action';
 
 
 export {
-	DEVIS,ENTREPRISE,ELEMENT,LOGIQUE, USER, CONTROLE,
-	devis,entreprise,element,logique, user, controle
+	CHOICE,DEVIS,ENTREPRISE,ELEMENT,LOGIQUE, USER, CONTROLE,
+	choice,devis,entreprise,element,logique, user, controle
 };

@@ -7,12 +7,10 @@ import {
 	NotFound, 
 	Home,
 	MonEntreprise,
+	DevisList,
 	Devis
 
 } from '../../imports/4_pages';
-import {
-	DevisEdit
-} from '../../imports/_common/5_smartComponent';
 
 //const NotFoundRedirect = () => withRouter(<Redirect to="/404" />);
 
@@ -35,15 +33,15 @@ export default class Routes extends Component {
 				
 
 					<Route
-						path="/devis"
+						path="/devis_list"
 						component={() => (
-								<Devis user_id={Meteor.userId()}/>
+								<DevisList user_id={Meteor.userId()}/>
 						)}
 					/>
 					<Route
-						path="/devis_edit/:id"
+						path="/devis/:id"
 						component={() => (
-								<DevisEdit devis_id={useParams().id} user_id={Meteor.userId()}/>
+								<Devis devis_id={useParams().id} user_id={Meteor.userId()}/>
 						)}
 					/>
 					{/*

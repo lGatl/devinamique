@@ -29,7 +29,7 @@ console.log("e,{label, name, checked:e.target.checked}", e,{label, name, checked
 		let {style} = this.props;
 		return (
 			<div style={{...s_container, ...style}}>
-				<input type="checkbox" disabled={!this.props.active} name={this.props.name} checked={this.props.checked} onChange={this.change.bind(this)} style={!this.props.active?{pointerEvents:"none"}:{}}/>
+				<input type="checkbox" disabled={!this.props.active} name={this.props.name} checked={this.props.checked} onChange={this.change.bind(this)} style={!this.props.active?{pointerEvents:"none"}:{cursor:"pointer"}}/>
 				<label style={{...s_label}}>{this.props.label}</label>
 			</div>
 		);

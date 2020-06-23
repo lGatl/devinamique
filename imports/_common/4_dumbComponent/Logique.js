@@ -106,7 +106,7 @@ export default class Logique extends Component {
 							<Checkbox
 							label = ""
 							name = "numerique_log"
-							checked = { numerique_log }
+							checked = { numerique_log||false }
 							onChange = {this._onChange}
 							active = {active}
 						/>

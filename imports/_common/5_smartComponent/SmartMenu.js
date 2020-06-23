@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import './smartMenu.css';
 
 	export const ITEMS = [
-		{id: "devis",title:"Devis",display:true,actif:true},
+		{id: "devis_list",title:"Devis",display:true,actif:true},
 		{id: "entreprises",title:"Mon Entreprise",display:true,actif:true},
 		{id: "home",title:"Accueil",display:true,actif:true},
 		]
