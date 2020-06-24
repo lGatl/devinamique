@@ -54,7 +54,7 @@ class DevisList extends Component {
 	}
 	_devisOpen({_id}){
 		
-		history.push("/devis/"+_id)
+		history.push("/devis/"+_id+"/edit")
 						
 	}
 
@@ -97,7 +97,7 @@ class DevisList extends Component {
 		let { libelle,prix,num } = devis_controle;
 		
 		return (
-			<div style={{ display:"flex", flexDirection:"column",justifyContent:"flex-start", width:"100%",height:"100%"}}>
+			<div style={{ display:"flex", flexDirection:"column",justifyContent:"flex-start", width:"100%",height:"100%", backgroundColor:"white"}}>
 					Devis
 					
 					<Button style={{marginBottom:"45px"}} onClick={this._devisAdd.bind(this)}>Ajouter un devis</Button>

@@ -27,7 +27,7 @@ class DevisEdit extends Component {
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
 		return (
-				<div style={{ display:"flex", flexDirection:"column", flex:1,boxShadow: "1px 1px 12px #555",zIndex:100}}>
+				<div style={{ display:"flex", flexDirection:"column", flex:1,boxShadow: "1px 1px 12px #555",zIndex:100, backgroundColor:"white"}}>
 						Creez un devis dynamique
 						<DevisForm
 										active = {active_devis}

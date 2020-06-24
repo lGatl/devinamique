@@ -71,6 +71,7 @@ export default class Entreprise extends Component {
 		return (
 			<div 
 			style={{
+				backgroundColor:"white",
 				border:"solid 1px black",
 				cursor:active?"default":"pointer",
 				overflow:"hidden",

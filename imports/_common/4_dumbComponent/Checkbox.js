@@ -7,8 +7,6 @@ export default class Checkbox extends Component {
 			s_container:{
 				display:"flex",
 				alignItems:"center",
-				padding:5,
-				margin:5,
 				fontSize:20,
 			},
 			s_label:{

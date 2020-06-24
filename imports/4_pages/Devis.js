@@ -14,6 +14,9 @@ import {
 	DevisShow
 } from '../_common/4_dumbComponent';
 
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 class Devis extends Component {
 	constructor(){
 		super()
@@ -56,6 +59,8 @@ class Devis extends Component {
 		this._choiceDel = this._choiceDel.bind(this)
 		this._choiceCopy = this._choiceCopy.bind(this)
 		this._choiceAdd = this._choiceAdd.bind(this)
+
+		
 	}
 		init(){
 		return{
@@ -65,13 +70,29 @@ class Devis extends Component {
 		}
 	}
 	componentDidMount() {
-		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet } = this.props;
+		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet, edit } = this.props;
+		this.setState({menu:edit?1:2})
 		devisGet1({data:{_id:devis_id}})
 		entrepriseGet()
 		elementGet({data:{devis_id}})
 		logiqueGet()
 		choiceGet()
 	}
+
+	_printDocument() {
+    const input = document.getElementById('divToPrint');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        console.dir("imgData", imgData);
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0,210,297);
+        //pdf.output('dataurlnewwindow');
+        pdf.save("download.pdf");
+      })
+    ;
+  }
+  
 	//•••••••••••••••••••••••••••••••••••••••••••••••
 	_devisControle(obj) {
 		
@@ -252,7 +273,7 @@ class Devis extends Component {
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 	render(){
-		let { active_user, devis,
+		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
 			elements, logiques,entreprises,choices } = this.props;
 
@@ -263,15 +284,19 @@ class Devis extends Component {
 			let { titre,entreprise,client } = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
+console.log("edit", edit);
 		return (
 			<div style={{ display:"flex", flexDirection:"column", width:"100%"}}>
-					<div style={{ width:"100%", display:"flex",position:"fixed",zIndex:800,justifyContent:"flex-end"}}>
-						<div onClick={()=>{this.setState({menu:0})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>0</div>
-						<div onClick={()=>{this.setState({menu:1})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>1</div>
-						<div onClick={()=>{this.setState({menu:2})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>2</div>
-					</div>
-					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center"}}>
-					{this.state.menu===0||this.state.menu===1?<DevisEdit
+					
+					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center",flexWrap:"wrap"}}>
+					
+					<div style={{
+						//transitionDuration: "0.5s",
+						flex:this.state.menu===0||this.state.menu===1?1:"none",
+						width:this.state.menu===0||this.state.menu===1?"default":0,
+						overflow:"hidden"
+
+				}}><DevisEdit
 							active_user={active_user}
 							
 							entreprises={entreprises}
@@ -284,7 +309,7 @@ class Devis extends Component {
 							devisSave = {this._devisSave}
 							devisDel = {this._devisDel}
 							devisCopy = {this._devisCopy}
-							devisChange = {this._devisControle} 
+							devisPrint = {this._devisControle} 
 							
 							elements={elements}
 							active_element={this.state.active_element}
@@ -307,7 +332,19 @@ class Devis extends Component {
 							logiqueCopy = {this._logiqueCopy}
 							logiqueAdd = {this._logiqueAdd}
 							logiqueChange = {this._logiqueControle} 
-							/>: ""}
+							/></div>
+							
+								{edit?<div style={{
+								width:50,
+								display:"flex",
+								flexDirection:"column"
+							}}>
+									<div onClick={()=>{this.setState({menu:0})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>0</div>
+									<div onClick={()=>{this.setState({menu:1})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>1</div>
+									<div onClick={()=>{this.setState({menu:2})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>2</div>
+								</div>:""
+							}
+								
 					{this.state.menu===1||this.state.menu===2?<DevisShow 
 									menu={this.state.menu}
 									devis={devis}
@@ -325,6 +362,7 @@ class Devis extends Component {
 									onCopy = {this._choiceCopy}
 									onAdd = {this._choiceAdd}
 									onChange = {this._choiceControle} 
+									onPrint = {this._printDocument}
 
 									/>:""}
 

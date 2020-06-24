@@ -110,6 +110,8 @@ export default class Element extends Component {
 						</div>
 						<div style={{flex:1, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 								<Input
+									type="number"
+									min="0"
 									label=""
 									placeholder="Prix"
 									name="prix"

@@ -13,14 +13,15 @@ export default class Input extends Component {
 		let {active, value, label} = this.props;
 		return (
 			<div style={{ 
-				display: 'flex',flex:1
+				display: 'flex', flexDirection:"column",flex:1
 				
 			}}>
 				{label?<label >{label}</label>:""}
 				{active?
 				<input
-					style={{width:"100%",padding:0}}
+					style={{flex:1,padding:0,...this.props.style}}
 					type={this.props.type}
+					min={this.props.min}
 					placeholder={this.props.placeholder}
 					onChange={this.onChange.bind(this)}
 					value={value||""}

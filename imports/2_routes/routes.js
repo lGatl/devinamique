@@ -38,10 +38,17 @@ export default class Routes extends Component {
 								<DevisList user_id={Meteor.userId()}/>
 						)}
 					/>
+					
 					<Route
-						path="/devis/:id"
+						path="/devis/:id/:edit"
 						component={() => (
-								<Devis devis_id={useParams().id} user_id={Meteor.userId()}/>
+								<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>
+						)}
+					/>
+					<Route
+						path="/devis/:id/"
+						component={() => (
+								<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>
 						)}
 					/>
 					{/*
