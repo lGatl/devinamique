@@ -74,7 +74,9 @@ class DevisList extends Component {
 		let { active_user, deviss } = this.props;
 		let { devisPost, devisControle } = this.props;
 		let { controle } = this.props;
-		devisPost({data:{...this.init(),date:Date.now(),user:active_user._id},cbk:(_id)=>{this.setState({active_devis:_id})}});
+		devisPost({data:{...this.init(),date:Date.now(),user:active_user._id},cbk:(_id)=>{
+			history.push("/devis/"+_id+"/edit")
+		}});
 		//devisControle(this.init());
 		//
 	}

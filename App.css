@@ -45,7 +45,7 @@ span {
         display:flex;
         flex-direction:column;
         left:50px;
-        top:50px;
+        top:70px;
         bottom:50px;
         right:50px;
         position: absolute;
@@ -54,5 +54,3 @@ span {
         font-size:12
 
 }
-
-      

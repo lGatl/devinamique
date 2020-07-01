@@ -27,7 +27,7 @@ class DevisEdit extends Component {
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
 		return (
-				<div style={{ display:"flex", flexDirection:"column", flex:1,boxShadow: "1px 1px 12px #555",zIndex:100, backgroundColor:"white"}}>
+				<div style={{ display:"flex", flexDirection:"column", flex:1,boxShadow: "1px 1px 12px #555",zIndex:100, backgroundColor:"white", minHeight:"100%"}}>
 						Creez un devis dynamique
 						<DevisForm
 										active = {active_devis}
@@ -63,17 +63,18 @@ class DevisEdit extends Component {
 									return <Element 
 										active = {element._id===active_element}
 										key = {i}
+										id = {i}
 										_id = {element._id}
 										libelle = {element._id===active_element ? libelle: element.libelle}
 										prix = {element._id===active_element ? prix: element.prix}
 										numerique = {element._id===active_element ? numerique:element.numerique}
-											onClose = {this.props.elementClose}
-											onEdit = {this.props.elementEdit}
-											onSave = {this.props.elementSave}
-											onDel = {this.props.elementDel}
-											onCopy = {this.props.elementCopy}
-											onChange = {this.props.elementChange} 
-											onLogique = {this.props.logiqueAdd}
+										onClose = {this.props.elementClose}
+										onEdit = {this.props.elementEdit}
+										onSave = {this.props.elementSave}
+										onDel = {this.props.elementDel}
+										onCopy = {this.props.elementCopy}
+										onChange = {this.props.elementChange} 
+										onLogique = {this.props.logiqueAdd}
 										logiques = {logiques.reduce((total,logique,j)=>{
 											return element._id===logique.element_id?[...total,<Logique 
 												prix_log={logique._id===active_logique?prix_log:logique.prix_log}

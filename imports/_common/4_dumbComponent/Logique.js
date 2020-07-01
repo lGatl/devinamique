@@ -82,6 +82,7 @@ export default class Logique extends Component {
 						<div style={{display:"flex", flexDirection:"row",flex:1, backgroundColor:"rgba(0,150,0,0.5)"}}>
 							<div onClick = {this._onEdit} style={{flex:1, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
 							<div style={{flex:4, display:"flex", alignItems:"center",padding:"0px 5px"}}>
+							si
 							<Input
 								label=""
 								placeholder="Libellé"

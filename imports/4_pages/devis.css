@@ -1,0 +1,19 @@
+.imgbutt{
+	width:40px;
+	height:40px;
+	border-radius:5px;
+	margin:5px;
+	cursor:pointer;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0px 0px 0px #555;
+	transition: 0.3s;
+}
+.imgbutt:hover{
+	box-shadow: 1px 1px 5px #555;
+	background-color: white;
+}

@@ -17,12 +17,17 @@ import {
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+import "./devis.css"
+
+import { throttle } from '../8_libs';
+
 class Devis extends Component {
 	constructor(){
 		super()
 		/*PASSER DANS LES CONTROLE POUR ACTIVER L'EDITION LORS DE L'AJOUT => ajout dans reducer => _id dans active_*/
 
 		this.state = {
+			scroll:0,
 			menu:1,
 			show:2,
 			active_devis:false,
@@ -60,6 +65,8 @@ class Devis extends Component {
 		this._choiceCopy = this._choiceCopy.bind(this)
 		this._choiceAdd = this._choiceAdd.bind(this)
 
+		this._handleScroll = throttle(this._handleScroll.bind(this),30)
+
 		
 	}
 		init(){
@@ -71,12 +78,29 @@ class Devis extends Component {
 	}
 	componentDidMount() {
 		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet, edit } = this.props;
+
+		window.addEventListener('scroll', this._handleScroll);
+
 		this.setState({menu:edit?1:2})
 		devisGet1({data:{_id:devis_id}})
 		entrepriseGet()
 		elementGet({data:{devis_id}})
 		logiqueGet()
 		choiceGet()
+
+	}
+	
+
+	componentWillUnmount() {
+	    window.removeEventListener('scroll', this._handleScroll);
+	}
+
+	_handleScroll(event) {
+	    let scrollTop = event.srcElement.scrollingElement.scrollTop
+
+	    this.setState({
+	      scroll: scrollTop
+	    });
 	}
 
 	_printDocument() {
@@ -203,7 +227,7 @@ class Devis extends Component {
 		let { active_user, logiques, devis_id } = this.props;
 		let { logiquePost, logiqueControle } = this.props;
 		let { controle } = this.props;
-		logiquePost({data:{...this.init(),devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
+		logiquePost({data:{devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
 			this.setState({active_logique:_id})
 		}});
 		//logiqueControle(this.init());
@@ -276,6 +300,7 @@ class Devis extends Component {
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
 			elements, logiques,entreprises,choices } = this.props;
+		let	{menu}=this.state;
 
 			elements = typeof elements !== undefined && typeof elements === "object" && elements instanceof Array ? elements:[]
 			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
@@ -284,14 +309,13 @@ class Devis extends Component {
 			let { titre,entreprise,client } = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
-console.log("edit", edit);
 		return (
-			<div style={{ display:"flex", flexDirection:"column", width:"100%"}}>
+			<div style={{ display:"flex", flexDirection:"column", width:"100%", minHeight:"100%"}}>
 					
-					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center",flexWrap:"wrap"}}>
+					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center",flexWrap:"wrap", minHeight:"100%"}}>
 					
 					<div style={{
-						//transitionDuration: "0.5s",
+						transitionDuration: "0.5s",
 						flex:this.state.menu===0||this.state.menu===1?1:"none",
 						width:this.state.menu===0||this.state.menu===1?"default":0,
 						overflow:"hidden"
@@ -309,7 +333,7 @@ console.log("edit", edit);
 							devisSave = {this._devisSave}
 							devisDel = {this._devisDel}
 							devisCopy = {this._devisCopy}
-							devisPrint = {this._devisControle} 
+							devisChange = {this._devisControle} 
 							
 							elements={elements}
 							active_element={this.state.active_element}
@@ -335,24 +359,58 @@ console.log("edit", edit);
 							/></div>
 							
 								{edit?<div style={{
-								width:50,
-								display:"flex",
-								flexDirection:"column"
-							}}>
-									<div onClick={()=>{this.setState({menu:0})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>0</div>
-									<div onClick={()=>{this.setState({menu:1})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>1</div>
-									<div onClick={()=>{this.setState({menu:2})}} style={{ cursor:"pointer",backgroundColor:"rgba(50,50,240,1)",width:50,height:50,borderRadius:"10px"}}>2</div>
+									paddingTop:this.state.scroll,
+									transitionDuration: "0.1s",
+									width:50,
+									display:"flex",
+									flexDirection:"column"
+								}}>
+									{menu!==0?<div className="imgbutt" onClick={()=>{this.setState({menu:0})}}> {">>"} </div>:""}
+									{menu!==1?<div className="imgbutt" onClick={()=>{this.setState({menu:1})}}> {menu===0?"<":">"} </div>:""}
+									{menu!==2?<div className="imgbutt" onClick={()=>{this.setState({menu:2})}}> {"<<"} </div>:""}
+									<div className="imgbutt" onClick={this._printDocument} style={{ backgroundImage:"url('/image/printer.png')"}}></div>
+									<div className="imgbutt" style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
 								</div>:""
 							}
-								
-					{this.state.menu===1||this.state.menu===2?<DevisShow 
+					<div style={{
+						transitionDuration: "0.5s",
+						flex:menu===1||menu===2?1:"none",
+						width:menu===2||menu===2?"default":0,
+						overflow:"hidden",
+						display:"flex"
+
+				}}>		
+					<DevisShow 
 									menu={this.state.menu}
 									devis={devis}
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
-									elements={elements}
+									elements={elements.map((elt,j)=>{
+										console.log("elt", elt);
 
-									choices={logiques}
+										let nv_prix = elt.prix
+										console.log("nv_prix", nv_prix);
+
+										let logqs = logiques.filter(log=>log.element_id===elt._id)
+										console.log("logqs", logqs);
+										
+										
+										logqs.map(logq=>{
+
+											console.log("nv_prix", nv_prix);
+											console.log(typeof (logq.prix_log*1));
+											nv_prix = logq.prix_log !== undefined && typeof (logq.prix_log*1) === "number" ?logq.prix_log:nv_prix
+											console.log("nv_prix", nv_prix);
+										})
+										
+										return {...elt, 
+
+											prix: nv_prix
+
+										}
+									})}
+
+									choices={""}
 									active_choice={this.state.active_choice}
 									choice_controle={choice_controle}
 									onClose = {this._choiceClose}
@@ -364,7 +422,8 @@ console.log("edit", edit);
 									onChange = {this._choiceControle} 
 									onPrint = {this._printDocument}
 
-									/>:""}
+									/>
+							</div>
 
 			</div>	
 			</div>

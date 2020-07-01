@@ -73,9 +73,10 @@ export default class Element extends Component {
 	}
 	
 	render() {
-			let {libelle,prix, logiques, numerique, onChange, active} = this.props;
+			let {libelle,prix, logiques, numerique, onChange, active,id} = this.props;
 			logiques = typeof logiques === "object" && logiques instanceof Array?logiques:[];
 			onChange = typeof onChange === "function" ? onChange : false ;
+			
 		return (
 			<div style={{
 				flex:1, 
@@ -93,7 +94,7 @@ export default class Element extends Component {
 					<div onClick = {this._onEdit} style={{flex:7, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
 							<div style={{flex:1, display:"flex", alignItems:"center",justifyContent:"center"}}>
 							<div>
-								ID
+								{id}
 							</div>
 							
 						</div>

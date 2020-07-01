@@ -85,8 +85,6 @@ export default class DevisShow extends Component {
 				 	typeof choice!== "undefined" && typeof choice === "boolean"&&choice===false?0:
 					typeof choice!== "undefined" && typeof (choice*1) === "number"?choice:0;
 
-
-console.log("choice", choice);
 				return total+choice* element.prix
 						},0)
 		return (
@@ -101,12 +99,14 @@ console.log("choice", choice);
 				zIndex:50,
 			}}
 			>
+
 			<div style={{
-			  height:100+1169+"px",
+			  height:120+1169+"px",
 			  width:100+826+"px",
 			  position: "absolute",
 			
 			}}>
+
 			<div id="divToPrint">
 				{/*adresse de l'entreprise*/}
 				<div style={{display:"flex",width:"100%",justifyContent:"space-between"}}>
@@ -195,10 +195,6 @@ console.log("choice", choice);
 						<span>{prix_total*20/100} TTC</span>
 					</div>
 				</div>
-			</div>
-			<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
-				<Button onClick={this.props.onPrint} style={{backgroundColor:"rgba(103,230,154,1)"}}>Imprimer</Button>
-				<Button style={{backgroundColor:"rgba(103,230,154,1)"}}>Enregistrer</Button>
 			</div>
 
 			<div style={{display:"flex",width:"100%",justifyContent:"space-between",flex:1}}>

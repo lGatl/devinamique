@@ -7,3 +7,19 @@ export const ENTREPRISE = {
 export const entreprise = {
 	...extendAction('ENTREPRISE').action
 };
+
+
+/*
+
+
+formulaire 
+ input
+ button
+
+
+
+
+
+
+
+*/
