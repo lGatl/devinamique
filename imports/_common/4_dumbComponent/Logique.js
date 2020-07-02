@@ -94,6 +94,8 @@ export default class Logique extends Component {
 						</div>
 						<div style={{flex:1, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 							<Input
+								type="number"
+								min="0"
 								label=""
 								placeholder="Prix"
 								name="prix_log"
@@ -103,14 +105,17 @@ export default class Logique extends Component {
 							/>
 						</div>
 						
-						<div style={{flex:1,display:"flex", justifyContent:"center"}}>
-							<Checkbox
-							label = ""
-							name = "numerique_log"
-							checked = { numerique_log||false }
-							onChange = {this._onChange}
-							active = {active}
-						/>
+						<div style={{flex:1,display:"flex", alignItems:"center",padding:"0px 5px"}}>
+							<Input
+									type="number"
+									min="0"
+									label=""
+									placeholder="nb"
+									name="numerique_log"
+									onChange={this._onChange}
+									value={numerique_log}
+									active = {active}
+								/>
 						</div>
 						<div style={{flex:1}}>
 								 

@@ -17,9 +17,8 @@ export default class Checkbox extends Component {
 	}
 	change(e){
 		let {label, name, onChange} = this.props;
-
-console.log("e,{label, name, checked:e.target.checked}", e,{label, name, checked:e.target.checked});
-		onChange({label, name, checked:!e.target.checked});
+		let ch = !e.target.checked
+		onChange({label, name, checked:ch?1:0});
 	}
 	render(){
 		

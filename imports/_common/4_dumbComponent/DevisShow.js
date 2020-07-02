@@ -10,6 +10,7 @@ import {
 import { dateToFormat } from '../../8_libs';
 
 export default class DevisShow extends Component {
+
 	componentDidUpdate(prevProps, prevState) {
 		
 	}
@@ -68,7 +69,7 @@ export default class DevisShow extends Component {
 			value === undefined && checked === undefined
 				? !this.props[name]
 				: value === undefined
-				? !checked
+				? !checked?1:0
 				: value;
 
 			onChange({ [name]: value });
@@ -89,7 +90,8 @@ export default class DevisShow extends Component {
 						},0)
 		return (
 			<div style={{
-				 boxShadow: "-1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset",
+				transition:"0.5s",
+				boxShadow: "-1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset",
 				display:"flex", 
 				flexDirection:"column", 
 				flex:1,
@@ -156,7 +158,7 @@ export default class DevisShow extends Component {
 					<span style={{flex:5}}>{element.libelle}</span>
 					<span style={{flex:1}}>{element.prix}</span>
 					<div style={{flex:1,display:"flex"}}>	
-						{element.numerique?<Checkbox
+						{!element.numerique?<Checkbox
 									label = ""
 									name = {element._id}
 									checked = { choice_controle[element._id]||false }

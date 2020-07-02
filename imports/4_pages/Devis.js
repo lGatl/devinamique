@@ -85,7 +85,7 @@ class Devis extends Component {
 		devisGet1({data:{_id:devis_id}})
 		entrepriseGet()
 		elementGet({data:{devis_id}})
-		logiqueGet()
+		logiqueGet({data:{devis_id}})
 		choiceGet()
 
 	}
@@ -94,7 +94,7 @@ class Devis extends Component {
 	componentWillUnmount() {
 	    window.removeEventListener('scroll', this._handleScroll);
 	}
-
+	
 	_handleScroll(event) {
 	    let scrollTop = event.srcElement.scrollingElement.scrollTop
 
@@ -245,12 +245,24 @@ class Devis extends Component {
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-		_choiceControle(obj) {
-			console.log("obj", obj);
+	_choiceControle(obj) {
+		console.log("obj", obj);
 		
-			let { choiceControle } = this.props;
+		let { choiceControle } = this.props;
 
-			choiceControle(obj);
+
+
+			this.props.logiques.reduce((total,lg,i)=>this.props.elements.findIndex(el=>el._id===lg.element_id)>-1?[...total,lg]:total,[]).map(logq=>{
+				console.log("logq", logq);
+				if(this.comprendre(logq.libelle_log,this.props.elements,{...this.props.choice_controle,...obj})){
+					
+console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.numerique_log});
+					choiceControle({[logq.element_id]:logq.numerique_log*1});
+				}						
+										
+			})
+
+		choiceControle(obj);
 	}
 	_choiceEdit({_id,libelle_log,prix_log,numerique_log}){
 
@@ -295,7 +307,10 @@ class Devis extends Component {
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
 	comprendre(logstr,elts,choices){
-		logstr = logstr.split(" ").join("").toLowerCase()
+		logstr = logstr.split("").reduce((total,lr,i)=>["i","d","n","b","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
+			.indexOf(lr)>-1?total+lr:total,"").toLowerCase();
+		logstr.split("=>").join("");
+
 		let remplace = logstr.split("id").reduce((total,lr,i)=>{
 				
 
@@ -317,11 +332,17 @@ class Devis extends Component {
 		
 		console.log("choices", choices);
 		
-		console.log(eval(remplace))
-
 		
 
-		return typeof eval(remplace) === "boolean" ?eval(remplace):false
+		
+		try{
+			console.log("eval(remplace)", eval(remplace));
+
+					return remplace !== undefined && typeof eval(remplace) === "boolean" ?eval(remplace):false
+
+		}catch{
+			return false
+		}
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -415,7 +436,7 @@ class Devis extends Component {
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements.map((elt,j)=>{
-
+										
 										let nv_prix = elt.prix
 
 										let logqs = logiques.filter(log=>log.element_id===elt._id)
