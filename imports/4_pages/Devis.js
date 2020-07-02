@@ -294,6 +294,16 @@ class Devis extends Component {
 		let { controle } = this.props;
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
+	comprendre(logstr,elts){
+		console.log("=======================")
+		console.log("elts", elts);
+		console.log("logstr", logstr);
+			console.log("=======================")
+
+		
+
+		return true
+	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 	render(){
@@ -386,21 +396,16 @@ class Devis extends Component {
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements.map((elt,j)=>{
-										console.log("elt", elt);
 
 										let nv_prix = elt.prix
-										console.log("nv_prix", nv_prix);
 
 										let logqs = logiques.filter(log=>log.element_id===elt._id)
-										console.log("logqs", logqs);
-										
 										
 										logqs.map(logq=>{
-
-											console.log("nv_prix", nv_prix);
-											console.log(typeof (logq.prix_log*1));
-											nv_prix = logq.prix_log !== undefined && typeof (logq.prix_log*1) === "number" ?logq.prix_log:nv_prix
-											console.log("nv_prix", nv_prix);
+											
+											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq.libelle_log,elements)  ?
+											logq.prix_log:nv_prix
+											
 										})
 										
 										return {...elt, 

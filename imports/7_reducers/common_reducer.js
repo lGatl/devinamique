@@ -1,4 +1,4 @@
-import { delIfNull, buildUrl, styleLog, testLevelView } from '../8_libs';
+import { styleLog } from '../8_libs';
 
 let stylelog = 'color: #5440FF;' + styleLog;
 let stylerejlog = 'color: #B8B0FF;' + styleLog;
@@ -35,7 +35,6 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
 
         case TYPES.GET:
         
-console.log("data", data);
                 return {
                     ...state,
                     got: {
@@ -123,7 +122,7 @@ console.log("data", data);
             };
 
         case "ERROR":
-            console.log(TYPES)
+            console.log("ERROR-------",TYPES)
             console.log(action)
             return state;
 

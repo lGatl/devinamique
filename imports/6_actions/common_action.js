@@ -1,3 +1,5 @@
+import { styleLog } from '../8_libs';
+
 
 
 export function extendAction(CONST_NAME) {
@@ -55,7 +57,6 @@ export function extendAction(CONST_NAME) {
     };
   };
   let get1 = (obj) => {
-    console.log("-------------------------------obj", obj);
     obj = typeof obj !== undefined && obj !== null && typeof obj === "object" ? obj : {};
     let {data, instate, ssl, cbk} = obj;
     data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
@@ -66,10 +67,12 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
       Meteor.call('get1' + CONST_NAME,data,ssl,(err,res)=>{
         if(err){
-          console.log(CONSTANTE.GET1, " - ACTION ERROR", err)
+          console.log("%c"+CONSTANTE.GET1+" - ACTION ERROR!!!!!",styleLog("red"), err)
           
         }else{
-          console.log(CONSTANTE.GET1," : ",{ data:res, instate})
+
+
+          console.log("%c"+CONSTANTE.GET1+" : ",styleLog("blue"),{ data:res, instate})
           
           dispatch(
           get1T({ data:res, instate})
@@ -101,10 +104,10 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
     	Meteor.call('get' + CONST_NAME,data,ssl,(err,res)=>{
 				if(err){
-					console.log(CONSTANTE.GET, " - ACTION ERROR", err)
+					console.log("%c"+CONSTANTE.GET+" - ACTION ERROR!!!!!",styleLog("red"), err)
 					
 				}else{
-					console.log(CONSTANTE.GET," : ",{ data:res, instate})
+					console.log("%c"+CONSTANTE.GET+" : ",styleLog("#00296C"),{ data:res, instate})
 					
 					dispatch(
           getT({ data:res, instate})
@@ -137,13 +140,13 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
     	Meteor.call('get' + CONST_NAME,data,ssl,(err,res)=>{
 				if(err){
-					console.log(CONSTANTE.GET_ADD," - ACTION ERROR - ",err)
+					console.log("%c"+CONSTANTE.GET_ADD+" - ACTION ERROR!!!!!",styleLog("red"), err)
 					
 				}else{
-					console.log(CONSTANTE.GET_ADD," - ",{ data:res, instate:null})
+					console.log("%c"+CONSTANTE.GET_ADD+" : ",styleLog("#001D4D"),{ data:res, instate})
 					
 					dispatch(
-          getAddT({ data:res, instate:null})
+          getAddT({ data:res, instate})
         );
 				}
 			});
@@ -164,13 +167,13 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
     	Meteor.call('add' + CONST_NAME, data ,(err,res)=>{
 				if(err){
-					console.log(CONSTANTE.POST," - ACTION ERROR - ",err)
+					console.log("%c"+CONSTANTE.POST+" - ACTION ERROR!!!!!",styleLog("red"), err)
 					
 				}else{
-					console.log(CONSTANTE.POST," - ",{ data:{ ...data, _id:res }, instate:null })
+					console.log("%c"+CONSTANTE.POST+" - ",styleLog("green"),{ data:{ ...data, _id:res }, instate })
 					cbk(res)
 					dispatch(
-          postT({ data:{ ...data, _id:res }, instate:null })
+          postT({ data:{ ...data, _id:res }, instate })
         );
 				}
 			});
@@ -191,13 +194,13 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
 			Meteor.call('up' + CONST_NAME,data,(err,res)=>{
 				if(err){
-					console.log(CONSTANTE.UP," - ACTION ERROR - ",err)
+					console.log("%c"+CONSTANTE.UP+" - ACTION ERROR!!!!!",styleLog("red"), err)
 					
 				}else{
-					console.log(CONSTANTE.UP," - ",{ data:{ ...data, _id:res }, instate:null })
+					console.log("%c"+CONSTANTE.UP+" - ",styleLog("green"),{ data:{ ...data, _id:res }, instate })
 					
 					dispatch(
-          upT({ data:{ ...data, _id:res }, instate:null })
+          upT({ data:{ ...data, _id:res }, instate })
         );
 				}
 			});
@@ -220,7 +223,7 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
 			Meteor.call('ups' + CONST_NAME,data,(err,res)=>{
 				if(err){
-					console.log(console.log(CONSTANTE.UPS," - ACTION ERROR - ",err))
+					console.log("%c"+CONSTANTE.UPS+" - ACTION ERROR!!!!!",styleLog("red"), err)
 					
 				}else{
 					console.log(CONSTANTE.UPS, " : ",{ data:{ ...obj, _id:res }, instate:null })
@@ -248,9 +251,9 @@ export function extendAction(CONST_NAME) {
     return (dispatch, getState) => {
     	Meteor.call('rm' + CONST_NAME, obj ,(err)=>{
 					if(err){
-					console.log(CONSTANTE.DEL," - ACTION ERROR - ",err)
+					console.log("%c"+CONSTANTE.DEL+" - ACTION ERROR!!!!!",styleLog("red"), err)
 				}else{
-					console.log(CONSTANTE.DEL," - ",{ data:obj, instate})
+					console.log("%c"+CONSTANTE.DEL+" - ",styleLog("orange"),{ data:obj, instate})
 					dispatch(
           delT({ data:obj, instate})
         );
