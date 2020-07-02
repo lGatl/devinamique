@@ -294,15 +294,34 @@ class Devis extends Component {
 		let { controle } = this.props;
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
-	comprendre(logstr,elts){
-		console.log("=======================")
+	comprendre(logstr,elts,choices){
+		logstr = logstr.split(" ").join("").toLowerCase()
+		let remplace = logstr.split("id").reduce((total,lr,i)=>{
+				
+
+			if(lr.indexOf("nb")>-1){
+				let elt = elts[lr.split("nb")[0]]
+				let elt_id = elt?elt._id:false
+				let nb = elt_id?choices[elt_id]:0
+
+				return  nb?total+nb+lr.split("nb")[1]:total
+			}else{
+				return total
+			}
+		},"")
+
+		console.log("remplace", remplace);
+		console.log("=========")
 		console.log("elts", elts);
 		console.log("logstr", logstr);
-			console.log("=======================")
+		
+		console.log("choices", choices);
+		
+		console.log(eval(remplace))
 
 		
 
-		return true
+		return typeof eval(remplace) === "boolean" ?eval(remplace):false
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
@@ -403,7 +422,7 @@ class Devis extends Component {
 										
 										logqs.map(logq=>{
 											
-											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq.libelle_log,elements)  ?
+											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq.libelle_log,elements,choice_controle)  ?
 											logq.prix_log:nv_prix
 											
 										})
