@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import { bindActionCreators }	from 'redux';
 import { connect } from 'react-redux';
 
-import { devis } from '../6_actions';
+import { devis, choice } from '../6_actions';
 
 import { 
 	DevisCard,
@@ -74,7 +74,8 @@ class DevisList extends Component {
 		let { active_user, deviss } = this.props;
 		let { devisPost, devisControle } = this.props;
 		let { controle } = this.props;
-		devisPost({data:{...this.init(),date:Date.now(),user:active_user._id},cbk:(_id)=>{
+		devisPost({data:{...this.init(),user_id:active_user._id},cbk:(_id)=>{
+			choicePost({data:{user_id:active_user._id,devis_id}})
 			history.push("/devis/"+_id+"/edit")
 		}});
 		//devisControle(this.init());
@@ -158,6 +159,8 @@ function mapDispatchToProps(dispatch){
 			devisGet: devis.get,
 			devisUp: devis.up,
 			devisDel: devis.del,
+
+			choicePost: choice.post,
 
 	}, dispatch );
 }

@@ -85,8 +85,11 @@ class Devis extends Component {
 		devisGet1({data:{_id:devis_id}})
 		entrepriseGet()
 		elementGet({data:{devis_id}})
-		logiqueGet({data:{devis_id}})
-		choiceGet()
+		/*logiqueGet({data:{devis_id}})
+		choiceGet()*/
+
+
+		
 
 	}
 	
@@ -180,7 +183,7 @@ class Devis extends Component {
 		let { active_user, elements, devis_id } = this.props;
 		let { elementPost, elementControle } = this.props;
 		let { controle } = this.props;
-		elementPost({data:{...this.init(),devis_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{this.setState({active_element:_id})}});
+		elementPost({data:{...this.init(),devis_id,date:Date.now(),user_id:active_user._id},cbk:(_id)=>{this.setState({active_element:_id})}});
 		//elementControle(this.init());
 		
 	}
@@ -227,7 +230,7 @@ class Devis extends Component {
 		let { active_user, logiques, devis_id } = this.props;
 		let { logiquePost, logiqueControle } = this.props;
 		let { controle } = this.props;
-		logiquePost({data:{devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
+		logiquePost({data:{devis_id,element_id:_id,date:Date.now(),user_id:active_user._id},cbk:(_id)=>{
 			this.setState({active_logique:_id})
 		}});
 		//logiqueControle(this.init());
@@ -246,31 +249,26 @@ class Devis extends Component {
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 	_choiceControle(obj) {
-		console.log("obj", obj);
 		
 		let { choiceControle } = this.props;
 
-
-
 			this.props.logiques.reduce((total,lg,i)=>this.props.elements.findIndex(el=>el._id===lg.element_id)>-1?[...total,lg]:total,[]).map(logq=>{
-				console.log("logq", logq);
+
 				if(this.comprendre(logq.libelle_log,this.props.elements,{...this.props.choice_controle,...obj})){
 					
-console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.numerique_log});
 					choiceControle({[logq.element_id]:logq.numerique_log*1});
-				}						
-										
+				}												
 			})
-
 		choiceControle(obj);
 	}
+
 	_choiceEdit({_id,libelle_log,prix_log,numerique_log}){
 
-		let { choiceControle } = this.props;
+		/*let { choiceControle } = this.props;
 			if(this.state.active_choice!==_id){
 				choiceControle({_id,libelle_log,prix_log,numerique_log});
 				this.setState({active_choice:_id,active_devis:false,active_element:-1})
-			}
+			}*/
 	}
 	_choiceSave({_id}){
 		let { active_user } = this.props;
@@ -284,15 +282,7 @@ console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.nu
 	_choiceClose(){
 		this.setState({active_choice:-1})
 	}
-	_choiceAdd({_id}){
-
-		let { active_user, choices, devis_id } = this.props;
-		let { choicePost, choiceControle } = this.props;
-		let { controle } = this.props;
-		choicePost({data:{...this.init(),devis_id,element_id:_id,date:Date.now(),user:active_user._id},cbk:(_id)=>{
-			this.setState({active_choice:_id})
-		}});
-		//choiceControle(this.init());
+	_choiceAdd(){
 		
 	}
 	_choiceDel({_id}){
@@ -307,19 +297,19 @@ console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.nu
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
 	comprendre(logstr,elts,choices){
-		logstr = logstr.split("").reduce((total,lr,i)=>["i","d","n","b","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
+		logstr = logstr.split("").reduce((total,lr,i)=>["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
 			.indexOf(lr)>-1?total+lr:total,"").toLowerCase();
 		logstr.split("=>").join("");
 
 		let remplace = logstr.split("id").reduce((total,lr,i)=>{
 				
 
-			if(lr.indexOf("nb")>-1){
-				let elt = elts[lr.split("nb")[0]]
+			if(lr.indexOf("_")>-1){
+				let elt = elts[lr.split("_")[0]]
 				let elt_id = elt?elt._id:false
 				let nb = elt_id?choices[elt_id]:0
 
-				return  nb?total+nb+lr.split("nb")[1]:total
+				return  nb?total+nb+lr.split("_")[1]:total
 			}else{
 				return total
 			}
@@ -329,11 +319,7 @@ console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.nu
 		console.log("=========")
 		console.log("elts", elts);
 		console.log("logstr", logstr);
-		
 		console.log("choices", choices);
-		
-		
-
 		
 		try{
 			console.log("eval(remplace)", eval(remplace));
@@ -364,7 +350,7 @@ console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.nu
 					
 					<div style={{ display:"flex", flexDirection:"row", width:"100%", justifyContent:"center",flexWrap:"wrap", minHeight:"100%"}}>
 					
-					<div style={{
+					{edit?<div style={{
 						transitionDuration: "0.5s",
 						flex:this.state.menu===0||this.state.menu===1?1:"none",
 						width:this.state.menu===0||this.state.menu===1?"default":0,
@@ -406,22 +392,25 @@ console.log("{[logq.element_id]:logq.numerique_log}", {[logq.element_id]:logq.nu
 							logiqueCopy = {this._logiqueCopy}
 							logiqueAdd = {this._logiqueAdd}
 							logiqueChange = {this._logiqueControle} 
-							/></div>
+							/>
+						</div>:""}
 							
-								{edit?<div style={{
+								<div style={{
 									paddingTop:this.state.scroll,
 									transitionDuration: "0.1s",
 									width:50,
 									display:"flex",
 									flexDirection:"column"
 								}}>
-									{menu!==0?<div className="imgbutt" onClick={()=>{this.setState({menu:0})}}> {">>"} </div>:""}
-									{menu!==1?<div className="imgbutt" onClick={()=>{this.setState({menu:1})}}> {menu===0?"<":">"} </div>:""}
-									{menu!==2?<div className="imgbutt" onClick={()=>{this.setState({menu:2})}}> {"<<"} </div>:""}
+									{menu!==0&&edit?<div className="imgbutt" onClick={()=>{this.setState({menu:0})}}> {">>"} </div>:""}
+									{menu!==1&&edit?<div className="imgbutt" onClick={()=>{this.setState({menu:1})}}> {menu===0?"<":">"} </div>:""}
+									{menu!==2&&edit?<div className="imgbutt" onClick={()=>{this.setState({menu:2})}}> {"<<"} </div>:""}
 									<div className="imgbutt" onClick={this._printDocument} style={{ backgroundImage:"url('/image/printer.png')"}}></div>
 									<div className="imgbutt" style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
-								</div>:""
-							}
+									<div className="imgbutt" 
+										onClick={()=>{}}
+										style={{ backgroundImage:"url('/image/refresh.png')"}}></div>
+								</div>
 					<div style={{
 						transitionDuration: "0.5s",
 						flex:menu===1||menu===2?1:"none",
