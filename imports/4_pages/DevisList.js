@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import { bindActionCreators }	from 'redux';
 import { connect } from 'react-redux';
 
-import { devis, choice } from '../6_actions';
+import { devis, choice, entreprise } from '../6_actions';
 
 import { 
 	DevisCard,
@@ -36,11 +36,17 @@ class DevisList extends Component {
 			libelle:"",
       entreprise:"",
       client:"",
+      elements:"",
       date:Date(Date.now()) 
 		}
 	}
 	componentDidMount() {
-		this.props.devisGet()
+
+		let { user_id, devisGet, entrepriseGet } = this.props;
+		if(typeof user_id === "string"){
+		devisGet({data:{user:user_id}})
+		entrepriseGet({data:{user:user_id}})
+	}
 	}
 	_devisControle(obj) {
 		
@@ -72,7 +78,7 @@ class DevisList extends Component {
 	_devisAdd(){
 
 		let { active_user, deviss } = this.props;
-		let { devisPost, devisControle } = this.props;
+		let { devisPost, devisControle, choicePost } = this.props;
 		let { controle } = this.props;
 		devisPost({data:{...this.init(),user_id:active_user._id},cbk:(_id)=>{
 			choicePost({data:{user_id:active_user._id,devis_id}})
@@ -87,13 +93,13 @@ class DevisList extends Component {
 		devisDel({_id});
 	}
 	_devisCopy({_id,libelle,prix,num}){
-		let { active_user, deviss } = this.props;
+		/*let { active_user, deviss } = this.props;
 		let { devisPost, devisControle } = this.props;
 		let { controle } = this.props;
-		devisPost({data:{libelle,prix,num,date:Date.now(),user:active_user._id}});
+		devisPost({data:{libelle,prix,num,date:Date.now(),user:active_user._id}});*/
 	}
 	render(){
-		let { active_user, deviss } = this.props;
+		let { active_user, deviss, entreprises } = this.props;
 		let { devis_controle } = this.props;
 		let { logique_controle } = this.props;
 	
@@ -125,9 +131,9 @@ class DevisList extends Component {
 									onClose = {this._devisClose}
 									onEdit={this._devisEdit}
 									active = {active}
-									libelle={devis.libelle}
-									entreprise={devis.entreprise}
-									client={devis.client}
+									titre={devis.titre}
+									entreprise={entreprises.find(ent=>ent._id === devis.entreprise)?entreprises.find(ent=>ent._id === devis.entreprise).nom:""}
+									client={entreprises.find(ent=>ent._id === devis.client)?entreprises.find(ent=>ent._id === devis.client).nom:""}
 									date={devis.date}
 									key={i}
 									_id={devis._id}
@@ -146,7 +152,8 @@ function mapStateToProps( state ){
 		{
 			active_user: state.user.active_user,
 			devis_controle: state.devis.controle,
-			deviss: state.devis.got.data
+			deviss: state.devis.got.data,
+			entreprises: state.entreprise.got.data,
 		}
 	);
 
@@ -159,6 +166,8 @@ function mapDispatchToProps(dispatch){
 			devisGet: devis.get,
 			devisUp: devis.up,
 			devisDel: devis.del,
+
+			entrepriseGet:entreprise.get,
 
 			choicePost: choice.post,
 

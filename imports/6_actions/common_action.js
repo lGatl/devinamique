@@ -73,7 +73,7 @@ export function extendAction(CONST_NAME) {
 
 
           console.log("%c"+CONSTANTE.GET1+" : ",styleLog("blue"),{ data:res, instate})
-          
+          cbk(res)
           dispatch(
           get1T({ data:res, instate})
         );
@@ -108,7 +108,7 @@ export function extendAction(CONST_NAME) {
 					
 				}else{
 					console.log("%c"+CONSTANTE.GET+" : ",styleLog("#00296C"),{ data:res, instate})
-					
+					cbk(res)
 					dispatch(
           getT({ data:res, instate})
         );
@@ -144,7 +144,7 @@ export function extendAction(CONST_NAME) {
 					
 				}else{
 					console.log("%c"+CONSTANTE.GET_ADD+" : ",styleLog("#001D4D"),{ data:res, instate})
-					
+					cbk(res)
 					dispatch(
           getAddT({ data:res, instate})
         );
@@ -198,7 +198,7 @@ export function extendAction(CONST_NAME) {
 					
 				}else{
 					console.log("%c"+CONSTANTE.UP+" - ",styleLog("green"),{ data:{ ...data, _id:res }, instate })
-					
+					cbk(res)
 					dispatch(
           upT({ data:{ ...data, _id:res }, instate })
         );
@@ -227,7 +227,7 @@ export function extendAction(CONST_NAME) {
 					
 				}else{
 					console.log(CONSTANTE.UPS, " : ",{ data:{ ...obj, _id:res }, instate:null })
-					
+					cbk(res)
 					dispatch(
           upsT({ data:{ ...obj, _id:res }, instate:null })
         );
@@ -249,13 +249,14 @@ export function extendAction(CONST_NAME) {
   	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
-    	Meteor.call('rm' + CONST_NAME, obj ,(err)=>{
+    	Meteor.call('rm' + CONST_NAME, data ,(err)=>{
 					if(err){
 					console.log("%c"+CONSTANTE.DEL+" - ACTION ERROR!!!!!",styleLog("red"), err)
 				}else{
 					console.log("%c"+CONSTANTE.DEL+" - ",styleLog("orange"),{ data:obj, instate})
-					dispatch(
-          delT({ data:obj, instate})
+					cbk()
+          dispatch(
+          delT({ data:data, instate})
         );
 				}
   	});

@@ -74,7 +74,7 @@ export default class DevisCard extends Component {
 			onChange({ [name]: value });
 	}
 	render() {
-			let {libelle,entreprise,client,date,_id, onChange, active} = this.props;
+			let {titre,entreprise,client,date,_id, onChange, active} = this.props;
 			client = typeof client === "string"?client:"";
 			entreprise = typeof entreprise === "string"?entreprise:"",
 			client = typeof client === "string"?client:"";
@@ -109,7 +109,7 @@ export default class DevisCard extends Component {
 						</div>
 						
 						<div style={{flex:4, display:"flex", justifyContent:"center",alignItems:"center",padding:"0px 5px"}}>
-								{libelle}
+								{titre}
 						</div>
 						<div style={{flex:1, display:"flex", justifyContent:"center",alignItems:"center",padding:"0px 5px"}}>
 								{entreprise}

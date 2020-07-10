@@ -26,23 +26,24 @@ class DevisEdit extends Component {
 			let { titre,entreprise,client } = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
+
 		return (
 				<div style={{ display:"flex", flexDirection:"column", flex:1,boxShadow: "1px 1px 12px #555",zIndex:100, backgroundColor:"white", minHeight:"100%"}}>
 						Creez un devis dynamique
 						<DevisForm
-										active = {active_devis}
-										_id = {devis._id}
-										onClose = {this.props.devisClose}
-										onEdit = {this.props.devisEdit}
-										onSave = {this.props.devisSave}
-										onDel = {this.props.devisDel}
-										onCopy = {this.props.devisCopy}
-										onChange = {this.props.devisChange} 
-										titre = {active_devis ? titre: devis.titre}
-										entreprise = {active_devis ? entreprise: devis.entreprise}
-										options = {entreprises.reduce((total,ent)=>[...total,{value:ent._id,text:ent.nom}],[])}
-										client = {active_devis ? client: devis.client}
-										/>
+							active = {active_devis}
+							_id = {devis._id}
+							onClose = {this.props.devisClose}
+							onEdit = {this.props.devisEdit}
+							onSave = {this.props.devisSave}
+							onDel = {this.props.devisDel}
+							onCopy = {this.props.devisCopy}
+							onChange = {this.props.devisChange} 
+							titre = {active_devis ? titre: devis.titre}
+							entreprise = {active_devis ? entreprise: devis.entreprise}
+							options = {entreprises.reduce((total,ent)=>[...total,{value:ent._id,text:ent.nom}],[])}
+							client = {active_devis ? client: devis.client}
+							/>
 
 						<Button onClick={this.props.elementAdd}>Ajouter une élément</Button>
 					<br/>
@@ -77,6 +78,8 @@ class DevisEdit extends Component {
 										onLogique = {this.props.logiqueAdd}
 										logiques = {logiques.reduce((total,logique,j)=>{
 											return element._id===logique.element_id?[...total,<Logique 
+												error1={logique.error1}
+												error2={logique.error2}
 												prix_log={logique._id===active_logique?prix_log:logique.prix_log}
 												libelle_log={logique._id===active_logique?libelle_log:logique.libelle_log}
 												numerique_log={logique._id===active_logique?numerique_log:logique.numerique_log}

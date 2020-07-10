@@ -14,12 +14,13 @@ export default class Input extends Component {
 		return (
 			<div style={{ 
 				display: 'flex', flexDirection:"column",flex:1
+				,...this.props.style
 				
 			}}>
 				{label?<label >{label}</label>:""}
 				{active?
 				<input
-					style={{flex:1,padding:0,...this.props.style}}
+					style={{flex:1,padding:0}}
 					type={this.props.type}
 					min={this.props.min}
 					placeholder={this.props.placeholder}

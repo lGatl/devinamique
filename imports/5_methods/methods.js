@@ -22,6 +22,7 @@ COLLECTIONS.forEach((COLLECTION) =>{
 			return BD[COLLECTION.toLowerCase()].insert({created_at: Date.now(),...obj}); // return id of new object
 		},
 		[ 'get' + COLLECTION ]:(obj,ssl)=>{
+			
 			obj = typeof obj ==="object" && obj!== null && obj !== undefined ? obj : {}
 			ssl = typeof (ssl) == 'object' && ssl !=null && Object.keys(ssl).length > 0 ?ssl:false;
 			if(ssl){
@@ -35,8 +36,6 @@ COLLECTIONS.forEach((COLLECTION) =>{
 		// return array of found objects
 		},
 		[ 'get1' + COLLECTION ]: (obj)=>{
-			console.log("----------------------------------------------------------------------obj", obj);
-
 			return BD[COLLECTION.toLowerCase()].findOne(obj); // return found object
 		},
 		[ 'count' + COLLECTION ]:(obj)=>{

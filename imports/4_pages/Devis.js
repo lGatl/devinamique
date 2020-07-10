@@ -32,7 +32,9 @@ class Devis extends Component {
 			show:2,
 			active_devis:false,
 			active_element:-1,
-			active_logique:-1
+			active_logique:-1,
+			error1:-1,
+			error2:-1
 		}
 		this._devisControle = this._devisControle.bind(this)
 		this._devisEdit = this._devisEdit.bind(this)
@@ -58,7 +60,7 @@ class Devis extends Component {
 		this._logiqueAdd = this._logiqueAdd.bind(this)
 
 		this._choiceControle = this._choiceControle.bind(this)
-		this._choiceEdit = this._choiceEdit.bind(this)
+		this._choiceRef = this._choiceRef.bind(this)
 		this._choiceSave = this._choiceSave.bind(this)
 		this._choiceClose = this._choiceClose.bind(this)
 		this._choiceDel = this._choiceDel.bind(this)
@@ -77,20 +79,18 @@ class Devis extends Component {
 		}
 	}
 	componentDidMount() {
-		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet, edit } = this.props;
+		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet1, edit, user_id, choiceControle } = this.props;
 
 		window.addEventListener('scroll', this._handleScroll);
 
 		this.setState({menu:edit?1:2})
 		devisGet1({data:{_id:devis_id}})
-		entrepriseGet()
+		entrepriseGet({data:{user:user_id}})
 		elementGet({data:{devis_id}})
-		/*logiqueGet({data:{devis_id}})
-		choiceGet()*/
-
-
-		
-
+		logiqueGet({data:{devis_id}})
+		choiceGet1({data:{devis_id},cbk:(res)=>{
+			choiceControle({...res})
+		}})
 	}
 	
 
@@ -146,7 +146,7 @@ class Devis extends Component {
 	_devisDel({_id}){
 
 		let { devisDel } = this.props;
-		devisDel({_id});
+		devisDel({data:{_id}});
 	}
 	_devisCopy({_id,libelle,prix,num,id}){
 		/*let { active_user, deviss } = this.props;
@@ -180,17 +180,23 @@ class Devis extends Component {
 		this.setState({active_element:-1})
 	}
 	_elementAdd(){
-		let { active_user, elements, devis_id } = this.props;
-		let { elementPost, elementControle } = this.props;
+		let { active_user, elements,devis } = this.props;
+		let { elementPost, elementControle, devisUp } = this.props;
 		let { controle } = this.props;
-		elementPost({data:{...this.init(),devis_id,date:Date.now(),user_id:active_user._id},cbk:(_id)=>{this.setState({active_element:_id})}});
+		elementPost({data:{...this.init(),devis_id:devis._id,date:Date.now(),user_id:active_user._id},cbk:(_id)=>{
+			this.setState({active_element:_id})
+			devisUp({data:{...devis,elements:[...devis.elements,_id]}})
+
+		}});
 		//elementControle(this.init());
 		
 	}
 	_elementDel({_id}){
 
-		let { elementDel } = this.props;
-		elementDel({_id});
+		let { elementDel,devisUp, devis } = this.props;
+		elementDel({data:{_id},cbk:()=>{
+			devisUp({data:{...devis,elements:devis.elements.filter(elt=>elt!==_id)}})
+		}});
 	}
 	_elementCopy({_id,libelle,prix,numerique,id}){
 		/*let { active_user, elements } = this.props;
@@ -202,6 +208,9 @@ class Devis extends Component {
 	_logiqueControle(obj) {
 		
 			let { logiqueControle } = this.props;
+
+			//logstr = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
+
 
 			logiqueControle(obj);
 	}
@@ -227,19 +236,24 @@ class Devis extends Component {
 	}
 	_logiqueAdd({_id}){
 
-		let { active_user, logiques, devis_id } = this.props;
-		let { logiquePost, logiqueControle } = this.props;
+		let { active_user, logiques, devis_id, elements } = this.props;
+		let { logiquePost, logiqueControle, elementUp } = this.props;
 		let { controle } = this.props;
-		logiquePost({data:{devis_id,element_id:_id,date:Date.now(),user_id:active_user._id},cbk:(_id)=>{
-			this.setState({active_logique:_id})
+		logiquePost({data:{devis_id,element_id:_id,date:Date.now(),user_id:active_user._id},cbk:(id)=>{
+			this.setState({active_logique:id})
+			let element = elements.find(elt=>elt._id===_id)
+			elementUp({data:{...element,logiques:[...element.logiques,id]}})
 		}});
 		//logiqueControle(this.init());
 		
 	}
-	_logiqueDel({_id}){
+	_logiqueDel({_id,element_id}){
 
-		let { logiqueDel } = this.props;
-		logiqueDel({_id});
+		let { logiqueDel, elementUp, elements } = this.props;
+		logiqueDel({data:{_id},cbk:()=>{
+			let element = elements.find(elt=>elt._id===element_id)
+			elementUp({data:{...element,logiques:element.logiques.filter(logq=>logq!==_id)}})
+		}});
 	}
 	_logiqueCopy({_id,libelle,prix,numerique,id}){
 		/*let { active_user, logiques } = this.props;
@@ -254,27 +268,23 @@ class Devis extends Component {
 
 			this.props.logiques.reduce((total,lg,i)=>this.props.elements.findIndex(el=>el._id===lg.element_id)>-1?[...total,lg]:total,[]).map(logq=>{
 
-				if(this.comprendre(logq.libelle_log,this.props.elements,{...this.props.choice_controle,...obj})){
+				if(this.comprendre(logq,this.props.elements,{...this.props.choice_controle,...obj})){
 					
-					choiceControle({[logq.element_id]:logq.numerique_log*1});
+					if(logq.numerique_log){choiceControle({[logq.element_id]:logq.numerique_log})}
 				}												
 			})
 		choiceControle(obj);
 	}
 
-	_choiceEdit({_id,libelle_log,prix_log,numerique_log}){
-
-		/*let { choiceControle } = this.props;
-			if(this.state.active_choice!==_id){
-				choiceControle({_id,libelle_log,prix_log,numerique_log});
-				this.setState({active_choice:_id,active_devis:false,active_element:-1})
-			}*/
+	_choiceRef(){
+		let {choice, choiceControle} = this.props;
+		choiceControle({...choice})
+		
 	}
 	_choiceSave({_id}){
 		let { active_user } = this.props;
 		let { choiceUp } = this.props;
-		let { choice_controle,choices } = this.props;
-		let choice = choices.find((logi)=>logi._id===_id)
+		let { choice_controle,choice } = this.props;
 
 		choiceUp({data:{_id,...choice,...choice_controle}});
 		this.setState({active_choice:-1})
@@ -288,7 +298,7 @@ class Devis extends Component {
 	_choiceDel({_id}){
 
 		let { choiceDel } = this.props;
-		choiceDel({_id});
+		choiceDel({data:{_id}});
 	}
 	_choiceCopy({_id,libelle,prix,numerique,id}){
 		/*let { active_user, logiques } = this.props;
@@ -296,14 +306,20 @@ class Devis extends Component {
 		let { controle } = this.props;
 		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
 	}
-	comprendre(logstr,elts,choices){
-		logstr = logstr.split("").reduce((total,lr,i)=>["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
-			.indexOf(lr)>-1?total+lr:total,"").toLowerCase();
-		logstr.split("=>").join("");
+
+	comprendre(logq,elts,choices){
+		let logstr = logq.libelle_log
+		let logstr1 = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
+			.indexOf(lr)>-1?total+lr:total,"").toLowerCase():"";
+		logstr1.split("=>").join("")
+		if(logstr!==undefined&&logstr!==logstr1){
+			//this.setState({error1:logq._id})
+		}
+		logstr=logstr1
+
 
 		let remplace = logstr.split("id").reduce((total,lr,i)=>{
 				
-
 			if(lr.indexOf("_")>-1){
 				let elt = elts[lr.split("_")[0]]
 				let elt_id = elt?elt._id:false
@@ -315,11 +331,8 @@ class Devis extends Component {
 			}
 		},"")
 
-		console.log("remplace", remplace);
 		console.log("=========")
-		console.log("elts", elts);
 		console.log("logstr", logstr);
-		console.log("choices", choices);
 		
 		try{
 			console.log("eval(remplace)", eval(remplace));
@@ -327,20 +340,54 @@ class Devis extends Component {
 					return remplace !== undefined && typeof eval(remplace) === "boolean" ?eval(remplace):false
 
 		}catch{
+			console.log("error logique")
 			return false
 		}
 	}
+
+	verifSyntax(logstr){
+		let error1=false;
+		let error2=false;
+		
+		let logstr1 = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
+			.indexOf(lr)>-1?total+lr:total,"").toLowerCase():"";
+		logstr1.split("=>").join("")
+		if(logstr!==logstr1){
+			error1=true
+		}
+		logstr=logstr1
+
+		let remplace = logstr.split("id").reduce((total,lr,i)=>{
+			if(lr.indexOf("_")>-1){
+				let nb = "0"
+				return  nb?total+nb+lr.split("_")[1]:total
+			}else{
+				return total
+			}
+		},"")
+
+		try{
+			let	test = eval(remplace)
+		}catch{
+			error2=true
+		}
+		return {error1,error2}
+	}
+
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
 	render(){
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
-			elements, logiques,entreprises,choices } = this.props;
+			elements, logiques,entreprises,choice } = this.props;
+
 		let	{menu}=this.state;
 
 			elements = typeof elements !== undefined && typeof elements === "object" && elements instanceof Array ? elements:[]
 			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
-	
+			logiques = logiques.reduce((total,logq,i)=>[...total,{...logq,...this.verifSyntax(logq.libelle_log)}],[])
+			
+
 			let { libelle,prix,numerique } = element_controle;
 			let { titre,entreprise,client } = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
@@ -406,11 +453,9 @@ class Devis extends Component {
 									{menu!==1&&edit?<div className="imgbutt" onClick={()=>{this.setState({menu:1})}}> {menu===0?"<":">"} </div>:""}
 									{menu!==2&&edit?<div className="imgbutt" onClick={()=>{this.setState({menu:2})}}> {"<<"} </div>:""}
 									<div className="imgbutt" onClick={this._printDocument} style={{ backgroundImage:"url('/image/printer.png')"}}></div>
-									<div className="imgbutt" style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
-									<div className="imgbutt" 
-										onClick={()=>{}}
-										style={{ backgroundImage:"url('/image/refresh.png')"}}></div>
-								</div>
+									<div className="imgbutt" onClick={this._choiceSave} style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
+									<div className="imgbutt" onClick={this._choiceRef} style={{ backgroundImage:"url('/image/refresh.png')"}}></div>
+							 	</div>
 					<div style={{
 						transitionDuration: "0.5s",
 						flex:menu===1||menu===2?1:"none",
@@ -432,7 +477,7 @@ class Devis extends Component {
 										
 										logqs.map(logq=>{
 											
-											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq.libelle_log,elements,choice_controle)  ?
+											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" /*&& this.comprendre(logq,elements,choice_controle)*/  ?
 											logq.prix_log:nv_prix
 											
 										})
@@ -478,6 +523,7 @@ function mapStateToProps( state ){
 			logique_controle: state.logique.controle,
 			choice_controle: state.choice.controle,
 			entreprises: state.entreprise.got.data,
+			choice:state.choice.got1.data,
 		}
 	);
 
@@ -506,7 +552,7 @@ function mapDispatchToProps(dispatch){
 
 			choiceControle: choice.controle,
 			choicePost: choice.post,
-			choiceGet: choice.get,
+			choiceGet1: choice.get1,
 			choiceUp: choice.up,
 			choiceDel: choice.del,
 			

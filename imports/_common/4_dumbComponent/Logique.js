@@ -67,8 +67,8 @@ export default class Logique extends Component {
 	}
 
 	render() {
-		let {libelle_log,prix_log, logiques, numerique_log, onChange, active} = this.props;
-
+		let {libelle_log,prix_log, logiques, numerique_log, onChange, active, error1,error2} = this.props;
+		
 		return (
 			<div style={{
 				flex:1,
@@ -84,6 +84,7 @@ export default class Logique extends Component {
 							<div style={{flex:4, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 							si
 							<Input
+								style={{backgroundColor:error2?"red":error1?"orange":"rgba(0,0,0,0)"}}
 								label=""
 								placeholder="Libellé"
 								name="libelle_log"
