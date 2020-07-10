@@ -135,9 +135,9 @@ class Devis extends Component {
 	}
 	_devisSave({_id}){
 		let { active_user } = this.props;
-		let { devisUp } = this.props;
+		let { devisUp, devis } = this.props;
 		let { devis_controle } = this.props;
-		devisUp({data:{...devis_controle,_id}});
+		devisUp({data:{...devis,...devis_controle,_id}});
 		this.setState({active_devis:false})
 	}
 	_devisClose(){
@@ -313,10 +313,8 @@ class Devis extends Component {
 			.indexOf(lr)>-1?total+lr:total,"").toLowerCase():"";
 		logstr1.split("=>").join("")
 		if(logstr!==undefined&&logstr!==logstr1){
-			//this.setState({error1:logq._id})
 		}
 		logstr=logstr1
-
 
 		let remplace = logstr.split("id").reduce((total,lr,i)=>{
 				
@@ -330,17 +328,9 @@ class Devis extends Component {
 				return total
 			}
 		},"")
-
-		console.log("=========")
-		console.log("logstr", logstr);
-		
 		try{
-			console.log("eval(remplace)", eval(remplace));
-
-					return remplace !== undefined && typeof eval(remplace) === "boolean" ?eval(remplace):false
-
+			return remplace !== undefined && typeof eval(remplace) === "boolean" ?eval(remplace):false
 		}catch{
-			console.log("error logique")
 			return false
 		}
 	}
@@ -383,10 +373,15 @@ class Devis extends Component {
 
 		let	{menu}=this.state;
 
-			elements = typeof elements !== undefined && typeof elements === "object" && elements instanceof Array ? elements:[]
-			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
-			logiques = logiques.reduce((total,logq,i)=>[...total,{...logq,...this.verifSyntax(logq.libelle_log)}],[])
+			elements = typeof elements !== undefined && typeof elements === "object" && elements instanceof Array && elements.length >0? 
+			devis && devis.elements?devis.elements.reduce((total,elt_id)=>elements.find(elt=>elt._id===elt_id)?[...total,elements.find(elt=>elt._id===elt_id)]:total,[]):[]
+			:[]
+
+			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 ? 
+				logiques.reduce((total,logq,i)=>[...total,{...logq,...this.verifSyntax(logq.libelle_log)}],[])
+			:[]
 			
+
 
 			let { libelle,prix,numerique } = element_controle;
 			let { titre,entreprise,client } = devis_controle;
@@ -470,22 +465,15 @@ class Devis extends Component {
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements.map((elt,j)=>{
-										
 										let nv_prix = elt.prix
-
-										let logqs = logiques.filter(log=>log.element_id===elt._id)
-										
+										let logqs = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 &&elt && elt.logiques ? 
+										elt.logiques.reduce((total,elo)=>logiques.find(logq=>logq._id === elo)?[...total,logiques.find(logq=>logq._id === elo)]:total,[]):[]
 										logqs.map(logq=>{
-											
-											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" /*&& this.comprendre(logq,elements,choice_controle)*/  ?
+											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq,elements,choice_controle)  ?
 											logq.prix_log:nv_prix
-											
 										})
-										
 										return {...elt, 
-
 											prix: nv_prix
-
 										}
 									})}
 

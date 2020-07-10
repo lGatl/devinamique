@@ -60,7 +60,9 @@ class DevisEdit extends Component {
 						{
 							elements.map(
 								(element,i)=>{
-									
+									logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array && logiques.length>0 ? 
+									element.logiques.reduce((total,elo)=>logiques.find(logq=>logq._id===elo)?[...total,logiques.find(logq=>logq._id===elo)]:total,[]):[]
+
 									return <Element 
 										active = {element._id===active_element}
 										key = {i}
