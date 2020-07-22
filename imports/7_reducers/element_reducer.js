@@ -9,6 +9,7 @@ const DEFAULT = {
 		libelle:"",
 		numerique:"",
 		prix:"",
+		dynamique:false
 	}
 };
 

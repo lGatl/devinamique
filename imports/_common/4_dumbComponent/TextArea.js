@@ -14,7 +14,7 @@ export default class TextArea extends Component {
 		let {label, name, value, placeholder, active} = this.props;
 		return (
 				<div style={{ 
-						display: 'flex', flexDirection:"column",flex:1
+						display: 'flex', flexDirection:"column",flex:1, alignItems:"center", justifyContent:"center"
         }}>
         	{label?<label>{label}</label>:""}
 					{

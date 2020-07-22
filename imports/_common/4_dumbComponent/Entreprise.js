@@ -152,13 +152,21 @@ export default class Entreprise extends Component {
 						/>
 						
 					</div>
-					{active?<Button
-							onClick={this._onSave}
-							>Sauvegarder</Button>: <div style={{display:"flex"}}><Button
+					{active?<div style={{display:"flex"}}><Button
+							style={{backgroundColor:"red"}}
 							onClick={this._onDel}
-							>U</Button><Button
+							>
+								<img src="/image/trash.png" style={{width:30, height:30}} alt=""/>
+							</Button><Button
+							style={{backgroundColor:"aqua"}}
+							onClick={this._onSave}
+							>
+								<img src="/image/floppy.png" style={{width:30, height:30}} alt=""/>
+							</Button></div>:<ShortButton
+							style={{backgroundColor:"rgb(100,100,255)",height:50}}
 							onClick={this._onCopy}
-							>+</Button></div>}
+						>+
+						</ShortButton> }
 					</div>
 			
 		);

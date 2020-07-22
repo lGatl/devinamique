@@ -6,7 +6,7 @@ export default class Button extends Component {
    
 	onClick(e) {
 		this.props.onClick(
-		//{...this.props,}
+		{...this.props}
 			);
 	}
 	render() {

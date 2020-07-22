@@ -4,11 +4,18 @@
 export const CONTROLE = {
 	CHANGE_PAGE: 'Controle_CHANGE_PAGE',
 	SET: 'Controle_SET',
+	RESIZE: 'Controle_RESIZE',
 };
 //Simple set function, to controle components like a setState
 function set(val){
 	return {
 		type: 		CONTROLE.SET,
+		payload: 	val
+	};
+}
+function resize(val){
+	return {
+		type: 		CONTROLE.RESIZE,
 		payload: 	val
 	};
 }
@@ -23,5 +30,6 @@ function changePage(val){
 //export this, it will be import in ./action to be add in ACTIONS constant
 export const controle = { 
 	changePage,
-	set
+	set,
+	resize
 };

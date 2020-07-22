@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Route, Switch, useParams } from 'react-router-dom';
+import { Route, Switch, Redirect, useParams } from 'react-router-dom';
 
 import {
 	ErrorPage, 
@@ -27,7 +27,7 @@ export default class Routes extends Component {
 					<Route
 						path="/entreprises"
 						component={() => (
-								<MonEntreprise user_id={Meteor.userId()}/>
+								Meteor.userId()?<MonEntreprise user_id={Meteor.userId()}/>: <Redirect to="/" />
 						)}
 					/>
 				
@@ -35,14 +35,14 @@ export default class Routes extends Component {
 					<Route
 						path="/devis_list"
 						component={() => (
-								<DevisList user_id={Meteor.userId()}/>
+								Meteor.userId()?<DevisList user_id={Meteor.userId()}/>: <Redirect to="/" />
 						)}
 					/>
 					
 					<Route
 						path="/devis/:id/:edit"
 						component={() => (
-								<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>
+								Meteor.userId()?<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>: <Redirect to="/" />
 						)}
 					/>
 					<Route

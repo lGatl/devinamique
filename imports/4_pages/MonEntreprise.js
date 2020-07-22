@@ -35,7 +35,9 @@ class MonEntreprise extends Component {
 		}
 	}
 	componentDidMount() {
-		this.props.entrepriseGet()
+		let { user_id } = this.props;
+
+		this.props.entrepriseGet({data:{user_id:user_id}})
 	}
 	_entrepriseControle(obj) {
 		
@@ -55,7 +57,6 @@ class MonEntreprise extends Component {
 		let { active_user } = this.props;
 		let { entrepriseUp } = this.props;
 		let { controle,set } = this.props;
-		console.log("controle", controle);
 		entrepriseUp({data:{...controle}});
 		set({active_entreprise:-1})
 	}
@@ -65,21 +66,29 @@ class MonEntreprise extends Component {
 	}
 	_onAdd(){
 		let { active_user, entreprises } = this.props;
-		let { entreprisePost, entrepriseControle } = this.props;
+		let { entreprisePost, entrepriseControle, set } = this.props;
 		let { controle } = this.props;
-		entreprisePost({data:{...this.init(),date:Date.now(),user:active_user._id}});
+		entreprisePost({data:{...this.init(),user_id:active_user._id},cbk:(_id)=>{
+			console.log(_id)
+			set({active_entreprise:_id})
+		}});
 		entrepriseControle(this.init());
 	}
 	_onDel({_id}){
 
 		let { entrepriseDel } = this.props;
-		entrepriseDel({_id});
+		entrepriseDel({data:{_id}});
 	}
 	_onCopy({_id,adresse,courriel,nom,siret,site_internet,telephone,tva_intracom}){
 		let { active_user, entreprises } = this.props;
-		let { entreprisePost, entrepriseControle } = this.props;
+		let { entreprisePost, entrepriseControle,set } = this.props;
 		let { controle } = this.props;
-		entreprisePost({data:{adresse,courriel,nom,siret,site_internet,telephone,tva_intracom,date:Date.now(),user:active_user._id}});
+		let data = {adresse,courriel,nom,siret,site_internet,telephone,tva_intracom,user_id:active_user._id}
+		
+		entreprisePost({data,cbk:(_id)=>{
+			entrepriseControle({...data})
+			set({active_entreprise:_id})}});
+		
 	}
 
 	render(){

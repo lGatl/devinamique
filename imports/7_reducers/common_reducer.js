@@ -77,7 +77,7 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                 ...state,
                 controle: { ...state.controle,
                      _id:data._id,
-                    date:Date(Date.now()) },
+                    },
                 got: {
                     ...state.got,
                     [instate]: [...state.got[instate], data],

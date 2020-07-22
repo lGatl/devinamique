@@ -121,38 +121,36 @@ export default class DevisCard extends Component {
 						{client}
 					</div>
 					</div>
-					<div style={{width:"30px", display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
+					<div style={{width:"50px", display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
 						{active?<ShortButton
-							style={{backgroundColor:"red"}}
+							style={{backgroundColor:"gray",height:50}}
 							onClick={this._onClose}
 						>x
-						</ShortButton>: <div style={{flex:1}}></div>
-						}
-						<ShortButton
-							style={{backgroundColor:"blue"}}
+						</ShortButton>:""}
+						
+						{!active?<ShortButton
+							style={{backgroundColor:"rgb(100,100,255)",height:50}}
 							onClick={()=>{}}
 						>+
-						</ShortButton>
+						</ShortButton>: ""}
+						
 					</div>
-
+					
+					
+					
 				</div>
-				<div style={{flex:1, display:"flex", justifyContent:"center",alignItems:"center"}}>
-								
-						{active?
-							<ShortButton
-								style={{backgroundColor:"red"}}
-								onClick={this._onDel}
-							>U
-							</ShortButton>:""}
-							
-							{active?
-								<ShortButton
-								style={{backgroundColor:"blue"}}
-								onClick={this._onOpen}
-							>Editer
-							</ShortButton>:""
-						}
-						</div>
+					{active?<div style={{display:"flex"}}><Button
+							style={{backgroundColor:"red"}}
+							onClick={this._onDel}
+							>
+								<img src="/image/trash.png" style={{width:30, height:30}} alt=""/>
+							</Button><Button
+							style={{backgroundColor:"aqua"}}
+							onClick={this._onOpen}
+							>
+								<img src="/image/pen.png" style={{width:30, height:30}} alt=""/>
+							</Button></div>:"" }	
+						
 		</div>
 			
 		);

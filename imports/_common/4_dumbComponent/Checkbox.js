@@ -7,9 +7,12 @@ export default class Checkbox extends Component {
 			s_container:{
 				display:"flex",
 				alignItems:"center",
+				justifyContent:"center",
 				fontSize:20,
 			},
 			s_label:{
+				alignItems:"center",
+				justifyContent:"center",
 				marginLeft:5,
 				display:"flex",
 			},
@@ -26,7 +29,8 @@ export default class Checkbox extends Component {
 		let {style} = this.props;
 		return (
 			<div style={{...s_container, ...style}}>
-				<input type="checkbox" disabled={!this.props.active} name={this.props.name} checked={this.props.checked} onChange={this.change.bind(this)} style={!this.props.active?{pointerEvents:"none"}:{cursor:"pointer"}}/>
+				<input type="checkbox" disabled={!this.props.active} name={this.props.name} checked={this.props.checked} onChange={this.change.bind(this)} 
+				style={!this.props.active?{pointerEvents:"none"}:{cursor:"pointer"}}/>
 				<label style={{...s_label}}>{this.props.label}</label>
 			</div>
 		);

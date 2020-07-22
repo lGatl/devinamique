@@ -9,7 +9,7 @@ import {
 
 import { dateToFormat } from '../../8_libs';
 
-export default class DevisShow extends Component {
+export default class DevisDynamique extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		
@@ -83,7 +83,6 @@ export default class DevisShow extends Component {
 		return (
 			<div style={{
 				transition:"0.5s",
-				boxShadow: "-1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset",
 				display:"flex", 
 				flexDirection:"column", 
 				flex:1,
@@ -94,70 +93,37 @@ export default class DevisShow extends Component {
 				...this.props.style
 			}}
 			>
-
-			<div style={{
-			  height:120+1169+"px",
-			  width:100+826+"px",
-			  position: "absolute",
-			
-			}}>
-
-			<div id="divToPrint">
 				{/*adresse de l'entreprise*/}
-				<div style={{display:"flex",width:"100%",justifyContent:"space-between"}}>
-					<div style={{display:"flex", flexDirection:"column",alignItems:"flex-start"}}>
-						<span>
-							{nom}
-						</span>
-						<span>
-							{telephone}
-						</span>
-						<a href={courriel}>
-							{courriel}
-						</a>
-						{adresse?adresse.split(/\n/).map((str,i)=><span key={i}>{str}</span>):""}
-					</div>
-					<div style={{display:"flex", flexDirection:"column",alignItems:"flex-end"}}>
-						<span>siret : {typeof siret === "string"?siret.slice(0,3)+" "+siret.slice(3,6)+" "+siret.slice(6,9)+" "+siret.slice(9):""}</span>
-						<span>TVA intracomm : {typeof tva_intracom === "string"? tva_intracom.slice(0,2)+" "+tva_intracom.slice(2,4)+" "+tva_intracom.slice(4):""}</span>
-					</div>
-				</div>
-				<div style={{display:"flex",width:"100%",justifyContent:"space-between",marginTop:40}}>
+				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
+				<div style={{display:"flex",flex:1,justifyContent:"space-between",marginTop:10}}>
 					<div style={{display:"flex", flexDirection:"column",alignItems:"center", flex:1}}>
 							<span style={{fontSize:"26px"}}>
-								DEVIS
+								Composez votre devis :
 							</span>
 							<span style={{fontSize:"18px"}}>
 								{devis.titre}
 							</span>
 						</div>
-					<div style={{display:"flex", flexDirection:"column",alignItems:"flex-start", flex:1, border:"1px solid black",padding:5}}>
-							<span style={{marginBottom:"10px",fontSize:"16px"}}>
-								le {"12/23/2334"}
-							</span>
-							<span>
-								{client?client.nom:""}
-							</span>
-								{client?client.adresse.split(/\n/).map((str,i)=><span key={i}>{str}</span>):""}
-					</div>
 				</div>
-				<div style={{display:"flex",padding:"5px",border:"1px solid black",marginTop:20}}>
+				</div>
+				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
+				<div style={{display:"flex",flex:1,padding:"5px",border:"1px solid black",marginTop:20}}>
 					<span style={{flex:5}}>prestation</span>
-					<span style={{flex:1}}>prix</span>
 					<span style={{flex:1}}>choix</span>
-
 				</div>
-				<div style={{border:"1px solid black",borderTop:"none"}}>
+				</div>
+				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
+				<div style={{border:"1px solid black",width:"100%",borderTop:"none"}}>
 				{elements.map((element,i)=><div key={i} style={{display:"flex",padding:"2px 5px",borderTop:"none" }}>
 					<span style={{flex:5}}>{element.libelle}</span>
-					<span style={{flex:1}}>{element.prix}</span>
+					
 					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>	
 						{!element.numerique?<Checkbox
 									label = ""
 									name = {element._id}
 									checked = { choice_controle[element._id]||false }
 									onChange = {this._onChange }
-									active = {false}
+									active = {dsactif}
 								/>: <Input
 											style={{width:40}}
 											min="0"
@@ -167,10 +133,11 @@ export default class DevisShow extends Component {
 											name={element._id}
 											onChange={this._onChange}
 											value={choice_controle[element._id]}
-											active={false}
+											active={dsactif}
 										/>}
 					</div>
 				</div>)}
+				</div>
 				</div>
 				
 			<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
@@ -193,22 +160,8 @@ export default class DevisShow extends Component {
 					</div>
 				</div>
 			</div>
-
-			<div style={{display:"flex",width:"100%",justifyContent:"space-between",flex:1}}>
-			
-			</div>
-			<div style={{display:"flex",justifyContent:"space-between"}}>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
-						<span></span>
-					</div>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
-						<span>lkmk</span>
-						<span>lkml</span>
-					</div>
-				</div>
-			</div>
 				
-			</div>		
+					
 		</div>
 			
 		);

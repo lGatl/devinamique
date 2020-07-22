@@ -34,8 +34,8 @@ class DevisList extends Component {
 		init(){
 		return{
 			libelle:"",
-      entreprise:"",
-      client:"",
+      entreprise_id:"",
+      client_id:"",
       elements:"",
       date:Date(Date.now()) 
 		}
@@ -44,8 +44,8 @@ class DevisList extends Component {
 
 		let { user_id, devisGet, entrepriseGet } = this.props;
 		if(typeof user_id === "string"){
-		devisGet({data:{user:user_id}})
-		entrepriseGet({data:{user:user_id}})
+		devisGet({data:{user_id:user_id}})
+		entrepriseGet({data:{user_id:user_id}})
 	}
 	}
 	_devisControle(obj) {
@@ -81,7 +81,7 @@ class DevisList extends Component {
 		let { devisPost, devisControle, choicePost } = this.props;
 		let { controle } = this.props;
 		devisPost({data:{...this.init(),user_id:active_user._id},cbk:(_id)=>{
-			choicePost({data:{user_id:active_user._id,devis_id}})
+			choicePost({data:{user_id:active_user._id,devis_id:_id}})
 			history.push("/devis/"+_id+"/edit")
 		}});
 		//devisControle(this.init());
@@ -90,7 +90,7 @@ class DevisList extends Component {
 	_devisDel({_id}){
 
 		let { devisDel } = this.props;
-		devisDel({_id});
+		devisDel({data:{_id}});
 	}
 	_devisCopy({_id,libelle,prix,num}){
 		/*let { active_user, deviss } = this.props;

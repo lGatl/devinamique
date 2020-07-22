@@ -11,7 +11,7 @@ class Home extends Component {
 	
 	constructor(){
 		super()
-		this.state = {menu:0}
+		this.state = {menu:1}
 	}
 	componentDidMount() {
 	
@@ -30,7 +30,7 @@ class Home extends Component {
 					
 				{ active_user?"":
 					<div style={{width:400}}>
-						{this.state.menu?<InscriptionForm/>:<ConnexionForm/>}
+						{this.state.menu?<ConnexionForm/>:<InscriptionForm/>}
 					</div>
 				}
 				

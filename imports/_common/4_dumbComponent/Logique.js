@@ -79,7 +79,7 @@ export default class Logique extends Component {
 				borderRadius:10
 			}}>
 						<div style={{display:"flex", flexDirection:"column",flex:1}}>
-						<div style={{display:"flex", flexDirection:"row",flex:1, backgroundColor:"rgba(0,150,0,0.5)"}}>
+						<div style={{display:"flex", flexDirection:"row",flex:1, backgroundColor:"rgb(150,200,150)"}}>
 							<div onClick = {this._onEdit} style={{flex:1, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
 							<div style={{flex:4, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 							si
@@ -124,16 +124,16 @@ export default class Logique extends Component {
 						</div>
 						<div style={{width:"50px", display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
 						{active?<ShortButton
-							style={{backgroundColor:"red",height:50}}
+							style={{backgroundColor:"gray",height:50}}
 							onClick={this._onClose}
 						>x
-						</ShortButton>: <div style={{height:"50px"}}></div>}
+						</ShortButton>:""}
 						
 						{!active?<ShortButton
-							style={{backgroundColor:"blue",height:50}}
+							style={{backgroundColor:"rgb(100,100,255)",height:50}}
 							onClick={()=>{}}
 						>+
-						</ShortButton>: <div style={{height:"50px"}}></div>}
+						</ShortButton>: ""}
 						
 					</div>
 					
@@ -141,10 +141,16 @@ export default class Logique extends Component {
 					
 				</div>
 					{active?<div style={{display:"flex"}}><Button
+							style={{backgroundColor:"red"}}
 							onClick={this._onDel}
-							>U</Button><Button
+							>
+								<img src="/image/trash.png" style={{width:30, height:30}} alt=""/>
+							</Button><Button
+							style={{backgroundColor:"aqua"}}
 							onClick={this._onSave}
-							>Sauvegarder</Button></div>:"" }	
+							>
+								<img src="/image/floppy.png" style={{width:30, height:30}} alt=""/>
+							</Button></div>:"" }	
 					
 					
 			

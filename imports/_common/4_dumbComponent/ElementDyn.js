@@ -12,7 +12,7 @@ import {
 } from '../../_common/4_dumbComponent';
 
 
-export default class Element extends Component {
+export default class ElementDyn extends Component {
 
 	constructor(props){
 		super(props)
@@ -125,18 +125,6 @@ export default class Element extends Component {
 										name="libelle"
 										onChange={this._onChange}
 										value={libelle}
-										active = {active}
-									/>
-							</div>
-							<div style={{flex:1, display:"flex", alignItems:"center",padding:"0px 5px"}}>
-									<Input
-										type="number"
-										min="0"
-										label=""
-										placeholder="Prix"
-										name="prix"
-										onChange={this._onChange}
-										value={prix}
 										active = {active}
 									/>
 							</div>

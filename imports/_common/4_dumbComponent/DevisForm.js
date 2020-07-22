@@ -79,7 +79,8 @@ export default class DevisForm extends Component {
 				margin: 5, 
 				borderRadius:"5px", 
 				display:"flex", 
-				flexDirection:"column"
+				flexDirection:"column",
+				...this.props.style
 			}}>
 				<div onClick={!active?this._onEdit:()=>{}}
 				style={{

@@ -30,18 +30,20 @@ let creeCompteT = p => {
 	};
 }
 
-function creeCompte(user, cbk = ()=>{}){
+function creeCompte(data, cbk = ()=>{}){
 
 	return (dispatch, getState) => {
-		Accounts.createUser(res, (err)=>{
+		data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+		Accounts.createUser(data, (err)=>{
 			if(err){
 					console.log(USER.CREE_COMPTE, " - ACTION ERROR",err)
 					
 				}else{
-					console.log(USER.CREE_COMPTE," : ",{ data:res})
+					console.log(USER.CREE_COMPTE," : ")
 					
 					dispatch(
-          creeCompteT({ data:res})
+          creeCompteT({ data })
         );
 				cbk()
 			}
