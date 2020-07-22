@@ -107,13 +107,13 @@ export default class DevisDynamique extends Component {
 				</div>
 				</div>
 				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
-				<div style={{display:"flex",flex:1,padding:"5px",border:"1px solid black",marginTop:20}}>
+				<div style={{display:"flex",flex:1,padding:"5px",border:"1px solid black",margin:"10px 10px 0px 10px"}}>
 					<span style={{flex:5}}>prestation</span>
 					<span style={{flex:1}}>choix</span>
 				</div>
 				</div>
 				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
-				<div style={{border:"1px solid black",width:"100%",borderTop:"none"}}>
+				<div style={{border:"1px solid black",flex:1,borderTop:"none",margin:"0px 10px 0px 10px"}}>
 				{elements.map((element,i)=><div key={i} style={{display:"flex",padding:"2px 5px",borderTop:"none" }}>
 					<span style={{flex:5}}>{element.libelle}</span>
 					
@@ -142,7 +142,7 @@ export default class DevisDynamique extends Component {
 				
 			<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
 				<div style={{display:"flex",justifyContent:"space-between", flex:1}}>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px",margin:"0px 0px 0px 10px"}}>
 						<span>Prix</span>
 					</div>
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
@@ -154,7 +154,7 @@ export default class DevisDynamique extends Component {
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 						<span>TVA</span>
 					</div>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none",margin:"0px 10px 0px 0px"}}>
 						<span>20% HT</span>
 						<span>{prix_total*20/100} TTC</span>
 					</div>

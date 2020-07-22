@@ -12,7 +12,7 @@ class Resize extends Component {
 		this.resize = throttle(this.resize.bind(this),40);
 	}
 	componentDidMount() {
-		this.props.controleResize({windowheight:window.innerHeight});
+		this.props.controleResize({windowheight:window.innerHeight,windowwidth:window.innerWidth});
 		window.addEventListener('resize', this.resize);
 	}
 
@@ -21,7 +21,7 @@ class Resize extends Component {
 	}
 	//==============CONTROLE====================
 	resize(){
-		this.props.controleResize({windowheight:window.innerHeight});
+		this.props.controleResize({windowheight:window.innerHeight,windowwidth:window.innerWidth});
 	}
 	
 	//Additional function to modify strings according to window width

@@ -39,7 +39,7 @@ class DevisEdit extends Component {
 				boxShadow: "1px 1px 12px #555",
 				zIndex:100, 
 				backgroundColor:"white",
-				height:this.props.resize?this.props.resize-80:1000
+				height:"100%"
 				}}>
 						Informations :
 						<DevisForm

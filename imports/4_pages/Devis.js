@@ -490,7 +490,7 @@ class Devis extends Component {
 	render(){
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
-			elements, logiques,entreprises,choice,set,windowheight } = this.props;
+			elements, logiques,entreprises,choice,set,windowheight,windowwidth } = this.props;
 		let {controleSet} = this.props
 		let	{menu, draged, souris_x,souris_y, dsactif,active_choice}=set;
 
@@ -513,6 +513,18 @@ class Devis extends Component {
 				logiques.reduce((total,logq,i)=>[...total,{...logq,...this.verifSyntax(logq.libelle_log)}],[])
 			:[]
 			
+			elements_to_show = elements_to_show.map((elt,j)=>{
+				let nv_prix = elt.prix
+				let logqs = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 &&elt && elt.logiques ? 
+				elt.logiques.reduce((total,elo)=>logiques.find(logq=>logq._id === elo)?[...total,logiques.find(logq=>logq._id === elo)]:total,[]):[]
+				logqs.map(logq=>{
+					nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq,elements,choice_controle)  ?
+					logq.prix_log:nv_prix
+				})
+				return {...elt, 
+					prix: nv_prix
+				}
+			})
 
 		let prix_total = elements_to_show.reduce((total,element,i)=>{
 				let choice = choice_controle[element._id]
@@ -530,7 +542,7 @@ class Devis extends Component {
 				display:"flex", 
 				flexDirection:"column", 
 				width:"100%", 
-				minHeight:"100%", 
+				height:windowheight?windowheight-80:4000, 
 				userSelect:"none"}}>
 					<ElementCard 
 					style={{
@@ -549,12 +561,13 @@ class Devis extends Component {
 						width:"100%", 
 						justifyContent:"center",
 						flexWrap:"wrap", 
-						minHeight:"100%"}}>
+						height:"100%"}}>
 					
 					{edit?<div style={{
 						transitionDuration: "0.5s",
-						flex:menu===0||menu===1?1:"none",
-						width:menu===0||menu===1?"default":0,
+						flex:menu===0||menu===1?1:0,
+						width:"auto",
+						height:"100%",
 						overflow:"hidden"
 
 				}}><DevisEdit
@@ -609,21 +622,21 @@ class Devis extends Component {
 							/>
 						</div>:""}
 							
-								<div style={{
-									transitionDuration: "0.1s",
-									width:50,
-									display:"flex",
-									flexDirection:"column"
-								}}>
-									{menu!==0&&edit?<div className="imgbutt" onClick={()=>{controleSet({menu:0})}}> {">>"} </div>:""}
-									{menu!==1&&edit?<div className="imgbutt" onClick={()=>{controleSet({menu:1})}}> {menu===0?"<":">"} </div>:""}
-									{menu!==2&&edit?<div className="imgbutt" onClick={()=>{controleSet({menu:2})}}> {"<<"} </div>:""}
-							 	</div>
+								{edit?<div style={{
+											transitionDuration: "0.1s",
+											width:50,
+											display:"flex",
+											flexDirection:"column"
+										}}>
+											{menu!==0?<div className="imgbutt" onClick={()=>{controleSet({menu:0})}}> {">>"} </div>:""}
+											{menu!==1?<div className="imgbutt" onClick={()=>{controleSet({menu:1})}}> {menu===0?"<":">"} </div>:""}
+											{menu!==2?<div className="imgbutt" onClick={()=>{controleSet({menu:2})}}> {"<<"} </div>:""}
+								</div>:""}
 					<div style={{
 						transitionDuration: "0.5s",
-						flex:menu===1||menu===2?1:"none",
-						width:menu===2||menu===2?"default":0,
-						height:windowheight?windowheight-80:4000,
+						flex:menu===1||menu===2?1:0,
+						width:"auto",
+						height:"100%",
 						overflow:"hidden",
 						display:"flex",
 						flexDirection:"column"
@@ -698,19 +711,8 @@ class Devis extends Component {
 									prix_total= {prix_total}
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
-									elements={elements_to_show.map((elt,j)=>{
-										let nv_prix = elt.prix
-										let logqs = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 &&elt && elt.logiques ? 
-										elt.logiques.reduce((total,elo)=>logiques.find(logq=>logq._id === elo)?[...total,logiques.find(logq=>logq._id === elo)]:total,[]):[]
-										logqs.map(logq=>{
-											nv_prix = logq.prix_log !== undefined && logq.prix_log !== "" && typeof (logq.prix_log*1) === "number" && this.comprendre(logq,elements,choice_controle)  ?
-											logq.prix_log:nv_prix
-										})
-										return {...elt, 
-											prix: nv_prix
-										}
-									})}
-
+									elements={elements_to_show}
+									
 									choices={""}
 									active_choice={active_choice}
 									choice_controle={choice_controle}
@@ -747,6 +749,7 @@ function mapStateToProps( state ){
 			entreprises: state.entreprise.got.data,
 			choice:state.choice.got1.data,
 			windowheight:state.controle.resize.windowheight,
+			windowwidth:state.controle.resize.windowwidth,
 			set:state.controle.set
 		}
 	);

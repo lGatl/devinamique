@@ -75,11 +75,10 @@ export default class DevisShow extends Component {
 			onChange({ [name]: value });
 	}
 	render() {
-			let {entreprise, client,devis, elements, choice_controle, dsactif, prix_total} = this.props;
+			let {entreprise, client,devis, elements, choice_controle, dsactif, prix_total, menu} = this.props;
 			entreprise=typeof entreprise !== "undefined" && typeof entreprise === "object"?entreprise:{};
 			let {nom,telephone,courriel,adresse,site_internet,siret,tva_intracom}=entreprise;
 
-			
 		return (
 			<div style={{
 				transition:"0.5s",
@@ -87,18 +86,26 @@ export default class DevisShow extends Component {
 				display:"flex", 
 				flexDirection:"column", 
 				flex:1,
-				alignItems:this.props.menu===2?"center":"start",
+				alignItems:"center",
+				justifyContent:"center",
 				overflow:"scroll",
-				position: this.props.menu===2?"default":"relative",
+				position: "relative",
 				zIndex:50,
 				...this.props.style
 			}}
 			>
 
 			<div style={{
-			  height:120+1169+"px",
-			  width:100+826+"px",
+				transition:"0.5s",
+				width:"100%",
+				display:"flex",
+				justifyContent:"center",
+				alignItems:"center",
+			  minHeight:"34cm",
+			  minWidth:"30cm",
 			  position: "absolute",
+			 	left:0,
+			  top:0
 			
 			}}>
 
