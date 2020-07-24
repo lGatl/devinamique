@@ -14,7 +14,7 @@ import rootReducer from './imports/7_reducers';
 
 import Routes from './imports/2_routes/routes';
 
-import { SmartMenu, User, Resize } from './imports/_common/5_smartComponent';
+import { SmartMenu, User, Resize, Kon } from './imports/_common/5_smartComponent';
 
 import { withRouter } from 'react-router-dom';
 
@@ -55,6 +55,7 @@ class App extends Component {
 					<div style ={{display:"flex", flexDirection:"column", width:"100%",height:"100%"}}>
 							<div style={{width:"100%", display:"flex"}}>
 								<SmartMenuR/>
+								<Kon/>
 							</div>
 							<div style={{marginTop:"80px",display:"flex", flexDirection:"column", alignItems:"center",height:"100%"}}>
 								<Routes />

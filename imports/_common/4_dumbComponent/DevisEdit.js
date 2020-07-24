@@ -95,7 +95,7 @@ class DevisEdit extends Component {
 							<div style={{flex:1}}></div>
 							<div style={{width:"50px"}}></div>
 						</div>
-						<div style={{height:"100%",overflowY:"scroll",}}>
+						<div ref={this.props.scroll1Ref} style={{height:"100%",overflowY:"scroll",paddingBottom:50}} >
 						<Dropable 
 								id={0} 
 								active = {draged}
@@ -185,7 +185,7 @@ class DevisEdit extends Component {
 							<div style={{flex:1}}></div>
 							<div style={{width:"50px"}}></div>
 						</div>
-						<div style={{height:"100%",overflowY:"scroll",}}>
+						<div ref={this.props.scroll2Ref} style={{height:"100%",overflowY:"scroll",paddingBottom:50}} >
 						<Dropable 
 								id={D_elements.length} 
 								active = {draged}

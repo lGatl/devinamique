@@ -101,7 +101,7 @@ export default class DevisShow extends Component {
 				display:"flex",
 				justifyContent:"center",
 				alignItems:"center",
-			  minHeight:"34cm",
+			  minHeight:"36cm",
 			  minWidth:"30cm",
 			  position: "absolute",
 			 	left:0,
