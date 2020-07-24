@@ -75,7 +75,7 @@ class Devis extends Component {
 }
 	
 	componentDidMount() {
-		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet1, edit, user_id, choiceControle,controleSet,
+		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet1, choicePost, edit, user_id, choiceControle,controleSet, elements,
 		 devisUp
 		} = this.props;
 
@@ -117,7 +117,17 @@ class Devis extends Component {
 		})
 		logiqueGet({data:{devis_id}})
 		choiceGet1({data:{devis_id},cbk:(res)=>{
-			choiceControle({...res})
+			console.log(elements)
+			if(res){
+				choiceControle({...res})
+			}else{
+				choicePost({data:{user_id,devis_id}
+				,cbk:()=>{
+					choiceGet1({data:{devis_id},cbk:(res)=>{choiceControle({...res})}})
+				}})
+
+			}
+			
 		}})
 	}
 	
@@ -130,11 +140,34 @@ class Devis extends Component {
 			document.removeEventListener('touchend', this._mouseup);
 	}
 	componentDidUpdate(prevProps, prevState){
-		let {controleSet} = this.props
+		let {controleSet, choiceUp, devisUp, choice_controle,} = this.props
 
 		if(prevProps.set.dsactif===true && this.props.set.dsactif===false){
 			this._printDocument()
 		}
+		//SI IL MANQUE DES ELEMENTS DANS CHOICE
+		if(prevProps.elements.length!==this.props.elements.length||prevProps.choice!==this.props.choice){
+			let elements = this.props.elements.filter(elt=>Object.keys(this.props.choice).indexOf(elt._id)===-1)
+			if(elements.length >0){
+				let choice = this.props.choice
+				choice = elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},choice)
+				choiceUp({data:choice},()=>{
+					choiceControle({...choice_controle,...choice})
+				})
+			}
+		}
+		//SI IL MANQUE DES ELEMENTS DANS Devis.elements NE PAS UTILISER !!!!!!!!!!!!!!!!!!!!!!!!!!
+		/*if(prevProps.elements.length!==this.props.elements.length||prevProps.devis.elements!==this.props.devis.elements){
+			console.log("EEEEEEEEEEEEEEEEEEEE")
+			let elements = this.props.elements.filter(elt=>this.props.devis.elements.indexOf(elt._id)===-1).map(elt=>elt._id)
+
+			if(elements.length >0){
+				let delts = [...this.props.devis.elements,...elements]
+				devisUp({data:{...this.props.devis,elements:[...delts]}});
+			}
+		}*/
+
+
 	}
 
 	_mousemove(event){
@@ -265,7 +298,7 @@ class Devis extends Component {
 			elementPost({data:{libelle:"",prix:"",numerique:false,logiques:[],dynamique,devis_id:devis._id,user_id:active_user._id},cbk:(_id)=>{
 			controleSet({active_element:_id})
 			elementControle({dynamique});
-			let nbd = dynamique?elements.reduce((total,elt)=>elt.dynamique===true?total+1:total,0)-1:elements.length
+			let nbd = dynamique?elements.reduce((total,elt)=>elt.dynamique===true?total+1:total,0):elements.length
 			let d_elements= [...devis.elements]
 			d_elements.splice(nbd,0,_id)
 			devisUp({data:{...devis,elements:d_elements}})
@@ -275,9 +308,12 @@ class Devis extends Component {
 	}
 	_elementDel({_id}){
 		let {controleSet} = this.props
-		let { elementDel,devisUp, devis } = this.props;
+		let { elementDel,devisUp, choiceUp, devis, choice } = this.props;
 		elementDel({data:{_id},cbk:()=>{
 			devisUp({data:{...devis,elements:devis.elements.filter(elt=>elt!==_id)}})
+			let nchoice = {...choice}
+			delete nchoice[_id]
+			choiceUp({data:{...nchoice}})
 		}});
 	}
 	_elementCopy({_id,libelle,prix,numerique,id}){

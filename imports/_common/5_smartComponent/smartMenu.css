@@ -4,7 +4,7 @@
   width:100%;
   flex:1;
   height: 80px;
-  background-color:rgb(1, 168, 251);
+  background-color:rgb(181, 204, 24);
 }
 .sm_nav ul {
   margin:0;
@@ -23,14 +23,14 @@
 
 }
 .sm_nav li:hover {
-  background-color:rgb(49, 184, 247);
+  background-color:rgb(170, 220, 80);
 }
 
 .sm_nav .sm_active {
-  background-color:rgb(75, 33, 114);
+  background-color:rgb(50, 180, 0);
 }
 .sm_nav .sm_active:hover {
-  background-color:rgb(75, 33, 114);
+  background-color:rgb(50, 180, 0);
 }
 .sm_nav li a {
   display:flex;
