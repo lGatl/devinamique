@@ -24,10 +24,8 @@ import "./devis.css"
 import { throttle } from '../8_libs';
 const CARACTERES_AUTORISES = ["i","d","_","<",">","!","=","&","|","0","1","2","3","4","5","6","7","8","9","(",")"]
 class Devis extends Component {
-	constructor(){
-		super()
-		/*PASSER DANS LES CONTROLE POUR ACTIVER L'EDITION LORS DE L'AJOUT => ajout dans reducer => _id dans active_*/
-
+	constructor(props){
+		super(props)
 		
 		this._devisControle = this._devisControle.bind(this)
 		this._devisEdit = this._devisEdit.bind(this)
@@ -55,10 +53,6 @@ class Devis extends Component {
 		this._choiceControle = this._choiceControle.bind(this)
 		this._choiceRef = this._choiceRef.bind(this)
 		this._choiceSave = this._choiceSave.bind(this)
-		this._choiceClose = this._choiceClose.bind(this)
-		this._choiceDel = this._choiceDel.bind(this)
-		this._choiceCopy = this._choiceCopy.bind(this)
-		this._choiceAdd = this._choiceAdd.bind(this)
 
 		this._printDocument = this._printDocument.bind(this)
 		this._desactiveForPrint = this._desactiveForPrint.bind(this)
@@ -68,16 +62,24 @@ class Devis extends Component {
 		this._mousemove = this._mousemove.bind(this)
 		this._mouseup = this._mouseup.bind(this)
 		this._viewDE = this._viewDE.bind(this)
+		this._finalView = this._finalView.bind(this)
 		this.scroll1Ref = React.createRef()
 		this.scroll2Ref = React.createRef()
+		this.checkLogq = this.checkLogq.bind(this)
 
 		
 }
 	
 	componentDidMount() {
-		let { devis_id, devisGet1, entrepriseGet, elementGet,logiqueGet, choiceGet1, choicePost, edit, user_id, choiceControle,controleSet, elements,
+		let { devis_id, 
+			devisGet1, devisGet1Start, 
+			entrepriseGet, entrepriseGetStart, 
+			elementGet,elementGetStart, 
+			logiqueGet,  logiqueGetStart, 
+			choiceGet1, choiceGet1Start, choicePost, edit, user_id, choiceControle,controleSet, elements,
 		 devisUp
 		} = this.props;
+
 
 		document.addEventListener('mouseup', this._mouseup);
 		document.addEventListener('mousemove', this._mousemove);
@@ -86,6 +88,8 @@ class Devis extends Component {
 		document.addEventListener('touchend', this._mouseup);
 
 		controleSet({
+			premierup:true,
+			first:0,
 			menu:edit?1:2,
 			scroll:0,
 			show:2,
@@ -102,33 +106,23 @@ class Devis extends Component {
 			view1:1,
 			view2:1,
 			view3:1,
+			print:false,
 			pscrollHeight:0,
 			scrollHeight:0
 		})
-		devisGet1({data:{_id:devis_id}})
-		entrepriseGet({data:{user_id}})
-		elementGet({data:{devis_id},
-			/*cbk:(elements)=>{
-				elements.sort((elta,eltb)=>eltb.dynamique-elta.dynamique)
-				devisGet1({data:{_id:devis_id},cbk:(devis)=>{
-					devisUp({data:{...devis,elements:elements.map(elt=>elt._id)}})
-				}})	
-			}*/
-		})
-		logiqueGet({data:{devis_id}})
-		choiceGet1({data:{devis_id},cbk:(res)=>{
-			console.log(elements)
-			if(res){
-				choiceControle({...res})
-			}else{
-				choicePost({data:{user_id,devis_id}
-				,cbk:()=>{
-					choiceGet1({data:{devis_id},cbk:(res)=>{choiceControle({...res})}})
-				}})
 
-			}
-			
-		}})
+		devisGet1Start()
+		entrepriseGetStart()
+		elementGetStart()
+		choiceGet1Start()
+		logiqueGetStart()
+
+		devisGet1({data:{_id:devis_id,user_id}})
+		entrepriseGet({data:{user_id}})
+		elementGet({data:{devis_id,user_id}})
+		choiceGet1({data:{devis_id,user_id}})
+		logiqueGet({data:{devis_id,user_id}})
+
 	}
 	
 
@@ -140,34 +134,51 @@ class Devis extends Component {
 			document.removeEventListener('touchend', this._mouseup);
 	}
 	componentDidUpdate(prevProps, prevState){
-		let {controleSet, choiceUp, devisUp, choice_controle,} = this.props
 
-		if(prevProps.set.dsactif===true && this.props.set.dsactif===false){
+		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle, choicePost, choiceGet1, user_id, set,
+					elements, devis, entreprises, choice, logiques,
+					elements_loading, devis_loading, entreprises_loading, choice_loading, logiques_loading} = this.props
+					elements = typeof elements === "object" && elements instanceof Array ? elements : false; 
+					devis = typeof devis === "object"  ? devis : false;
+					entreprises = typeof entreprises === "object" && entreprises instanceof Array ? entreprises : false; 
+					choice =  typeof choice === "object" ?choice : false;
+					
+					logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : false; 
+
+					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
+							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
+
+						controleSet({premierup:false})
+						choiceControle({...choice.elements})
+						this.checkLogq({logiques,save:true})
+
+
+
+
+						if(choice === null||elements.length !== Object.keys(choice.elements).length) {
+							console.log("ANOMALIE")
+							console.log("elements.length", elements.length);
+							console.log("Object.keys(choice).length", Object.keys(choice.elements).length);
+							/*choicePost({
+								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
+								cbk:()=>{
+									console.log("-----choice réparé-----")
+									choiceGet1({
+										data:{devis_id: devis._id},
+										cbk:(res)=>{
+											choiceControle({...res.elements})
+										}
+									})
+								}
+							}) 
+						
+						console.log("ok")*/
+						}
+					}
+		if(prevProps.set.print===false && this.props.set.print===true){
+
 			this._printDocument()
 		}
-		//SI IL MANQUE DES ELEMENTS DANS CHOICE
-		if(prevProps.elements.length!==this.props.elements.length||prevProps.choice!==this.props.choice){
-			let elements = this.props.elements.filter(elt=>Object.keys(this.props.choice).indexOf(elt._id)===-1)
-			if(elements.length >0){
-				let choice = this.props.choice
-				choice = elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},choice)
-				choiceUp({data:choice},()=>{
-					choiceControle({...choice_controle,...choice})
-				})
-			}
-		}
-		//SI IL MANQUE DES ELEMENTS DANS Devis.elements NE PAS UTILISER !!!!!!!!!!!!!!!!!!!!!!!!!!
-		/*if(prevProps.elements.length!==this.props.elements.length||prevProps.devis.elements!==this.props.devis.elements){
-			console.log("EEEEEEEEEEEEEEEEEEEE")
-			let elements = this.props.elements.filter(elt=>this.props.devis.elements.indexOf(elt._id)===-1).map(elt=>elt._id)
-
-			if(elements.length >0){
-				let delts = [...this.props.devis.elements,...elements]
-				devisUp({data:{...this.props.devis,elements:[...delts]}});
-			}
-		}*/
-
-
 	}
 
 	_mousemove(event){
@@ -191,21 +202,37 @@ class Devis extends Component {
 	
 	_desactiveForPrint(){
 		let {controleSet} = this.props
-		controleSet({dsactif:false})
+		controleSet({dsactif:false, print:true})
+	}
+	recurshtml2can(pdf,inputs,count){
+		let {controleSet,devis} = this.props
+		html2canvas(inputs[inputs.length-count])
+	      .then((canvas) => {
+	        const imgData = canvas.toDataURL('image/png');
+	        
+	        pdf.addImage(imgData, 'JPEG', 0, 0,210,297);
+	       count=count-1
+	       	if(count>0){
+	       		pdf.addPage()
+						this.recurshtml2can(pdf,inputs,count)
+	       	}else{
+	       		pdf.save(devis&&devis.titre?"devis_"+devis.titre+".pdf":"devis.pdf");
+	        	controleSet({print:false,dsactif:true})
+	       	}
+	        
+	      })
 	}
 	_printDocument() {
 		let {controleSet,devis} = this.props
-    const input = document.getElementById('divToPrint');
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'JPEG', 0, 0,210,297);
-        //pdf.output('dataurlnewwindow');
-        pdf.save(devis&&devis.titre?"devis_"+devis.titre+".pdf":devis.pdf);
-        controleSet({dsactif:true})
-      })
-    ;
+		let inputs = document.getElementsByClassName("divToPrint")
+
+    if(inputs!==null){
+ 			var count=inputs.length;
+ 			const pdf = new jsPDF();
+
+ 			this.recurshtml2can(pdf,inputs,count,devis)
+	    
+    }
   }
 
   _onShowLogq({_id}){
@@ -220,11 +247,11 @@ class Devis extends Component {
 			devisControle(obj);
 	}
 
-	_devisEdit({_id,titre,entreprise,client}){
+	_devisEdit({_id,titre,entreprise,client,contractuel, tjm, unite,password}){
 		let { devisControle } = this.props;
 		let {controleSet} = this.props
 
-			devisControle({_id,titre,entreprise,client});
+			devisControle({_id,titre,entreprise,client,contractuel, tjm, unite,password});
 			controleSet({active_devis:true,active_element:-1,active_logique:-1})
 	}
 	_devisSave({_id}){
@@ -257,21 +284,21 @@ class Devis extends Component {
 
 			elementControle(obj);
 	}
-	_elementEdit({_id,libelle,prix,numerique,dynamique,id}){
+	_elementEdit({_id,libelle,prix,numerique,dynamique,id,titre_lvl,sans_interaction}){
 		let {controleSet} = this.props
 		let { elementControle } = this.props;
 			if(this.props.set.active_element!==_id){
-				elementControle({_id,libelle,prix,numerique,dynamique});
+				elementControle({_id,libelle,prix,numerique,dynamique,titre_lvl,sans_interaction});
 				controleSet({active_element:_id,active_devis:false,active_logique:-1})
 			}
 	}
-	_elementSave({_id,libelle,prix,numerique,dynamique,id}){
+	_elementSave({_id,libelle,prix,titre_lvl,sans_interaction,numerique,dynamique,id}){
 		let {controleSet} = this.props
 		let { active_user,elements } = this.props;
 		let { elementUp } = this.props;
 		let { element_controle } = this.props;
 		let element = elements.find(elt=>elt._id===_id)
-		let test ={data:{...element,_id,libelle,prix,numerique,dynamique:typeof dynamique==="boolean"?dynamique:false,...element_controle}}
+		let test = {data:{...element,_id,libelle,prix,numerique,titre_lvl,sans_interaction,dynamique:typeof dynamique==="boolean"?dynamique:false,...element_controle}}
 		
 		elementUp(test);
 		controleSet({active_element:-1})
@@ -289,20 +316,19 @@ class Devis extends Component {
 
 		dynamique = dynamique!==undefined?dynamique:false
 
-
 			if(dynamique){
 				this.scroll1Ref.current.scrollTop = this.scroll1Ref.current.scrollHeight
 			}else{
 				this.scroll2Ref.current.scrollTop = this.scroll2Ref.current.scrollHeight
 			}
-			elementPost({data:{libelle:"",prix:"",numerique:false,logiques:[],dynamique,devis_id:devis._id,user_id:active_user._id},cbk:(_id)=>{
-			controleSet({active_element:_id})
-			elementControle({dynamique});
-			let nbd = dynamique?elements.reduce((total,elt)=>elt.dynamique===true?total+1:total,0):elements.length
-			let d_elements= [...devis.elements]
-			d_elements.splice(nbd,0,_id)
-			devisUp({data:{...devis,elements:d_elements}})
-			choiceUp({data:{...choice,[_id]:0}})
+			elementPost({data:{libelle:"",prix:0,titre_lvl:0,sans_interaction:false,numerique:false,logiques:[],dynamique,devis_id:devis._id,user_id:active_user._id},cbk:(_id)=>{
+				controleSet({active_element:_id})
+				elementControle({dynamique});
+				let nbd = dynamique?elements.reduce((total,elt)=>elt.dynamique===true?total+1:total,0):elements.length
+				let d_elements = [...devis.elements]
+				d_elements.splice(nbd,0,_id)
+				devisUp({data:{...devis,elements:d_elements}})
+				choiceUp({data:{...choice,elements:{...choice.elements,[_id]:0}}})
 		}});
 		
 	}
@@ -312,15 +338,24 @@ class Devis extends Component {
 		elementDel({data:{_id},cbk:()=>{
 			devisUp({data:{...devis,elements:devis.elements.filter(elt=>elt!==_id)}})
 			let nchoice = {...choice}
-			delete nchoice[_id]
-			choiceUp({data:{...nchoice}})
+			let elements = {...nchoice.elements}
+			delete elements[_id]
+			choiceUp({data:{...nchoice,elements}})
 		}});
 	}
-	_elementCopy({_id,libelle,prix,numerique,id}){
-		/*let { active_user, elements } = this.props;
-		let { elementPost, elementControle } = this.props;
-		let { controle } = this.props;
-		elementPost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
+	_elementCopy({_id,id}){
+		let { active_user, elements, devis } = this.props;
+		let { elementPost,devisUp,choiceUp} = this.props;
+		
+		let element = {...elements.find(elt=>elt._id===_id)}
+		delete element._id
+		elementPost({data:{...element},cbk:(_idd)=>{
+				let d_elements = [...devis.elements]
+				d_elements.splice(id,0,_idd)
+				devisUp({data:{...devis,elements:d_elements}})
+				choiceUp({data:{...choice,elements:{...choice.elements,[_id]:0}}})
+		}});
+
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 	_logiqueControle(obj) {
@@ -328,8 +363,6 @@ class Devis extends Component {
 			let { logiqueControle } = this.props;
 
 			//logstr = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>CARACTERES_AUTORISES
-
-
 			logiqueControle(obj);
 	}
 	_logiqueEdit({_id,libelle_log,prix_log,numerique_log}){
@@ -349,7 +382,7 @@ class Devis extends Component {
 		logiques = logiques.map(logi=>logique._id===logi._id?{_id,...logique,...logique_controle}:logi)
 
 		logiqueUp({data:{_id,...logique,...logique_controle},cbk:()=>{
-			this.checkLogq({logiques})
+			this.checkLogq({logiques,save:true})
 			controleSet({active_logique:-1})
 		}});
 		
@@ -366,7 +399,6 @@ class Devis extends Component {
 		logiquePost({data:{devis_id,element_id:_id,user_id:active_user._id},cbk:(id)=>{
 			controleSet({active_logique:id,active_element:-1})
 			let element = elements.find(elt=>elt._id===_id)
-
 			elementUp({data:{...element,logiques:[...element.logiques,id]}})
 		}});
 		//logiqueControle();
@@ -382,48 +414,129 @@ class Devis extends Component {
 			elementUp({data:{...element,logiques:element.logiques.filter(logq=>logq!==_id)}})
 		}});
 	}
-	_logiqueCopy({_id,libelle,prix,numerique,id}){
-		/*let { active_user, logiques } = this.props;
-		let { logiquePost, logiqueControle } = this.props;
+	_logiqueCopy({_id}){
+		let {controleSet} = this.props
+		let {  logiques, elements } = this.props;
+		let { logiquePost, logiqueControle, elementUp } = this.props;
 		let { controle } = this.props;
-		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
+
+		let logique = {...logiques.find(lo=>lo._id===_id)}
+		delete logique._id
+		logiquePost({data:{...logique},cbk:(id)=>{
+			controleSet({active_logique:-1,active_element:-1})
+			let element = elements.find(elt=>elt._id===logique.element_id)
+			elementUp({data:{...element,logiques:[...element.logiques,id]}})
+		}});
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-	checkLogq({new_choice, logiques}){
-		console.log("------------------logique-----------------", logique);
+	
+	checkLogq({new_choice, logiques,save}){
+
 		new_choice = new_choice? new_choice:{}
-		let { choiceControle } = this.props;
-		let {  elements, choice_controle } = this.props;
+		let { choiceControle,choiceUpControle, choiceUp, choice } = this.props;
+		let {  elements, elementUp } = this.props;
 
-		logiques = typeof logiques ==="object" && logiques instanceof Array ? logiques : this.props.logiques
+		save = typeof save === "boolean" ? save : false
+		logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : this.props.logiques
+		
+		
+		let props_choice_controle = typeof this.props.choice_controle ==="object"&&Object.keys(this.props.choice_controle).length>0?this.props.choice_controle:{...choice.elements}
+		let choice_controle = new_choice?{...props_choice_controle,...new_choice}:{...props_choice_controle}
 
-		choice_controle = new_choice?{...choice_controle,...new_choice}:choice_controle
+	/*==============dabord les elements dynamiques==================*/
+		Object.keys(choice_controle).forEach(cc=>{
 
-		logiques.reduce((total,lg,i)=>elements.findIndex(el=>el._id===lg.element_id)>-1?[...total,lg]:total,[]).map(logq=>{
-			
-			let comp = this.comprendre(logq,choice_controle);
-				console.log("comp", comp);
-				if(typeof comp === "number"){
-					
-					choiceControle({[logq.element_id]:comp})
-				}else if(comp){
-					if(logq.numerique_log){choiceControle({[logq.element_id]:logq.numerique_log})}
-				}												
+					let element = elements.find(elt=>elt._id === cc)
+
+				if(element === undefined){
+					delete choice_controle[cc]
+				}else{
+					let val = 0
+					let eltlq = element.logiques
+					let dynamique = element.dynamique
+					let saufclicked = new_choice?element._id!==Object.keys(new_choice)[0]:true
+					if(saufclicked&&dynamique){
+						let lqs = [...eltlq].reduce((total,lq_id,i)=>{
+						let lalogique = logiques.find(lq=>lq_id===lq._id)
+						if(lalogique===undefined){
+							eltlq.splice(i,1)
+							return total
+						}else{
+							return [...total,lalogique]
+						}
+					},[])
+
+
+					lqs.forEach(lq=>{
+							let comp = this.comprendre(lq,choice_controle);
+							
+						if(typeof comp === "number"){
+							val = comp
+							choice_controle={...choice_controle,[cc]:val}
+						}else if(comp ){
+							
+							if(!isNaN(lq.numerique_log*1)){
+								val = lq.numerique_log*1
+								choice_controle={...choice_controle,[cc]:val}
+							}
+						}
+					})
+					}
+				}
 		})
+		/*==============dabord les elements dynamiques==================*/
+		Object.keys(choice_controle).forEach(cc=>{
+					let element = elements.find(elt=>elt._id === cc)
+
+				if(element === undefined){
+					delete choice_controle[cc]
+				}else{
+					let val = 0
+					let eltlq = element.logiques
+					let dynamique = !element.dynamique
+					let saufclicked = element._id!==Object.keys(new_choice)[0]
+					if(saufclicked&&dynamique){
+						let lqs = [...eltlq].reduce((total,lq_id,i)=>{
+						let lalogique = logiques.find(lq=>lq_id===lq._id)
+						if(lalogique===undefined){
+							eltlq.splice(i,1)
+							return total
+						}else{
+							return [...total,lalogique]
+						}
+					},[])
+
+
+					lqs.forEach(lq=>{
+							let comp = this.comprendre(lq,choice_controle);
+							
+						if(typeof comp === "number"){
+							val = comp
+							choice_controle={...choice_controle,[cc]:val}
+						}else if(comp ){
+							if(!isNaN(lq.numerique_log*1)&&lq.numerique_log!==""){
+								val = lq.numerique_log*1
+								choice_controle={...choice_controle,[cc]:val}
+							}
+						}
+					})
+					}
+				}
+		})
+			choiceControle({...choice_controle})
 	}
 	_choiceControle(obj) {
 		
 		let { choiceControle } = this.props;
-		let { elements, choice_controle } = this.props;
 
-		this.checkLogq({new_choice:{...choice_controle,...obj}})
-		choiceControle(obj);
+		this.checkLogq({new_choice:obj})
+		//choiceControle(obj);
 	}
 
 	_choiceRef(){
 		let {choice, choiceControle, choice_controle} = this.props;
-		choiceControle({...choice})
+		choiceControle({...choice.elements})
 	}
 
 	_choiceSave({_id}){
@@ -432,27 +545,9 @@ class Devis extends Component {
 		let { choice_controle,choice } = this.props;
 		let {controleSet} = this.props
 
-		choiceUp({data:{_id,...choice,...choice_controle}});
-		controleSet({active_choice:-1})
+		choiceUp({data:{...choice,elements:{...choice_controle}}});
 	}
-	_choiceClose(){
-		let {controleSet} = this.props
-		controleSet({active_choice:-1})
-	}
-	_choiceAdd(){
-		
-	}
-	_choiceDel({_id}){
 
-		let { choiceDel } = this.props;
-		choiceDel({data:{_id}});
-	}
-	_choiceCopy({_id,libelle,prix,numerique,id}){
-		/*let { active_user, logiques } = this.props;
-		let { logiquePost, logiqueControle } = this.props;
-		let { controle } = this.props;
-		logiquePost({data:{libelle,prix,numerique,date:Date.now(),user:active_user._id}});*/
-	}
 	_dropableMouseUp({element_id,id,dynamique}){	
 		let {devisUp, devis, elementUp,elements}=this.props;
 		let d_elements = [...devis.elements];
@@ -482,47 +577,34 @@ class Devis extends Component {
 	}
 
 	comprendre(logq,choice_controle){
+
 		let {elements, devis} = this.props;
-		console.log("elements,choice", elements,choice_controle);
-		console.log("logq", logq);
 		let logstr = logq.libelle_log
-		console.log("logstr", logstr);
-		let logstr1 = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>CARACTERES_AUTORISES
+		
+		if(logstr==="true"){
+				return true
+		}else{
+			let logstr1 = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>CARACTERES_AUTORISES
 			.indexOf(lr)>-1?total+lr:total,"").toLowerCase():"";
-		logstr1.split("=>").join("")
+			logstr1.split("=>").join("")
+			logstr=logstr1
+			let remplace = logstr.split("id").reduce((total,lr,i)=>{
+				if(lr.indexOf("_")>-1){
+					let elt = elements.find(elt=>elt._id===devis.elements[lr.split("_")[0]])
+					let elt_id = elt?elt._id:false
+					let nb = elt_id?choice_controle[elt_id]:0
 
-console.log("logstr1", logstr1);
-		if(logstr!==undefined&&logstr!==logstr1){
-		}
-		logstr=logstr1
+					return  nb!==undefined?total+nb+lr.split("_")[1]:total
+				}else{
+						return total
+				}
+			},"")
 
-console.log("logstr.split(\"id\")", logstr.split("id"));
-
-		let remplace = logstr.split("id").reduce((total,lr,i)=>{
-				
-			if(lr.indexOf("_")>-1){
-
-				let elt = elements.find(elt=>elt._id===devis.elements[lr.split("_")[0]])
-				console.log("elt", elt);
-				let elt_id = elt?elt._id:false
-				console.log("elt_id", elt_id);
-				let nb = elt_id?choice_controle[elt_id]:0
-				console.log("nb", nb);
-
-				return  nb?total+nb+lr.split("_")[1]:total
-			}else{
-				return total
+			try{
+				return remplace !== undefined && (typeof eval(remplace) === "boolean"||typeof eval(remplace) === "number")  ? eval(remplace):false
+			}catch{
+				return false
 			}
-		},"")
-		console.log("remplace", remplace);
-
-		try{
-
-console.log("remplace", remplace);
-console.log("eval(remplace)", eval(remplace));
-			return remplace !== undefined && (typeof eval(remplace) === "boolean"||typeof eval(remplace) === "number")  ? eval(remplace):false
-		}catch{
-			return false
 		}
 	}
 
@@ -530,9 +612,14 @@ console.log("eval(remplace)", eval(remplace));
 		let error1=false;
 		let error2=false;
 		
+		if(logstr==="true"){
+				return {error1,error2}
+		}else{
 		let logstr1 = typeof logstr ==="string"?logstr.split("").reduce((total,lr,i)=>CARACTERES_AUTORISES
 			.indexOf(lr)>-1?total+lr:total,"").toLowerCase():"";
 		logstr1.split("=>").join("")
+
+
 		if(logstr!==logstr1){
 			error1=true
 		}
@@ -553,19 +640,53 @@ console.log("eval(remplace)", eval(remplace));
 			error2=true
 		}
 		return {error1,error2}
+		}	
 	}
 	_viewDE(a){
 		let {controleSet} = this.props
 		controleSet({...a,active_element:-1})
 	}
 	//•••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+	elts_to_nb_page({elements}){
+
+		let tx = []
+		let nbp = 0
+		let nb = 0
+
+		elements.reduce((total,elt,i)=>{
+			
+			let nb1 = (19+elt.titre_lvl*5)*((Math.floor(elt.libelle.length/(80-elt.titre_lvl*5)))+1)+4
+			let test = nbp<1?800:900
+			if((nb+nb1)>test){
+				tx.push(total)
+				total = []
+				nb=0
+				nbp++
+			}
+			if(elements.length-1 === i){
+				tx.push([...total,elt])
+				total = []
+				nb=0
+				nbp++
+			}
+
+			nb = nb1+nb
+			return [...total,elt]
+		},[])
+
+		return tx
+	}
+	_finalView(){
+		let {controleSet,set} = this.props
+		controleSet({dsactif:!set.dsactif})
+	}
 
 	render(){
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
 			elements, logiques,entreprises,choice,set,windowheight,windowwidth } = this.props;
 		let {controleSet} = this.props
-		let	{menu, draged, souris_x,souris_y, dsactif,active_choice}=set;
+		let	{menu, draged, souris_x,souris_y, dsactif}=set;
 
 		let { libelle,prix,numerique } = element_controle;
 		let { titre,entreprise,client } = devis_controle;
@@ -578,15 +699,18 @@ console.log("eval(remplace)", eval(remplace));
 
 		let elements_F = elements.filter(elt=>elt.dynamique!==true) 
 		let elements_D = elements.filter(elt=>elt.dynamique===true)
-			let elements_to_show = !dsactif?elements_F.reduce((total,elt)=>choice_controle[elt._id]?[...total,elt]:total,[]):elements_F
+		
+
+		dsactif = dsactif&&edit
+		let elements_to_show = !dsactif?elements_F.reduce((total,elt)=>choice_controle[elt._id]?[...total,elt]:total,[]):elements_F
 
 			let elt_dgd = elements.find(elt=>elt._id===draged)?elements.find(elt=>elt._id===draged):""
 
 			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 ? 
 				logiques.reduce((total,logq,i)=>[...total,{...logq,...this.verifSyntax(logq.libelle_log)}],[])
 			:[]
-			
-			/*elements_to_show = elements_to_show.map((elt,j)=>{
+
+			elements_to_show = elements_to_show.map((elt,j)=>{
 				let nv_prix = elt.prix
 				let logqs = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array&& logiques.length >0 &&elt && elt.logiques ? 
 				elt.logiques.reduce((total,elo)=>logiques.find(logq=>logq._id === elo)?[...total,logiques.find(logq=>logq._id === elo)]:total,[]):[]
@@ -597,19 +721,21 @@ console.log("eval(remplace)", eval(remplace));
 				return {...elt, 
 					prix: nv_prix
 				}
-			})*/
+			})
+
 
 		let prix_total = elements_to_show.reduce((total,element,i)=>{
-				let choice = choice_controle[element._id]
+				let choice = choice_controle&&choice_controle?choice_controle[element._id]:0
 					
 				 choice = typeof choice !== "undefined" && typeof choice === "boolean" && choice===true?1:
 				 	typeof choice!== "undefined" && typeof choice === "boolean"&&choice===false?0:
 					typeof choice!== "undefined" && typeof (choice*1) === "number"?choice:0;
 
-				return total+choice* element.prix
-						},0)
-			
+				return total+choice * (element.prix?element.prix:0)*(devis.tjm?devis.tjm:1)
+		},0)
 
+		// POUR L'AFFICHAGE => à la fin !!!
+		elements_to_show = this.elts_to_nb_page({elements:elements_to_show})
 		return (
 			<div style={{ 
 				display:"flex", 
@@ -699,7 +825,8 @@ console.log("eval(remplace)", eval(remplace));
 											transitionDuration: "0.1s",
 											width:50,
 											display:"flex",
-											flexDirection:"column"
+											flexDirection:"column",
+											backgroundColor:"rgba(230,230,230)"
 										}}>
 											{menu!==0?<div className="imgbutt" onClick={()=>{controleSet({menu:0})}}> {">>"} </div>:""}
 											{menu!==1?<div className="imgbutt" onClick={()=>{controleSet({menu:1})}}> {menu===0?"<":">"} </div>:""}
@@ -712,9 +839,20 @@ console.log("eval(remplace)", eval(remplace));
 						height:"100%",
 						overflow:"hidden",
 						display:"flex",
-						flexDirection:"column"
+						flexDirection:"column",
+
 
 				}}>	
+								<div style={{display:"flex",width:"100%",flexDirection:"column",backgroundColor:"rgba(230,230,230)"}}>
+				
+				<div style={{display:"flex",flex:1,justifyContent:"space-between",marginTop:10}}>
+					<div style={{display:"flex", flexDirection:"column",alignItems:"center", flex:1}}>
+							<span style={{fontSize:"26px",fontWeight:"bold"}}>
+								Composez votre devis :
+							</span>
+						</div>
+				</div>
+				</div>
 					<div style={{
 						display:"flex",
 						flexDirection:"column",
@@ -724,6 +862,7 @@ console.log("eval(remplace)", eval(remplace));
 						backgroundColor:"white",
 						transitionDuration: "0.5s",
 					}}>
+
 						<DevisDynamique
 									menu={menu}
 									devis={devis}
@@ -731,19 +870,12 @@ console.log("eval(remplace)", eval(remplace));
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements_D}
+									edit = {edit}
 
 									choices={""}
 									prix_total= {prix_total}
-									active_choice={active_choice}
 									choice_controle={choice_controle}
-									onClose = {this._choiceClose}
-									onEdit = {this._choiceEdit}
-									onSave = {this._choiceSave}
-									onDel = {this._choiceDel}
-									onCopy = {this._choiceCopy}
-									onAdd = {this._choiceAdd}
 									onChange = {this._choiceControle} 
-									onPrint = {()=>{}}
 									/>
 
 					</div>
@@ -757,9 +889,10 @@ console.log("eval(remplace)", eval(remplace));
 									}}> {"v"} </div>}
 									
 									<div style={{display:"flex",flex:1,justifyContent:"center"}}>
-										<div className="imgbutt" onClick={this._desactiveForPrint} style={{ backgroundImage:"url('/image/printer.png')"}}></div>
-										<div className="imgbutt" onClick={this._choiceSave} style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
-										<div className="imgbutt" onClick={this._choiceRef} style={{ backgroundImage:"url('/image/refresh.png')"}}></div>
+										{edit?<div className="imgbutt" title="Vue du client" onClick={this._finalView} style={{ backgroundImage:"url('/image/eye.png')"}}></div>:""}
+										<div className="imgbutt" title="télécharger une version imprimable" onClick={this._desactiveForPrint} style={{ backgroundImage:"url('/image/printer.png')"}}></div>
+										<div className="imgbutt" title="sauvegarder les choix" onClick={this._choiceSave} style={{ backgroundImage:"url('/image/floppy.png')"}}></div>
+										<div className="imgbutt" title="restituer les choix sauvegardés" onClick={this._choiceRef} style={{ backgroundImage:"url('/image/refresh.png')"}}></div>
 									</div>
 							 		{<div className="imgbutt" onClick={()=>{
 							 			set.view3===1?controleSet({view3:2}):controleSet({view3:1})
@@ -774,19 +907,9 @@ console.log("eval(remplace)", eval(remplace));
 									entreprise={ entreprises.find((entreprise)=>devis.entreprise===entreprise._id)}
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements_to_show}
-									
+									contractuel={devis.contractuel}
 									choices={""}
-									active_choice={active_choice}
 									choice_controle={choice_controle}
-									onClose = {this._choiceClose}
-									onEdit = {this._choiceEdit}
-									onSave = {this._choiceSave}
-									onDel = {this._choiceDel}
-									onCopy = {this._choiceCopy}
-									onAdd = {this._choiceAdd}
-									onChange = {this._choiceControle} 
-									onPrint = {()=>{}}
-
 									/>
 							</div>
 
@@ -802,14 +925,19 @@ function mapStateToProps( state ){
 			active_user: state.user.active_user,
 			element_controle: state.element.controle,
 			elements: state.element.got.data,
+			elements_loading: state.element.got.data_loading,
 			devis_controle: state.devis.controle,
 			devis: state.devis.got1.data,
+			devis_loading: state.devis.got1.data_loading,
 			deviss: state.devis.got.data,
 			logiques: state.logique.got.data,
+			logiques_loading: state.logique.got.data_loading,
 			logique_controle: state.logique.controle,
 			choice_controle: state.choice.controle,
 			entreprises: state.entreprise.got.data,
+			entreprises_loading: state.entreprise.got.data_loading,
 			choice:state.choice.got1.data,
+			choice_loading:state.choice.got1.data_loading,
 			windowheight:state.controle.resize.windowheight,
 			windowwidth:state.controle.resize.windowwidth,
 			set:state.controle.set
@@ -821,6 +949,7 @@ function mapStateToProps( state ){
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 			devisGet1: devis.get1,
+			devisGet1Start: devis.get1Start,
 			devisControle: devis.controle,
 			devisPost: devis.post,
 			devisGet: devis.get,
@@ -830,22 +959,26 @@ function mapDispatchToProps(dispatch){
 			elementControle: element.controle,
 			elementPost: element.post,
 			elementGet: element.get,
+			elementGetStart: element.getStart,
 			elementUp: element.up,
 			elementDel: element.del,
 
 			logiqueControle: logique.controle,
 			logiquePost: logique.post,
 			logiqueGet: logique.get,
+			logiqueGetStart: logique.getStart,
 			logiqueUp: logique.up,
 			logiqueDel: logique.del,
 
 			choiceControle: choice.controle,
 			choicePost: choice.post,
 			choiceGet1: choice.get1,
+			choiceGet1Start: choice.get1Start,
 			choiceUp: choice.up,
 			choiceDel: choice.del,
 			
 			entrepriseGet: entreprise.get,
+			entrepriseGetStart: entreprise.getStart,
 
 			controleSet: controle.set
 

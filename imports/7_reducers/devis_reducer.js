@@ -8,7 +8,9 @@ const DEFAULT = {
 	controle:{ 
     libelle:"",
     entreprise:"",
-    client:""
+    client:"",
+    contractuel:false,
+    tjm:""
      }
 };
 

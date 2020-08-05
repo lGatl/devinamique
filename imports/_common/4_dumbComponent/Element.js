@@ -88,7 +88,7 @@ export default class Element extends Component {
 	}
 	
 	render() {
-			let {libelle,prix, logiques, numerique, onChange, active,id, show_logq} = this.props;
+			let {libelle,prix, logiques, numerique, sans_interaction, titre_lvl, onChange, active,id, show_logq} = this.props;
 			logiques = typeof logiques === "object" && logiques instanceof Array?logiques:[];
 			onChange = typeof onChange === "function" ? onChange : false ;
 			
@@ -107,7 +107,7 @@ export default class Element extends Component {
 			}}
 			>
 				<div style={{flex:1, display:"flex", flexDirection:"row", margin:5}} >
-					<div style={{flex:7, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
+					<div style={{flex:8, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
 							<div 
 							onMouseDown = {this._dragDrop} 
 							onTouchStart ={this._dragDrop} 
@@ -117,7 +117,7 @@ export default class Element extends Component {
 							</div>
 							
 						</div>
-						<div onClick= {this._onEdit} style={{flex:6, display:"flex", alignItems:"center"}}>
+						<div onClick= {this._onEdit} style={{flex:8, display:"flex", alignItems:"center"}}>
 							<div style={{flex:4, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 									<Input
 										label=""
@@ -130,18 +130,39 @@ export default class Element extends Component {
 							</div>
 							<div style={{flex:1, display:"flex", alignItems:"center",padding:"0px 5px"}}>
 									<Input
+										step="0.01"
 										type="number"
 										min="0"
 										label=""
-										placeholder="Prix"
+										placeholder="1"
 										name="prix"
 										onChange={this._onChange}
 										value={prix}
 										active = {active}
 									/>
 							</div>
-							
-							<div style={{flex:1,display:"flex", justifyContent:"center"}}>
+							<div style={{flex:1, display:"flex", alignItems:"center",padding:"0px 5px"}}>
+									<Input
+										type="number"
+										min="0"
+										label=""
+										placeholder="1"
+										name="titre_lvl"
+										onChange={this._onChange}
+										value={titre_lvl}
+										active = {active}
+									/>
+							</div>
+							<div style={{flex:1,display:"flex", justifyContent:"center",padding:"0px 5px"}}>
+								<Checkbox
+										label = ""
+										name = "sans_interaction"
+										checked = { sans_interaction }
+										onChange = {this._onChange }
+										active = {active}
+									/>
+						</div>
+							<div style={{flex:1,display:"flex", justifyContent:"center",padding:"0px 5px"}}>
 								<Checkbox
 										label = ""
 										name = "numerique"
@@ -152,11 +173,11 @@ export default class Element extends Component {
 						</div>
 						</div>
 					</div>
-						<div style={{flex: 1,display:"flex",justifyContent:"center",alignItems:"center"}}>
+						<div style={{width:"50px",display:"flex",justifyContent:"center",alignItems:"center"}}>
 							<ShortButton
 								style={{ minHeight:40, color:"black",backgroundColor:"rgb(150,200,150)"}}
 								onClick={this._onLogique}
-							> <span> + logique</span>
+							> <span>?</span>
 							</ShortButton>
 
 					</div>
@@ -169,7 +190,7 @@ export default class Element extends Component {
 						
 						{!active?<ShortButton
 							style={{backgroundColor:"rgb(100,100,255)",height:50}}
-							onClick={()=>{}}
+							onClick={this._onCopy}
 						>+
 						</ShortButton>: ""}
 						

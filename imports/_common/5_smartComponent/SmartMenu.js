@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 import './smartMenu.css';
 
 	export const ITEMS = [
-		{id: "devis_list",title:"Devis",display:true,actif:true},
-		{id: "entreprises",title:"Entreprises",display:true,actif:true},
+		{id: "devis_list",title:"Devis",display:Meteor.userId(),actif:true},
+		{id: "entreprises",title:"Entreprises",display:Meteor.userId(),actif:true},
 		{id: "home",title:"Accueil",display:true,actif:true},
 		]
 
@@ -26,17 +26,17 @@ class SmartMenu extends Component {
 			<nav className="sm_nav">
 			<ul className="sm_ul">
 				{
-					ITEMS.map((item,i)=>{
+					ITEMS.reduce((total,item,i)=>{
 						let classe = item.className?"sm_"+item.className:"";
 						classe = "/"+item.id === pathname||(pathname==="/"&&item.id === "home")?classe+" sm_active":classe
-						return <li className={classe} key={i}> 
+						return item.display?[...total,<li className={classe} key={i}> 
 							<Link to={item.id==="home"?"/":"/"+item.id}>
 								{item.image?<img className="logo"
 				     src={item.image}
 				     alt="logo"/>:<span>{item.title}</span>}
 							</Link>
-						</li>
-						})
+						</li>]:"";
+						},[])
 				}
 			</ul>
 				

@@ -8,7 +8,8 @@ import {
 	Home,
 	MonEntreprise,
 	DevisList,
-	Devis
+	Devis,
+	DevisNC
 
 } from '../../imports/4_pages';
 
@@ -48,35 +49,9 @@ export default class Routes extends Component {
 					<Route
 						path="/devis/:id/"
 						component={() => (
-								<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>
+								<DevisNC devis_id={useParams().id} />
 						)}
 					/>
-					{/*
-					<Route
-						path="/attention"
-						component={() => (
-								<Attention active/>
-						)}
-					/>
-
-					<Route
-						path="/video"
-						component={() => (
-								<Vidéo active/>
-						)}
-					/>
-					<Route
-						path="/rendezvous"
-						component={() => (
-								<RendezVous/>
-						)}
-					/>
-					<Route
-						path="/diaporama"
-						component={() => (
-								<Diaporama/>
-						)}
-					/>*/}
 				<Route
 					path="/400"
 					component={() => (

@@ -16,50 +16,7 @@ export default class DevisDynamique extends Component {
 	}
 	constructor(props){
 		super(props)
-		this._onEdit = this._onEdit.bind(this)
-		this._onOpen = this._onOpen.bind(this)
-		this._onSave = this._onSave.bind(this)
-		this._onClose = this._onClose.bind(this)
-		this._onDel = this._onDel.bind(this)
-		this._onCopy = this._onCopy.bind(this)
 		this._onChange = this._onChange.bind(this)
-		
-	}
-	_onEdit(e) {
-		let {  onEdit  } = this.props;
-			onEdit({
-			...this.props
-		})
-	}
-	_onClose(e) {
-		let { onClose  } = this.props;
-			onClose({
-			...this.props
-		})
-	}
-	_onOpen(e) {
-		let { onOpen  } = this.props;
-			onOpen({
-			...this.props
-		})
-	}
-	_onSave(e) {
-		let { onSave  } = this.props;
-			onSave({
-				...this.props
-			})
-	}
-	_onDel(e) {
-		let { onDel  } = this.props;
-			onDel({
-				...this.props
-			})
-	}
-	_onCopy(e) {
-		let { onCopy  } = this.props;
-			onCopy({
-				...this.props
-			})
 	}
 
 	_onChange({ name, value, checked }) {
@@ -75,7 +32,7 @@ export default class DevisDynamique extends Component {
 			onChange({ [name]: value });
 	}
 	render() {
-			let {entreprise, client,devis, elements, choice_controle, dsactif, prix_total} = this.props;
+			let {entreprise, client,devis, elements, choice_controle, dsactif, prix_total, edit} = this.props;
 			entreprise=typeof entreprise !== "undefined" && typeof entreprise === "object"?entreprise:{};
 			let {nom,telephone,courriel,adresse,site_internet,siret,tva_intracom}=entreprise;
 
@@ -86,44 +43,39 @@ export default class DevisDynamique extends Component {
 				display:"flex", 
 				flexDirection:"column", 
 				flex:1,
-				alignItems:this.props.menu===2?"center":"start",
+				alignItems:"center",
 				overflow:"scroll",
-				position: this.props.menu===2?"default":"relative",
 				zIndex:50,
 				...this.props.style
 			}}
 			>
 				{/*adresse de l'entreprise*/}
-				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
-				<div style={{display:"flex",flex:1,justifyContent:"space-between",marginTop:10}}>
-					<div style={{display:"flex", flexDirection:"column",alignItems:"center", flex:1}}>
-							<span style={{fontSize:"26px"}}>
-								Composez votre devis :
-							</span>
-							<span style={{fontSize:"18px"}}>
+
+				<div style={{display:"flex", flexDirection:"column",alignItems:"center",flex:1, width:"100%",maxWidth:800}}>
+				<div style={{display:"flex", flexDirection:"column",alignItems:"center",width:"100%"}}>
+				<span style={{fontSize:"18px",fontWeight:"bold"}}>
 								{devis.titre}
-							</span>
-						</div>
-				</div>
+				</span>
 				</div>
 				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
 				<div style={{display:"flex",flex:1,padding:"5px",border:"1px solid black",margin:"10px 10px 0px 10px"}}>
+					{dsactif?<div style={{flex:1}}><span style={{color:"rgb(200,200,200)"}}>ID</span></div>:""}
 					<span style={{flex:5}}>prestation</span>
-					<span style={{flex:1}}>choix</span>
+					<div style={{flex:1}}><span>choix</span></div>
 				</div>
 				</div>
 				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
 				<div style={{border:"1px solid black",flex:1,borderTop:"none",margin:"0px 10px 0px 10px"}}>
-				{elements.map((element,i)=><div key={i} style={{display:"flex",padding:"2px 5px",borderTop:"none" }}>
+				{elements.map((element,i)=><div key={i} style={{fontSize:element.titre_lvl?((5*element.titre_lvl+14)+"px"):"14px",fontWeight:element.titre_lvl?(50*element.titre_lvl+400):"normal",display:"flex",padding:"2px 5px",borderTop:"none" }}>
+					{dsactif?<div style={{flex:1}}><span style={{color:"rgb(200,200,200)"}}>{i}</span></div>:""}
 					<span style={{flex:5}}>{element.libelle}</span>
-					
 					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>	
-						{!element.numerique?<Checkbox
+						{!element.sans_interaction?!element.numerique?<Checkbox
 									label = ""
 									name = {element._id}
 									checked = { choice_controle[element._id]||false }
 									onChange = {this._onChange }
-									active = {dsactif}
+									active
 								/>: <Input
 											style={{width:40}}
 											min="0"
@@ -133,8 +85,8 @@ export default class DevisDynamique extends Component {
 											name={element._id}
 											onChange={this._onChange}
 											value={choice_controle[element._id]}
-											active={dsactif}
-										/>}
+											active
+										/>:""}
 					</div>
 				</div>)}
 				</div>
@@ -160,7 +112,7 @@ export default class DevisDynamique extends Component {
 					</div>
 				</div>
 			</div>
-				
+			</div>	
 					
 		</div>
 			

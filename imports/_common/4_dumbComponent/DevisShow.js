@@ -11,73 +11,41 @@ import { dateToFormat } from '../../8_libs';
 
 export default class DevisShow extends Component {
 
-	componentDidUpdate(prevProps, prevState) {
-		
-	}
-	constructor(props){
-		super(props)
-		this._onEdit = this._onEdit.bind(this)
-		this._onOpen = this._onOpen.bind(this)
-		this._onSave = this._onSave.bind(this)
-		this._onClose = this._onClose.bind(this)
-		this._onDel = this._onDel.bind(this)
-		this._onCopy = this._onCopy.bind(this)
-		this._onChange = this._onChange.bind(this)
-		
-	}
-	_onEdit(e) {
-		let {  onEdit  } = this.props;
-			onEdit({
-			...this.props
-		})
-	}
-	_onClose(e) {
-		let { onClose  } = this.props;
-			onClose({
-			...this.props
-		})
-	}
-	_onOpen(e) {
-		let { onOpen  } = this.props;
-			onOpen({
-			...this.props
-		})
-	}
-	_onSave(e) {
-		let { onSave  } = this.props;
-			onSave({
-				...this.props
-			})
-	}
-	_onDel(e) {
-		let { onDel  } = this.props;
-			onDel({
-				...this.props
-			})
-	}
-	_onCopy(e) {
-		let { onCopy  } = this.props;
-			onCopy({
-				...this.props
-			})
-	}
+	
+	elts_to_nb_page({elements}){
 
-	_onChange({ name, value, checked }) {
+		let tx = []
+		let nbp = 0
+		let nb = 0
 
-			let { onChange } = this.props;
-		value =
-			value === undefined && checked === undefined
-				? !this.props[name]
-				: value === undefined
-				? !checked?1:0
-				: value;
+		elements.reduce((total,elt,i)=>{
+			
+			let nb1 = (19+elt.titre_lvl*5)*((Math.floor(elt.libelle.length/(80-elt.titre_lvl*5)))+1)+4
 
-			onChange({ [name]: value });
+			if((nb+nb1)>800){
+				tx.push(total)
+				total = []
+				nb=0
+				nbp++
+			}
+			if(elements.length-1 === i){
+				tx.push([...total,elt])
+				total = []
+				nb=0
+				nbp++
+			}
+
+			nb = nb1+nb
+			return [...total,elt]
+		},[])
+
+		return tx
 	}
 	render() {
-			let {entreprise, client,devis, elements, choice_controle, dsactif, prix_total, menu} = this.props;
+			let {entreprise, client,devis, elements, choice_controle, prix_total, menu, contractuel, dsactif} = this.props;
 			entreprise=typeof entreprise !== "undefined" && typeof entreprise === "object"?entreprise:{};
 			let {nom,telephone,courriel,adresse,site_internet,siret,tva_intracom}=entreprise;
+
 
 		return (
 			<div style={{
@@ -94,8 +62,10 @@ export default class DevisShow extends Component {
 				...this.props.style
 			}}
 			>
+			
+			{elements.map((eltt,i)=><div key={i} style={{
 
-			<div style={{
+				transform:"translateY("+i*34+"cm)",
 				transition:"0.5s",
 				width:"100%",
 				display:"flex",
@@ -105,12 +75,36 @@ export default class DevisShow extends Component {
 			  minWidth:"30cm",
 			  position: "absolute",
 			 	left:0,
-			  top:0
-			
+			  top:0,
+			  zIndex:60
 			}}>
 
-			<div id="divToPrint">
+			<div className="divToPrint" ref={this.props.refPages} style={{
+							display:"flex",
+			        flexDirection:"column",
+			        width:"21cm",
+			        height:"29.7cm",
+			        position: "absolute",
+			        zIndex:80,
+			        padding:"50px 100px 70px 100px",
+			        backgroundColor:"white",
+			        fontSize:12
+						}}>
+			
+			<div style={{
+				position: "absolute",
+				display:"flex",
+			  flexDirection:"column",
+				zIndex:70,
+			 	left:0,
+			  top:0,
+				width:"100%",
+				height:"100%",
+				background:"center/80% no-repeat url('/image/non_contractuel.png')",
+				opacity:contractuel?0:0.5}}></div>
 				{/*adresse de l'entreprise*/}
+				<div style={{display:"flex",flexDirection:"column",width:"100%",height:"100%"}}>
+				{i<1?<div>
 				<div style={{display:"flex",width:"100%",justifyContent:"space-between"}}>
 					<div style={{display:"flex", flexDirection:"column",alignItems:"flex-start"}}>
 						<span>
@@ -148,63 +142,83 @@ export default class DevisShow extends Component {
 								{client?client.adresse.split(/\n/).map((str,i)=><span key={i}>{str}</span>):""}
 					</div>
 				</div>
-				<div style={{display:"flex",padding:"5px",border:"1px solid black",marginTop:20}}>
+				</div>:""}
+				<div style={{display:"flex",padding:"5px",border:"1px solid black",marginTop:20, justifyContent:"center",alignItems:"center"}}>
+					{dsactif?<div style={{flex:1,justifyContent:"center",display:"flex",color:"rgb(200,200,200)"}}><span>id</span></div>:""}
 					<span style={{flex:5}}>prestation</span>
-					<span style={{flex:1}}>prix</span>
-					<span style={{flex:1}}>choix</span>
-
+					<div style={{flex:1}}><span>{devis.unite}</span></div>
+					<div style={{flex:1}}><span>quantité</span></div>
 				</div>
+				
 				<div style={{border:"1px solid black",borderTop:"none"}}>
-				{elements.map((element,i)=><div key={i} style={{display:"flex",padding:"2px 5px",borderTop:"none" }}>
-					<span style={{flex:5}}>{element.libelle}</span>
-					<span style={{flex:1}}>{element.prix}</span>
+				{eltt.map((element,i)=><div key={i} style={{
+					fontSize:element.titre_lvl?((5*element.titre_lvl+14)+"px"):"14px",
+					fontWeight:element.titre_lvl?(50*element.titre_lvl+400):"normal",
+					display:"flex",padding:"2px 5px",borderTop:"none" }}>
+					{dsactif?<div style={{flex:1,justifyContent:"center",display:"flex",color:"rgb(200,200,200)"}}><span>{element.id}</span></div>:""}
+					<div style={{flex:5,display:"flex",alignItems:"center",justifyContent:"flex-start"}}><span>{element.libelle}</span></div>
+					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}><span>{element.prix}</span></div>
 					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>	
-						{!element.numerique?<Checkbox
+						{!element.sans_interaction?!element.numerique?!dsactif?<div style={{minHeight:19}}></div>:<Checkbox
 									label = ""
 									name = {element._id}
 									checked = { choice_controle[element._id]||false }
-									onChange = {this._onChange }
+									onChange = {()=>{} }
 									active = {false}
-								/>: <Input
-											style={{width:40}}
-											min="0"
-											type="number"
-											label=""
-											placeholder=""
-											name={element._id}
-											onChange={this._onChange}
-											value={choice_controle[element._id]}
-											active={false}
-										/>}
+								/>: <span>{choice_controle[element._id]}</span>:""}
 					</div>
 				</div>)}
 				</div>
-				
-			<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
-				<div style={{display:"flex",justifyContent:"space-between", flex:1}}>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
-						<span>Prix</span>
-					</div>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
-						<span>{prix_total} HT</span>
-						<span>{prix_total} TTC</span>
-					</div>
-				</div>
-				<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
-						<span>TVA</span>
-					</div>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
-						<span>20% HT</span>
-						<span>{prix_total*20/100} TTC</span>
-					</div>
-				</div>
-			</div>
+			
+			{i===elements.length-1?<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
+							<div style={{display:"flex",justifyContent:"space-between", flex:1}}>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+									<span>nb de {devis.unite}</span>
+								</div>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+									<div><span style={{fontWeight:"bold"}}>{prix_total/(devis.tjm?devis.tjm:1)}</span> 
+									<span style={{}}>{" "+devis.unite}(s)</span></div>
+									
+								</div>
+							</div>
+							<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+									<span>Prix d'un {devis.unite}</span>
+								</div>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+									<div><span style={{fontWeight:"bold"}}>{(devis.tjm?devis.tjm:1)}</span> 
+									<span style={{}}>€/({devis.unite})</span></div>
+								</div>
+							</div>
+						</div>:""
+			}
+
+			{i===elements.length-1?<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
+							<div style={{display:"flex",justifyContent:"space-between", flex:1}}>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+									<span>Prix</span>
+								</div>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+									<span style={{fontWeight:"bold"}}>{prix_total} HT</span>
+									<span>{prix_total} TTC</span>
+								</div>
+							</div>
+							<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+									<span>TVA</span>
+								</div>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+									<span>20% HT</span>
+									<span>{prix_total*20/100} TTC</span>
+								</div>
+							</div>
+						</div>:""
+			}
 
 			<div style={{display:"flex",width:"100%",justifyContent:"space-between",flex:1}}>
 			
 			</div>
-			<div style={{display:"flex",justifyContent:"space-between"}}>
+			{i===elements.length-1?<div style={{display:"flex",justifyContent:"space-between"}}>
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 						<span></span>
 					</div>
@@ -212,10 +226,12 @@ export default class DevisShow extends Component {
 						<span>lkmk</span>
 						<span>lkml</span>
 					</div>
-				</div>
+			</div>:""}
+			</div>
+			
 			</div>
 				
-			</div>		
+			</div>)}		
 		</div>
 			
 		);

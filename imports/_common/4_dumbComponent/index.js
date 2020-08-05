@@ -16,6 +16,7 @@ import ElementDyn from './ElementDyn';
 import Entreprise from './Entreprise';
 import Input from './Input';
 import Logique from './Logique';
+import LogiqueDD from './LogiqueDD';
 import Poppup from './Poppup';
 import ShortButton from './ShortButton';
 import TextArea from './TextArea';
@@ -23,5 +24,5 @@ import TextArea from './TextArea';
 
 
 export {
-	Ball, Basket, Button, Checkbox, DevisCard, DevisDynamique, DevisEdit, DevisForm, DevisShow,Dropable, Dropdown, Element,ElementCard, ElementDyn, Entreprise, Input, Logique, Poppup, ShortButton, TextArea
+	Ball, Basket, Button, Checkbox, DevisCard, DevisDynamique, DevisEdit, DevisForm, DevisShow,Dropable, Dropdown, Element,ElementCard, ElementDyn, Entreprise, Input, Logique, LogiqueDD, Poppup, ShortButton, TextArea
 };

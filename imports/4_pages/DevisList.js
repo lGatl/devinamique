@@ -33,12 +33,9 @@ class DevisList extends Component {
 
 		init(){
 		return{
-			libelle:"",
-      entreprise_id:"",
-      client_id:"",
+
       elements:"",
-      date:Date(Date.now()) 
-		}
+    }
 	}
 	componentDidMount() {
 
@@ -58,6 +55,8 @@ class DevisList extends Component {
 			
 			this.setState({active_devis:_id})
 	}
+	
+
 	_devisOpen({_id}){
 		
 		history.push("/devis/"+_id+"/edit")
@@ -80,7 +79,7 @@ class DevisList extends Component {
 		let { active_user, deviss } = this.props;
 		let { devisPost, devisControle, choicePost } = this.props;
 		let { controle } = this.props;
-		devisPost({data:{...this.init(),user_id:active_user._id},cbk:(_id)=>{
+		devisPost({data:{...this.init(),user_id:active_user._id,contractuel:false},cbk:(_id)=>{
 			choicePost({data:{user_id:active_user._id,devis_id:_id}})
 			history.push("/devis/"+_id+"/edit")
 		}});
@@ -126,6 +125,7 @@ class DevisList extends Component {
 								let active = this.state.active_devis === devis._id?true:false
 
 								return <DevisCard 
+									
 									onOpen = {this._devisOpen}
 									onDel = {this._devisDel}
 									onClose = {this._devisClose}

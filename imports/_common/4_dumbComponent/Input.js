@@ -13,20 +13,20 @@ export default class Input extends Component {
 		let {active, value, label} = this.props;
 		return (
 			<div style={{ 
-				display: 'flex', flexDirection:"column",flex:1
+				display: 'flex', flexDirection:"column",flex:1,justifyContent:"center",alignItems:"center"
 				,...this.props.style
 				
 			}}>
 				{label?<label >{label}</label>:""}
 				{active?
 				<input
-					style={{flex:1,padding:0}}
+					style={{width:"100%",padding:0}}
 					type={this.props.type}
 					min={this.props.min}
 					placeholder={this.props.placeholder}
 					onChange={this.onChange.bind(this)}
 					value={value||""}
-				/>: <label style={{lineHeight:"21px",cursor:"inherit"}} htmlFor="">{value}</label>||""}
+				/>: <label style={{lineHeight:"21px",cursor:"inherit",texrAlign:"center",display:"block"}} htmlFor="">{value}</label>||""}
 			</div>
 		);
 	}

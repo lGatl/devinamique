@@ -10,13 +10,17 @@ import {
 	Dropdown,
 	Checkbox
 } from '../../_common/4_dumbComponent';
+import { Redirect } from 'react-router'
 
 import { dateToFormat } from '../../8_libs';
-
+const BoutonDeNavigation = ({ libelle, history }) => (
+  <button type="button" onClick={({_id}) => history.push("/devis/"+_id+"/edit")}>{libelle}</button>
+);
 export default class DevisCard extends Component {
 
 	constructor(props){
 		super(props)
+		this.state={redirect:false}
 		this._onEdit = this._onEdit.bind(this)
 		this._onOpen = this._onOpen.bind(this)
 		this._onSave = this._onSave.bind(this)
@@ -39,9 +43,7 @@ export default class DevisCard extends Component {
 	}
 	_onOpen(e) {
 		let { onOpen  } = this.props;
-			onOpen({
-			...this.props
-		})
+			this.setState({redirect:true})
 	}
 	_onSave(e) {
 		let { onSave  } = this.props;
@@ -74,15 +76,21 @@ export default class DevisCard extends Component {
 			onChange({ [name]: value });
 	}
 	render() {
-			let {titre,entreprise,client,date,_id, onChange, active} = this.props;
+			let {titre,entreprise,client,date,_id, onChange, active, set} = this.props;
 			client = typeof client === "string"?client:"";
 			entreprise = typeof entreprise === "string"?entreprise:"",
 			client = typeof client === "string"?client:"";
 
 			onChange = typeof onChange === "function" ? onChange : false ;
 
+				const { redirect } = this.state;
+
+     if (redirect) {
+       return <Redirect to={"/devis/"+_id+"/edit"}/>
+     }
 
 		return (
+
 			<div style={{
 				 
 				display:"flex", 
@@ -144,7 +152,9 @@ export default class DevisCard extends Component {
 							onClick={this._onDel}
 							>
 								<img src="/image/trash.png" style={{width:30, height:30}} alt=""/>
-							</Button><Button
+							</Button>
+
+							<Button
 							style={{backgroundColor:"aqua"}}
 							onClick={this._onOpen}
 							>

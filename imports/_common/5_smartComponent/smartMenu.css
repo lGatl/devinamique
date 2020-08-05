@@ -23,14 +23,14 @@
 
 }
 .sm_nav li:hover {
-  background-color:rgb(170, 220, 80);
+  background-color:rgb(190, 214, 34);
 }
 
 .sm_nav .sm_active {
-  background-color:rgb(50, 180, 0);
+  background-color:rgb(160, 180, 0);
 }
 .sm_nav .sm_active:hover {
-  background-color:rgb(50, 180, 0);
+  background-color:rgb(170, 190, 10);
 }
 .sm_nav li a {
   display:flex;

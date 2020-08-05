@@ -5,6 +5,7 @@ import { styleLog } from '../8_libs';
 export function extendAction(CONST_NAME) {
   let CONSTANTE = {
     CONTROLE: CONST_NAME + '_CONTROLE',
+    UPCONTROLE: CONST_NAME + '_UPCONTROLE',
     GET1_START: CONST_NAME + '_GET1_START',
     GET1: CONST_NAME + '_GET1',
     GET: CONST_NAME + '_GET',
@@ -23,6 +24,12 @@ export function extendAction(CONST_NAME) {
   let controle = function controle(object) {
     return {
       type: CONSTANTE.CONTROLE,
+      payload: object
+    };
+  };
+  let upcontrole = function upcontrole(object) {
+    return {
+      type: CONSTANTE.UPCONTROLE,
       payload: object
     };
   };
@@ -266,9 +273,11 @@ export function extendAction(CONST_NAME) {
     action: {
       clean,
       controle,
+      upcontrole,
       select,
       set,
       get1,
+      get1Start,
       get,
       getT,
       getStart,

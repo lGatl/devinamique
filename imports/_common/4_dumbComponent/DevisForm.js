@@ -7,7 +7,8 @@ import {
 	TextArea,
 	Button,
 	ShortButton,
-	Dropdown
+	Dropdown,
+	Checkbox
 } from '../../_common/4_dumbComponent';
 
 
@@ -52,7 +53,6 @@ export default class DevisForm extends Component {
 			})
 	}
 	_onChange({ name, value, checked }) {
-
 			let { onChange } = this.props;
 		value =
 			value === undefined && checked === undefined
@@ -66,7 +66,7 @@ export default class DevisForm extends Component {
 	
 	render() {
 			let {
-				titre,entreprise,client,options,
+				titre,entreprise,client,contractuel,options, tjm, unite,password,
 				onChange,
 				active
 			} = this.props;
@@ -95,7 +95,8 @@ export default class DevisForm extends Component {
 							style={{width:"40px",height:"100%"}}>x</ShortButton>:""}
 						</div>
 						DEVIS
-						<div style={{display:"flex", justifyContent:"center", alignItems:"center",marginTop:30}}>
+						<div style={{display:"flex", flexDirection:"column",padding:5}}>
+						<div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
 							<Input
 							label="Titre"
 							placeholder="Titre"
@@ -122,6 +123,48 @@ export default class DevisForm extends Component {
 			        options = { options }
 			        value = { client||"" }
 			      />
+						</div>
+						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10}}>
+			      <Checkbox
+							label = "Contractuel"
+							name = "contractuel"
+							checked = { contractuel===undefined?false:contractuel }
+							onChange = {this._onChange }
+							active = {active}
+						/>
+
+						<Input
+							style={{flex:1, maxWidth:160}}
+							type="number"
+							min="0"
+							label="prix d'une unitée"
+							placeholder="450"
+							name="tjm"
+							onChange={this._onChange}
+							value={tjm||""}
+							active = {active}
+						/>
+
+						<Input
+							style={{flex:1, maxWidth:160}}
+							label="Unite"
+							placeholder="1/2 jour"
+							name="unite"
+							onChange={this._onChange}
+							value={unite||""}
+							active={active}
+						/>
+
+						<Input
+							style={{flex:1, maxWidth:160}}
+							label="Password"
+							placeholder=""
+							name="password"
+							onChange={this._onChange}
+							value={password||""}
+							active={active}
+						/>
+						</div>
 						</div>
 						
 				
