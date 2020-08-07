@@ -9,13 +9,19 @@ import {
 	MonEntreprise,
 	DevisList,
 	Devis,
-	DevisNC
-
+	DevisNC,
 } from '../../imports/4_pages';
+
+import {
+	Admin,
+  AddToAdmin,
+  RemoveFromAdmin
+} from '../../imports/user/5_smartComponent';
 
 //const NotFoundRedirect = () => withRouter(<Redirect to="/404" />);
 
 export default class Routes extends Component {
+
 	render() {
 		return (
 			<Switch>
@@ -50,6 +56,24 @@ export default class Routes extends Component {
 						path="/devis/:id/"
 						component={() => (
 								<DevisNC devis_id={useParams().id} />
+						)}
+					/>
+					<Route
+						path="/addToAdmin/"
+						component={() => (
+								<AddToAdmin />
+						)}
+					/>
+					<Route
+						path="/removeFromAdmin/"
+						component={() => (
+								<RemoveFromAdmin />
+						)}
+					/>
+					<Route
+						path="/admin/"
+						component={() => (
+								<Admin/>
 						)}
 					/>
 				<Route

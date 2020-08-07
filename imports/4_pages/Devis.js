@@ -155,7 +155,10 @@ class Devis extends Component {
 
 
 
-						if(choice === null||elements.length !== Object.keys(choice.elements).length) {
+						if(
+							elements !== undefined && typeof elements === "object" && elements instanceof Array &&
+							choice.elements !== undefined && typeof choice.elements === "object" &&
+							(choice === null||elements.length !== Object.keys(choice.elements).length)) {
 							console.log("ANOMALIE")
 							console.log("elements.length", elements.length);
 							console.log("Object.keys(choice).length", Object.keys(choice.elements).length);
@@ -602,6 +605,7 @@ class Devis extends Component {
 
 			try{
 				return remplace !== undefined && (typeof eval(remplace) === "boolean"||typeof eval(remplace) === "number")  ? eval(remplace):false
+				
 			}catch{
 				return false
 			}
@@ -684,7 +688,7 @@ class Devis extends Component {
 	render(){
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
-			elements, logiques,entreprises,choice,set,windowheight,windowwidth } = this.props;
+			elements, logiques,entreprises,choice,set,windowheight } = this.props;
 		let {controleSet} = this.props
 		let	{menu, draged, souris_x,souris_y, dsactif}=set;
 
@@ -741,7 +745,7 @@ class Devis extends Component {
 				display:"flex", 
 				flexDirection:"column", 
 				width:"100%", 
-				height:windowheight?windowheight-80:4000, 
+				height:"100%", 
 				userSelect:"none"}}>
 					<ElementCard 
 					style={{
@@ -939,7 +943,6 @@ function mapStateToProps( state ){
 			choice:state.choice.got1.data,
 			choice_loading:state.choice.got1.data_loading,
 			windowheight:state.controle.resize.windowheight,
-			windowwidth:state.controle.resize.windowwidth,
 			set:state.controle.set
 		}
 	);

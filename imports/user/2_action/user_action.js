@@ -10,9 +10,10 @@ import { extendAction } from '../../6_actions/common_action';
 export const USER = { 
 	CREE_COMPTE: 'USER_CREE_COMPTE',
 	GET_ACTIVE_USER: 'USER_GET_ACTIVE_USER',
+	PUT_USER_ID: 'USER_PUT_USER_ID',
 	LOG_IN: 'USER_LOG_IN',
 	LOG_OUT: 'USER_LOG_OUT',
-	...extendAction('USER').CONSTANTE
+	...extendAction('USERS').CONSTANTE
 };
 
 //Meteor Methods for account system have to be called by client
@@ -115,8 +116,16 @@ function logOut( cbk = ()=>{}){
 				payload: 	p
 			};
 	}
+	let putUserId = p => {
+	    return {
+				type: USER.PUT_USER_ID,
+				payload: 	p
+			};
+	}
 export function getActiveUser( cbk = ()=>{} ){ 
+	
 	return (dispatch, getState) => {
+		dispatch(putUserId(Meteor.userId()))
 		Meteor.call('get1USERS', Meteor.userId(), ( err, res ) => {
 				if(err){
 					console.log(USER.GET_ACTIVE_USER, " - ACTION ERROR",err)
@@ -138,5 +147,5 @@ export const user = {
 	logIn,
 	logOut,
 	getActiveUser,
-	...extendAction('USER').action
+	...extendAction('USERS').action
 };

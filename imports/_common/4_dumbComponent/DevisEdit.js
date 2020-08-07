@@ -86,7 +86,7 @@ class DevisEdit extends Component {
 						}> {"^"} 
 					</div>
 					</div>
-										<div style={{
+					<div style={{
 						height:"auto",			
 						flex:view2 ===2||view1 ===2? 0:1,
 						overflowY:"hidden",

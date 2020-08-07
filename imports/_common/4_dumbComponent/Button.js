@@ -5,7 +5,10 @@ import './button.css'
 export default class Button extends Component {
    
 	onClick(e) {
-		this.props.onClick(
+		let {onClick} = this.props;
+		onClick = typeof onClick === "function"? onClick:()=>{}
+		
+		onClick(
 		{...this.props}
 			);
 	}

@@ -45,14 +45,17 @@ class FormulaireDInscription extends Component {
 				email,
 				username:email,
 				password,
+				roles:[],
 				profile:{
 					surname,
 					firstname,
 					agreement
 				}
 			}, ()=>{
-				this.props.getActiveUser();
-				this.props.userControle(this.init());
+				this.props.userLogIn( email, password, ()=>{
+					this.props.getActiveUser();
+					this.props.userControle(this.init());
+				})
 			});
 		}else{
 			//Trigger alert thanks to Bert meteor package
@@ -135,7 +138,8 @@ function mapDispatchToProps( dispatch ){
 		//We use control of user collection
 		userControle: user.controle,
 		creeCompte: user.creeCompte,
-		getActiveUser: user.getActiveUser
+		getActiveUser: user.getActiveUser,
+		userLogIn: user.logIn
 	}, dispatch );
 }
 

@@ -30,7 +30,9 @@ class ConnexionForm extends Component {
 		e?e.preventDefault():'';
 		let {email, password} = this.props.user_controle;
 		if(email&&password){
+			console.log("email&&password", email,password);
 			this.props.userLogIn( email, password, ()=>{
+				console.log("email, password", email, password);
 				this.props.getActiveUser();
 				this.props.userControle(this.init());
 			} );
@@ -71,9 +73,7 @@ class ConnexionForm extends Component {
 					onChange = { this.change.bind( this ) }
 					active
 				/>
-				<Button
-					onClick = { this._userLogIn.bind( this ) }
-				>
+				<Button type = "submit">
 				Se Connecter
 				</Button>
 			</form>

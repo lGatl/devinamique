@@ -29,7 +29,6 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
             };
             case TYPES.UPCONTROLE:
             
-console.log("action.payload", action.payload);
             return {
                 ...state,
                 controle: { ...action.payload }
@@ -101,7 +100,8 @@ console.log("action.payload", action.payload);
             };
         case TYPES.UP:
 
-              newstate = state.got[instate].reduce((total,elt)=>elt._id===data._id?[...total,data]:[...total,elt],[])
+              newstate = state.got!== undefined && typeof state.got ==="object" && typeof state.got[instate] === "object" && state.got[instate] instanceof Array ?
+                state.got[instate].reduce((total,elt)=>elt._id===data._id?[...total,data]:[...total,elt],[]):[]
             return {
                 ...state,
                 got: {
@@ -116,8 +116,8 @@ console.log("action.payload", action.payload);
                 }
             };
             case TYPES.DEL:
-
-              newstate = state.got[instate].reduce((total,elt)=>elt._id===data._id?total:[...total,elt],[])
+             newstate = state.got!== undefined && typeof state.got ==="object" && typeof state.got[instate] === "object" && state.got[instate] instanceof Array ?
+              newstate = state.got[instate].reduce((total,elt)=>elt._id===data._id?total:[...total,elt],[]):[]
             return {
                 ...state,
                 got: {

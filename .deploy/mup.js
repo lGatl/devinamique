@@ -28,20 +28,22 @@ module.exports = {
       // If you are using ssl, it needs to start with https://
       ROOT_URL: 'https://devinamique.com',
       MONGO_URL: 'mongodb://mongodb/meteor',
-      MONGO_OPLOG_URL: 'mongodb://mongodb/local',
+      //MONGO_OPLOG_URL: 'mongodb://mongodb/local',
     },
 
     docker: {
       // change to 'abernix/meteord:base' if your app is using Meteor 1.4 - 1.5
-      image: 'abernix/meteord:node-8.4.0-base',
+      image: "zodern/meteor:root",//'abernix/meteord:base',//'abernix/meteord:node-8.4.0-base',
     },
 
+    deployCheckWaitTime: 60,
     // Show progress bar while uploading bundle to server
     // You might need to disable it on CI servers
     enableUploadProgressBar: true
   },
 
   mongo: {
+    port: 27017,
     version: '3.4.1',
     servers: {
       one: {}

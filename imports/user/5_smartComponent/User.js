@@ -11,7 +11,7 @@ class User extends Component {
 
 	componentDidMount() {
 
-		if(Meteor.userId()||this.props.active_user){
+		if(Meteor.userId()&&!this.props.active_user){
 			this.props.getActiveUser()
 		}
 	}
@@ -37,7 +37,6 @@ function mapDispatchToProps( dispatch ){
 	return bindActionCreators({
 
 		getActiveUser:	user.getActiveUser,
-
 	}, dispatch );
 }
 

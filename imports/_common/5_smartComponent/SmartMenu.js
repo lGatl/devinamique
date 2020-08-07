@@ -8,14 +8,20 @@ import { Link } from 'react-router-dom';
 
 import './smartMenu.css';
 
-	export const ITEMS = [
-		{id: "devis_list",title:"Devis",display:Meteor.userId(),actif:true},
-		{id: "entreprises",title:"Entreprises",display:Meteor.userId(),actif:true},
-		{id: "home",title:"Accueil",display:true,actif:true},
-		]
 
 // preparation of Menu at the top
 class SmartMenu extends Component {
+
+	ITEMS(){
+		let {active_user} = this.props;
+
+		let user_id = active_user !== undefined && typeof active_user === "object" && active_user !== null &&
+		typeof active_user._id === "string" && active_user._id.length>0
+		return [
+			{id: "devis_list",title:"Devis",display:user_id,actif:true},
+			{id: "entreprises",title:"Entreprises",display:user_id,actif:true},
+			{id: "home",title:"Accueil",display:true,actif:true},
+			]}
 
 	render() {
 			let {location} = this.props;
@@ -26,7 +32,7 @@ class SmartMenu extends Component {
 			<nav className="sm_nav">
 			<ul className="sm_ul">
 				{
-					ITEMS.reduce((total,item,i)=>{
+					this.ITEMS().reduce((total,item,i)=>{
 						let classe = item.className?"sm_"+item.className:"";
 						classe = "/"+item.id === pathname||(pathname==="/"&&item.id === "home")?classe+" sm_active":classe
 						return item.display?[...total,<li className={classe} key={i}> 
@@ -48,6 +54,7 @@ class SmartMenu extends Component {
 function mapStateToProps(state){
 	return (
 		{
+			active_user:state.user.active_user
 		}
 	);
 }

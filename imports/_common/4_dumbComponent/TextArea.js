@@ -14,11 +14,12 @@ export default class TextArea extends Component {
 		let {label, name, value, placeholder, active} = this.props;
 		return (
 				<div style={{ 
-						display: 'flex', flexDirection:"column",flex:1, alignItems:"center", justifyContent:"center"
+						display: 'flex', flexDirection:"column",flex:1, alignItems:"center", justifyContent:"center",...this.props.style
         }}>
         	{label?<label>{label}</label>:""}
 					{
 						active?<textarea 
+						style={{...this.props.style_ta}}
 						placeholder={placeholder}
 						name={name}
 						value={value||""}
