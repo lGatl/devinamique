@@ -14,6 +14,7 @@ import {
 
 	const BDD = ["devis", "element", "logique", "entreprise", "choice", "user"]
 	const COMMON_ACTION = ["Controle","Get1","Get","Post","Up","Del" ]
+	const USER_ACTION = ["creeCompte","logIn","logOut","getActiveUser"]
 	const NR = {
 		devisGet1: devis.get1,
 		devisControle: devis.controle,
@@ -59,13 +60,14 @@ import {
 		userControle: user.controle,
 		creeCompte: user.creeCompte,
 		getActiveUser: user.getActiveUser,
-		userLogIn: user.logIn
+		userLogIn: user.logIn,
+		logOut: user.logOut,
 	}
 
 class Admin extends Component {
 	constructor(){
 		super()
-		this.state = {bdd:"devis",action:"Get",data:"{}",show:"",wrap:false,dispached:true, poppup:false}
+		this.state = {bdd:"devis",action:"Get",data:"{}",show:"",wrap:false,dispached:true, poppup:false, ssl:'{"sort":{"created_at":1},"skip":0,"limit":50}'}
 		this._onChange = this._onChange.bind(this) 
 		this._submit = this._submit.bind(this) 
 		this._annule = this._annule.bind(this)
@@ -83,7 +85,15 @@ class Admin extends Component {
 
 			this.setState({ [name]: value });
 	}
-
+	LigneComp(ligne,wrap,arr,j){
+		return ligne.indexOf(":")>-1 ? 
+				<div key={j} style = {{whiteSpace:wrap?"normal":"nowrap",marginLeft:arr.length*30, boxSizing:"border-box"}}>
+					<span style = {{wordBreak: "break-all", color:"green"}}>{ligne.split(":")[0]}</span>
+					<span style={{ wordBreak: "break-all"}}>:{ligne.split(":")[1]}</span>
+				</div>
+				:
+				<span style = {{whiteSpace:wrap?"normal":"nowrap",wordBreak: "break-all", marginLeft:arr.length*30}}key={j}>{ligne}</span>
+	}
 	pretty(str){
 		if(str){
 			let {wrap} = this.state
@@ -93,6 +103,8 @@ class Admin extends Component {
 			let dcote = []
 			let ligne = ""
 			let nb = 0
+			let LigneComp = {}
+			let j = 0
 
 			star.forEach((l,i)=>{
 				
@@ -103,17 +115,18 @@ class Admin extends Component {
 						dcote.push(l)
 					}
 				}
+				
 				if( ["]","}",")"].indexOf(l)>-1&&dcote.length===0){
-					
-					strf.push(<span style = {{whiteSpace:wrap?"normal":"nowrap",marginLeft:arr.length*30}}key={i}>{ligne}</span>)
+					strf.push(this.LigneComp(ligne,wrap,arr,j))
 					arr.pop()
 					ligne = ""
+					j++
 				}
 			
 				ligne = ligne + l
 				if( ["[","(","{"].indexOf(l)>-1&&dcote.length===0){
-					
-					strf.push(<span style = {{whiteSpace:wrap?"normal":"nowrap",marginLeft:arr.length*30}}key={i}>{ligne}</span>)
+					strf.push(this.LigneComp(ligne,wrap,arr,j))
+					j++
 					arr.push(l)
 					if(arr.length === 2){
 						nb++
@@ -121,7 +134,8 @@ class Admin extends Component {
 					ligne = ""
 				}else if( [","].indexOf(l)>-1&&dcote.length===0){
 					
-					strf.push(<span style = {{whiteSpace:wrap?"normal":"nowrap",marginLeft:arr.length*30}}key={i}>{ligne}</span>)
+					strf.push(this.LigneComp(ligne,wrap,arr,j))
+					j++
 					ligne = ""
 				}
 			})
@@ -136,8 +150,7 @@ class Admin extends Component {
 		
 	}
 	_submit(){
-		let {bdd,action,data, dispached} = this.state
-
+		let {bdd,action,data, dispached,ssl} = this.state
 		let ok = true
 
 		if(["Post","Up","Del"].indexOf(action)>-1){
@@ -146,11 +159,13 @@ class Admin extends Component {
 		}
 		if(ok){
 			if(!dispached){
-				NR[bdd+action]({data:JSON.parse(data),cbk:(res)=>{
+				NR[bdd+action]({data:JSON.parse(data),ssl:JSON.parse(ssl),cbk:(res)=>{
 					this.setState({show:JSON.stringify(res)})
 				}})()
 			}else{
-				this.props[bdd+action]({data:JSON.parse(data),cbk:(res)=>{
+
+
+				this.props[bdd+action]({data:JSON.parse(data),ssl:JSON.parse(ssl),cbk:(res)=>{
 					this.setState({show:JSON.stringify(res)})
 				}})
 			}
@@ -165,7 +180,6 @@ class Admin extends Component {
 				}})()
 			}else{
 				this.props[bdd+action]({data:JSON.parse(data),cbk:(res)=>{
-					console.log("res", res);
 					this.setState({show:JSON.stringify(res)})
 				}})
 			}
@@ -175,7 +189,7 @@ class Admin extends Component {
 	}
 	render(){
 		let {active_user} = this.props;
-		let {bdd,action,data, show, wrap, dispached} = this.state
+		let {bdd,action,data, show, wrap, dispached, ssl} = this.state
 
 		let active_user_admin = active_user !== undefined && typeof active_user === "object" && Object.keys(active_user).length>0 && 
 		active_user.roles !== undefined && typeof active_user.roles === "object" && active_user.roles instanceof Array && 
@@ -190,15 +204,22 @@ class Admin extends Component {
 	        style={{overflow:"hidden"}}
 	        >
 	        sur???
-	        <Button onClick={this._annule}>NON</Button>
-	        <Button onClick={this._submit2}>{bdd+action+ (dispached?"":" not dispached")}</Button>
+	        <div style={{flex:1}}></div>
+	        <div style={{display:"flex"}} >
+		        <Button style={{marginRight:10,backgroundColor:"red"}} onClick={this._annule}>NON</Button>
+		        <Button style={{marginLeft:10}}onClick={this._submit2}>{bdd+action+ (dispached?"":" not dispached")}</Button>
+	        </div>
+	       
 	      </Poppup>
 				<div style={{ width:"100%",display:"flex", alignItems:"center"}}>
 					{BDD.map((bdd,i)=><Button onClick={()=>{this.setState({bdd})}} style={{flex:1}} key = {i}>{bdd}</Button>)}
 				</div>
 				
 				<div style={{ width:"100%",display:"flex", alignItems:"center"}}>
-						{COMMON_ACTION.map((action,i)=><Button onClick={()=>{this.setState({action})}} style={{flex:1}} key = {i}>{action}</Button>)}
+						{
+							bdd==="user"?[...COMMON_ACTION].map((action,i)=><Button onClick={()=>{this.setState({action})}} style={{flex:1}} key = {i}>{action}</Button>):
+							[...COMMON_ACTION].map((action,i)=><Button onClick={()=>{this.setState({action})}} style={{flex:1}} key = {i}>{action}</Button>)
+						}
 				</div>
 				
 				<div style={{ width:"100%",height:"100%", overflow:"hidden",flex:1,display:"flex", alignItems:"center"}}>
@@ -219,12 +240,22 @@ class Admin extends Component {
 							style={{flex:1,width:"100%"}}
 							style_ta={{height:"100%",width:"100%"}}
 							label="data"
-							placeholder=""
+							placeholder="{}"
 							name="data"
 							onChange={this._onChange}
 							value={data}
 							active={true}
 						/>
+						{action === "Get"?<TextArea
+							style={{flex:1,width:"100%"}}
+							style_ta={{height:"100%",width:"100%"}}
+							label="sort / skip / limit"
+							placeholder='{"sort":{"created_at":1},"skip":0,"limit":50}'
+							name="ssl"
+							onChange={this._onChange}
+							value={ssl}
+							active={true}
+						/>:""}
 						<Button onClick={this._submit}>{bdd+action+ (dispached?"":" not dispached")}</Button>
 					</div>
 					<div style={{width:"50%",height:"100%",display:"flex",flexDirection:"column"}}>
@@ -308,7 +339,8 @@ function mapDispatchToProps(dispatch){
 			userControle: user.controle,
 			creeCompte: user.creeCompte,
 			getActiveUser: user.getActiveUser,
-			userLogIn: user.logIn
+			userLogIn: user.logIn,
+			logOut: user.logOut,
 	}, dispatch );
 }
 

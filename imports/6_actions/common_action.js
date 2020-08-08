@@ -66,14 +66,13 @@ export function extendAction(CONST_NAME) {
   let get1 = ({data, instate, ssl, cbk}) => {
     data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
     instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-    ssl = typeof ssl !== undefined && ssl !== null && typeof ssl === "object" ? ssl : null;
     cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.GET1+" : ",styleLog("blue"),"NOT DISPACHED")
       }
-      Meteor.call('get1' + CONST_NAME,data,ssl,(err,res)=>{
+      Meteor.call('get1' + CONST_NAME,data,(err,res)=>{
         if(err){
           console.log("%c"+CONSTANTE.GET1+" - ACTION ERROR!!!!!",styleLog("red"), err)
           
@@ -102,9 +101,11 @@ export function extendAction(CONST_NAME) {
     };
   };
   let get = ({data, instate, ssl, cbk}) => {
+    console.log("ssl", ssl);
   	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
   	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
   	ssl = typeof ssl !== undefined && ssl !== null && typeof ssl === "object" ? ssl : null;
+    console.log("ssl", ssl);
   	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {

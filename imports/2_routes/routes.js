@@ -58,7 +58,7 @@ export default class Routes extends Component {
 								<DevisNC devis_id={useParams().id} />
 						)}
 					/>
-					<Route
+					{/*<Route
 						path="/addToAdmin/"
 						component={() => (
 								<AddToAdmin />
@@ -69,7 +69,7 @@ export default class Routes extends Component {
 						component={() => (
 								<RemoveFromAdmin />
 						)}
-					/>
+					/>*/}
 					<Route
 						path="/admin/"
 						component={() => (
