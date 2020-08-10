@@ -76,7 +76,7 @@ export default class DevisCard extends Component {
 			onChange({ [name]: value });
 	}
 	render() {
-			let {titre,entreprise,client,date,_id, onChange, active, set} = this.props;
+			let {titre,entreprise,client,created_at,_id, onChange, active, set} = this.props;
 			client = typeof client === "string"?client:"";
 			entreprise = typeof entreprise === "string"?entreprise:"",
 			client = typeof client === "string"?client:"";
@@ -112,7 +112,7 @@ export default class DevisCard extends Component {
 						</div>
 						<div style={{flex:1, display:"flex", justifyContent:"center",alignItems:"center"}}>
 							
-								{dateToFormat(new Date(date))}
+								{dateToFormat(new Date(created_at))}
 							
 						</div>
 						
@@ -138,7 +138,7 @@ export default class DevisCard extends Component {
 						
 						{!active?<ShortButton
 							style={{backgroundColor:"rgb(100,100,255)",height:50}}
-							onClick={()=>{}}
+							onClick={this._onCopy}
 						>+
 						</ShortButton>: ""}
 						

@@ -71,12 +71,8 @@ class Devis extends Component {
 }
 	
 	componentDidMount() {
-		let { devis_id, 
-			devisGet1, devisGet1Start, 
-			entrepriseGet, entrepriseGetStart, 
-			elementGet,elementGetStart, 
-			logiqueGet,  logiqueGetStart, 
-			choiceGet1, choiceGet1Start, choicePost, edit, user_id, choiceControle,controleSet, elements,
+		let { devis_id, devisGet1, entrepriseGet, elementGet, logiqueGet, 
+			choiceGet1, choicePost, edit, user_id, choiceControle,controleSet, elements,
 		 devisUp
 		} = this.props;
 
@@ -111,12 +107,6 @@ class Devis extends Component {
 			scrollHeight:0
 		})
 
-		devisGet1Start()
-		entrepriseGetStart()
-		elementGetStart()
-		choiceGet1Start()
-		logiqueGetStart()
-
 		devisGet1({data:{_id:devis_id,user_id}})
 		entrepriseGet({data:{user_id}})
 		elementGet({data:{devis_id,user_id}})
@@ -138,6 +128,7 @@ class Devis extends Component {
 		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle, choicePost, choiceGet1, user_id, set,
 					elements, devis, entreprises, choice, logiques,
 					elements_loading, devis_loading, entreprises_loading, choice_loading, logiques_loading} = this.props
+
 					elements = typeof elements === "object" && elements instanceof Array ? elements : false; 
 					devis = typeof devis === "object"  ? devis : false;
 					entreprises = typeof entreprises === "object" && entreprises instanceof Array ? entreprises : false; 
@@ -145,6 +136,23 @@ class Devis extends Component {
 					
 					logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : false; 
 
+					if (elements&& devis&& entreprises&& logiques&& set.premierup===true&&
+							!elements_loading&&!devis_loading&& !entreprises_loading&& !logiques_loading){
+
+						/*	choicePost({
+								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
+								cbk:()=>{
+									console.log("-----choice réparé-----")
+									choiceGet1({
+										data:{devis_id: devis._id},
+										cbk:(res)=>{
+											choiceControle({...res.elements})
+										}
+									})
+								}
+							}) 
+*/
+					}
 					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
 							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
 
@@ -162,7 +170,7 @@ class Devis extends Component {
 							console.log("ANOMALIE")
 							console.log("elements.length", elements.length);
 							console.log("Object.keys(choice).length", Object.keys(choice.elements).length);
-							/*choicePost({
+							choicePost({
 								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
 								cbk:()=>{
 									console.log("-----choice réparé-----")
@@ -175,7 +183,7 @@ class Devis extends Component {
 								}
 							}) 
 						
-						console.log("ok")*/
+						console.log("ok")
 						}
 					}
 		if(prevProps.set.print===false && this.props.set.print===true){
@@ -337,13 +345,14 @@ class Devis extends Component {
 	}
 	_elementDel({_id}){
 		let {controleSet} = this.props
-		let { elementDel,devisUp, choiceUp, devis, choice } = this.props;
+		let { elementDel,devisUp, choiceUp, devis, choice, logiqueDel } = this.props;
 		elementDel({data:{_id},cbk:()=>{
 			devisUp({data:{...devis,elements:devis.elements.filter(elt=>elt!==_id)}})
 			let nchoice = {...choice}
 			let elements = {...nchoice.elements}
 			delete elements[_id]
 			choiceUp({data:{...nchoice,elements}})
+			logiqueDel({data:{element_id:_id}})
 		}});
 	}
 	_elementCopy({_id,id}){
@@ -952,7 +961,6 @@ function mapStateToProps( state ){
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
 			devisGet1: devis.get1,
-			devisGet1Start: devis.get1Start,
 			devisControle: devis.controle,
 			devisPost: devis.post,
 			devisGet: devis.get,
@@ -962,26 +970,22 @@ function mapDispatchToProps(dispatch){
 			elementControle: element.controle,
 			elementPost: element.post,
 			elementGet: element.get,
-			elementGetStart: element.getStart,
 			elementUp: element.up,
 			elementDel: element.del,
 
 			logiqueControle: logique.controle,
 			logiquePost: logique.post,
 			logiqueGet: logique.get,
-			logiqueGetStart: logique.getStart,
 			logiqueUp: logique.up,
 			logiqueDel: logique.del,
 
 			choiceControle: choice.controle,
 			choicePost: choice.post,
 			choiceGet1: choice.get1,
-			choiceGet1Start: choice.get1Start,
 			choiceUp: choice.up,
 			choiceDel: choice.del,
 			
 			entrepriseGet: entreprise.get,
-			entrepriseGetStart: entreprise.getStart,
 
 			controleSet: controle.set
 

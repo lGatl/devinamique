@@ -13,9 +13,13 @@ export function extendAction(CONST_NAME) {
     GET_ADD: CONST_NAME + '_GET_ADD',
     GET_ADD_START: CONST_NAME + '_GET_ADD_START',
     POST: CONST_NAME + '_POST',
+    POST_START: CONST_NAME + '_POST_START',
     UP: CONST_NAME + '_UP',
+    UP_START: CONST_NAME + '_UP_START',
     UPS: CONST_NAME + '_UPS',
+    UPS_START: CONST_NAME + '_UPS_START',
     DEL: CONST_NAME + '_DEL',
+    DEL_START: CONST_NAME + '_DEL_START',
     SELECT: CONST_NAME + '_SELECT',
     SET: CONST_NAME + '_SET',
     CLEAN: CONST_NAME + '_CLEAN'
@@ -51,7 +55,7 @@ export function extendAction(CONST_NAME) {
       payload: object
     };
   }
-  let get1Start = instate => {
+  let get1Start = ({instate}) => {
     return {
       type: CONSTANTE.GET1_START,
       payload: { instate }
@@ -64,31 +68,34 @@ export function extendAction(CONST_NAME) {
     };
   };
   let get1 = ({data, instate, ssl, cbk}) => {
-    data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-    instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-    cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+    data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+    instate = instate !== undefined && typeof instate === "string" ? instate : null;
+    cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.GET1+" : ",styleLog("blue"),"NOT DISPACHED")
       }
+      dispatch(
+        get1Start({ instate })
+      );
       Meteor.call('get1' + CONST_NAME,data,(err,res)=>{
         if(err){
           console.log("%c"+CONSTANTE.GET1+" - ACTION ERROR!!!!!",styleLog("red"), err)
           
         }else{
 
-
           console.log("%c"+CONSTANTE.GET1+" : ",styleLog("blue"),{ data:res, instate})
           cbk(res)
+
           dispatch(
-          get1T({ data:res, instate})
-        );
+            get1T({ data:res, instate})
+          );
         }
       });
     };
   };
-  let getStart = instate => {
+  let getStart = ({instate}) => {
     return {
       type: CONSTANTE.GET_START,
       payload: { instate }
@@ -101,17 +108,19 @@ export function extendAction(CONST_NAME) {
     };
   };
   let get = ({data, instate, ssl, cbk}) => {
-    console.log("ssl", ssl);
-  	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
+
+  	data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
   	ssl = typeof ssl !== undefined && ssl !== null && typeof ssl === "object" ? ssl : null;
-    console.log("ssl", ssl);
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.GET+" : ",styleLog("#00296C"),"NOT DISPACHED")
       }
+      dispatch(
+        getStart({ instate })
+      );
     	Meteor.call('get' + CONST_NAME,data,ssl,(err,res)=>{
 				if(err){
 					console.log("%c"+CONSTANTE.GET+" - ACTION ERROR!!!!!",styleLog("red"), err)
@@ -127,7 +136,7 @@ export function extendAction(CONST_NAME) {
   	};
   };
 
-  const getAddStart = instate => {
+  const getAddStart = ({instate}) => {
     return {
       type: CONSTANTE.GET_ADD_START,
       payload: { instate }
@@ -140,10 +149,10 @@ export function extendAction(CONST_NAME) {
     };
   };
   let getAdd = ({data, instate, ssl, cbk}) => {
-  	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
+  	data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
   	ssl = typeof ssl !== undefined && ssl !== null && typeof ssl === "object" ? ssl : null;
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
@@ -152,18 +161,25 @@ export function extendAction(CONST_NAME) {
     	Meteor.call('get' + CONST_NAME,data,ssl,(err,res)=>{
 				if(err){
 					console.log("%c"+CONSTANTE.GET_ADD+" - ACTION ERROR!!!!!",styleLog("red"), err)
-					
+					dispatch(
+            getAddStart({ instate })
+          );
 				}else{
 					console.log("%c"+CONSTANTE.GET_ADD+" : ",styleLog("#001D4D"),{ data:res, instate})
 					cbk(res)
 					dispatch(
-          getAddT({ data:res, instate})
-        );
+            getAddT({ data:res, instate})
+          );
 				}
 			});
   	};
   };
-
+  const postStart = ({instate}) => {
+    return {
+      type: CONSTANTE.POST_START,
+      payload: { instate }
+    };
+  };
   const postT = p => {
     return {
       type: CONSTANTE.POST,
@@ -171,27 +187,35 @@ export function extendAction(CONST_NAME) {
     };
   };
   const post = ({data, instate, body, cbk}) => {
-  	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.POST+" - ",styleLog("green"),"NOT DISPACHEC")
       }
+      dispatch(
+        postStart({ instate })
+      );
     	Meteor.call('add' + CONST_NAME, data ,(err,res)=>{
 				if(err){
 					console.log("%c"+CONSTANTE.POST+" - ACTION ERROR!!!!!",styleLog("red"), err)
-					
 				}else{
 					console.log("%c"+CONSTANTE.POST+" - ",styleLog("green"),{ data:{ ...data, _id:res }, instate })
 					cbk(res)
 					dispatch(
-          postT({ data:{ ...data, _id:res }, instate })
-        );
+            postT({ data:{ ...data, _id:res }, instate })
+          );
 				}
 			});
   	};
+  };
+  const upStart = ({instate}) => {
+    return {
+      type: CONSTANTE.UP_START,
+      payload: { instate }
+    };
   };
   const upT = p => {
     
@@ -202,14 +226,17 @@ export function extendAction(CONST_NAME) {
   };
   let up = ({data, instate, cbk}) =>{
 
-  	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.UP+" - ",styleLog("green"),"NOT DISPACHED")
       }
+      dispatch(
+         upStart({ instate })
+      );
 			Meteor.call('up' + CONST_NAME,data,(err,res)=>{
 				if(err){
 					console.log("%c"+CONSTANTE.UP+" - ACTION ERROR!!!!!",styleLog("red"), err)
@@ -218,12 +245,18 @@ export function extendAction(CONST_NAME) {
 					console.log("%c"+CONSTANTE.UP+" - ",styleLog("green"),{ data:{ ...data, _id:res }, instate })
 					cbk(res)
 					dispatch(
-          upT({ data:{ ...data, _id:res }, instate })
-        );
+            upT({ data:{ ...data, _id:res }, instate })
+          );
 				}
 			});
 		}
 	}
+  const upsStart = ({instate}) => {
+    return {
+      type: CONSTANTE.UPS_START,
+      payload: { instate }
+    };
+  };
 	const upsT = p => {
     return {
       type: CONSTANTE.UPS,
@@ -232,14 +265,17 @@ export function extendAction(CONST_NAME) {
   };
   let ups = ({data, instate, body, cbk}) =>{
 
-  	data = typeof data !== undefined && data !== null && typeof data === "object" ? data : {};
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	data = data !== undefined && data !== null && typeof data === "object" ? data : {};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log(CONSTANTE.UPS, " : ","NOT DISPACHED")
       }
+      dispatch(
+        upsStart({ instate })
+      );
 			Meteor.call('ups' + CONST_NAME,data,(err,res)=>{
 				if(err){
 					console.log("%c"+CONSTANTE.UPS+" - ACTION ERROR!!!!!",styleLog("red"), err)
@@ -248,13 +284,18 @@ export function extendAction(CONST_NAME) {
 					console.log(CONSTANTE.UPS, " : ",{ data:{ ...obj, _id:res }, instate:null })
 					cbk(res)
 					dispatch(
-          upsT({ data:{ ...obj, _id:res }, instate:null })
-        );
+            upsT({ data:{ ...obj, _id:res }, instate })
+          );
 				}
 			});
 		}
 	}
-
+  const delStart = ({instate}) => {
+    return {
+      type: CONSTANTE.DEL_START,
+      payload: { instate }
+    };
+  };
   const delT = p => {
     return {
       type: CONSTANTE.DEL,
@@ -263,13 +304,16 @@ export function extendAction(CONST_NAME) {
   };
   const del = ({data, instate, cbk}) => {
 
-  	instate = typeof instate !== undefined && instate !== null && typeof instate === "object" ? instate : null;
-  	cbk = typeof cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
+  	instate = instate !== undefined && typeof instate === "string" ? instate : null;
+  	cbk = cbk !== undefined && cbk !== null && typeof cbk === "function" ? cbk : ()=>{};
 
     return (dispatch, getState) => {
       dispatch = typeof dispatch === "function" ? dispatch : ()=>{
         console.log("%c"+CONSTANTE.DEL+" - ",styleLog("orange"),"NOT DISPACHED")
       }
+      dispatch(
+        delStart({ data, instate})
+      );
     	Meteor.call('rm' + CONST_NAME, data ,(err)=>{
 					if(err){
 					console.log("%c"+CONSTANTE.DEL+" - ACTION ERROR!!!!!",styleLog("red"), err)
@@ -277,8 +321,8 @@ export function extendAction(CONST_NAME) {
 					console.log("%c"+CONSTANTE.DEL+" - ",styleLog("orange"),{ data, instate})
 					cbk()
           dispatch(
-          delT({ data, instate})
-        );
+            delT({ data, instate})
+          );
 				}
   	});
     };
@@ -298,6 +342,7 @@ export function extendAction(CONST_NAME) {
       getAdd,
       getAddStart,
       post,
+      postStart,
       up,
       ups,
       del

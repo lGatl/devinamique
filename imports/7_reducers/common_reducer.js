@@ -5,7 +5,7 @@ let stylerejlog = 'color: #B8B0FF;' + styleLog;
 
 const DEFAULT = {
   got: {data:[],data_loading:false}, 
-  got1:{data:{}},data_loading:false
+  got1:{data:{},data_loading:false}
 };
 
 export const extendReducer = (state = DEFAULT, action, TYPES) => {
@@ -27,7 +27,7 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                 ...state,
                 controle: { ...state.controle, ...action.payload }
             };
-            case TYPES.UPCONTROLE:
+        case TYPES.UPCONTROLE:
             
             return {
                 ...state,
@@ -50,10 +50,11 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                     }
                 };
         case TYPES.GET1:
+
                 return {
                     ...state,
                     got1: {
-                        ...state.got,
+                        ...state.got1,
                         [instate]: data,
                         [instate + '_loading']: false
                     }
@@ -85,6 +86,14 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                     [instate + '_loading']: true
                 }
             };
+        case TYPES.POST_START:
+            return {
+                ...state,
+                got: {
+                    ...state.got,
+                    [instate + '_loading']: true
+                }
+            };
         case TYPES.POST:
 
             return {
@@ -95,6 +104,19 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                 got: {
                     ...state.got,
                     [instate]: [...state.got[instate], data],
+                    [instate + '_loading']: false
+                }
+            };
+            case TYPES.UP_START:
+
+            return {
+                ...state,
+                got: {
+                    ...state.got,
+                    [instate + '_loading']: false
+                },
+                got1: {
+                    ...state.got1,
                     [instate + '_loading']: false
                 }
             };
@@ -115,6 +137,16 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                     [instate + '_loading']: false
                 }
             };
+            case TYPES.DEL_START:
+
+            return {
+                ...state,
+                got: {
+                    ...state.got,
+                    [instate + '_loading']: false
+                }
+            };
+
             case TYPES.DEL:
              newstate = state.got!== undefined && typeof state.got ==="object" && typeof state.got[instate] === "object" && state.got[instate] instanceof Array ?
               newstate = state.got[instate].reduce((total,elt)=>elt._id===data._id?total:[...total,elt],[]):[]
@@ -123,6 +155,15 @@ export const extendReducer = (state = DEFAULT, action, TYPES) => {
                 got: {
                     ...state.got,
                     [instate]: [...newstate],
+                    [instate + '_loading']: false
+                }
+            };
+
+        case TYPES.UPS_START:
+            return {
+                ...state,
+                got: {
+                    ...state.got,
                     [instate + '_loading']: false
                 }
             };
