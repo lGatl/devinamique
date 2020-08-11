@@ -156,7 +156,6 @@ class Devis extends Component {
 					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
 							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
 
-console.log("choice.elements", choice.elements);
 						controleSet({premierup:false})
 						choiceControle({...choice.elements})
 						this.checkLogq({logiques,save:true})
@@ -456,9 +455,7 @@ console.log("choice.elements", choice.elements);
 		let {  elements, elementUp } = this.props;
 
 		save = typeof save === "boolean" ? save : false
-		logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : this.props.logiques
-		console.log("logiques", logiques);
-		
+		logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : this.props.logiques		
 		
 		let props_choice_controle = typeof this.props.choice_controle ==="object"&&Object.keys(this.props.choice_controle).length>0?this.props.choice_controle:{...choice.elements}
 		let choice_controle = new_choice?{...props_choice_controle,...new_choice}:{...props_choice_controle}
@@ -492,7 +489,6 @@ console.log("choice.elements", choice.elements);
 
 					lqs.forEach(lq=>{
 							let comp = this.comprendre(lq,choice_controle);
-							console.log("comp", comp);
 							
 						if(typeof comp === "number"){
 							val = comp
@@ -517,7 +513,6 @@ console.log("choice.elements", choice.elements);
 				}else{
 					let val = 0
 					let eltlq = element.logiques
-					console.log("eltlq", eltlq);
 					let dynamique = !element.dynamique
 					let saufclicked = element._id!==Object.keys(new_choice)[0]
 					if(saufclicked&&dynamique){
@@ -532,8 +527,6 @@ console.log("choice.elements", choice.elements);
 						}
 					},[])
 
-
-console.log("lqs", lqs);
 					lqs.forEach(lq=>{
 							let comp = this.comprendre(lq,choice_controle);
 							
@@ -555,7 +548,6 @@ console.log("lqs", lqs);
 			choiceControle({...choice_controle})
 	}
 	_choiceControle(obj) {
-		console.log("obj", obj);
 		
 		let { choiceControle } = this.props;
 

@@ -59,7 +59,7 @@ class DevisNC extends Component {
 			view2:1,
 			view3:1,
 			print:false,
-			password:true,
+			password:false,
 			pass:"",
 		})
 

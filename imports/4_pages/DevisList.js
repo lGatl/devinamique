@@ -88,7 +88,6 @@ class DevisList extends Component {
 												elements.forEach((elemento,l)=>{
 													let tablogiques = [...elemento.logiques]
 													tablogiques = tablogiques.length>0?tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]],[]):tablogiques;
-													console.log("tablogiques", tablogiques);
 													elementUp({data:{...elemento,_id:annvelt[elemento._id],devis_id:devis._id,logiques:[...tablogiques]}})
 												})
 											}
