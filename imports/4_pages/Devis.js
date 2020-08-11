@@ -156,6 +156,7 @@ class Devis extends Component {
 					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
 							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
 
+console.log("choice.elements", choice.elements);
 						controleSet({premierup:false})
 						choiceControle({...choice.elements})
 						this.checkLogq({logiques,save:true})
@@ -170,7 +171,7 @@ class Devis extends Component {
 							console.log("ANOMALIE")
 							console.log("elements.length", elements.length);
 							console.log("Object.keys(choice).length", Object.keys(choice.elements).length);
-							choicePost({
+							/*choicePost({
 								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
 								cbk:()=>{
 									console.log("-----choice réparé-----")
@@ -181,7 +182,7 @@ class Devis extends Component {
 										}
 									})
 								}
-							}) 
+							}) */
 						
 						console.log("ok")
 						}
@@ -320,8 +321,8 @@ class Devis extends Component {
 	}
 	_elementAdd({dynamique}){
 
-		let {controleSet} = this.props
-		let { active_user, elements,devis, choice } = this.props;
+		let {controleSet, choiceControle, choice_controle} = this.props
+		let { active_user, elements,devis, choice, } = this.props;
 		let { elementPost, elementControle, devisUp, choiceUp } = this.props;
 		let { controle } = this.props;
 
@@ -340,12 +341,13 @@ class Devis extends Component {
 				d_elements.splice(nbd,0,_id)
 				devisUp({data:{...devis,elements:d_elements}})
 				choiceUp({data:{...choice,elements:{...choice.elements,[_id]:0}}})
+				choiceControle({...choice_controle,[_id]:0})
 		}});
 		
 	}
 	_elementDel({_id}){
 		let {controleSet} = this.props
-		let { elementDel,devisUp, choiceUp, devis, choice, logiqueDel } = this.props;
+		let { elementDel,devisUp, choiceUp, choiceUpControle, devis, choice, logiqueDel, choice_controle } = this.props;
 		elementDel({data:{_id},cbk:()=>{
 			devisUp({data:{...devis,elements:devis.elements.filter(elt=>elt!==_id)}})
 			let nchoice = {...choice}
@@ -353,6 +355,9 @@ class Devis extends Component {
 			delete elements[_id]
 			choiceUp({data:{...nchoice,elements}})
 			logiqueDel({data:{element_id:_id}})
+			let nchoice_controle = {...choice_controle}
+			delete choice_controle[_id]
+			choiceControle({...choice_controle})
 		}});
 	}
 	_elementCopy({_id,id}){
@@ -445,16 +450,19 @@ class Devis extends Component {
 	
 	checkLogq({new_choice, logiques,save}){
 
+
 		new_choice = new_choice? new_choice:{}
 		let { choiceControle,choiceUpControle, choiceUp, choice } = this.props;
 		let {  elements, elementUp } = this.props;
 
 		save = typeof save === "boolean" ? save : false
 		logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : this.props.logiques
+		console.log("logiques", logiques);
 		
 		
 		let props_choice_controle = typeof this.props.choice_controle ==="object"&&Object.keys(this.props.choice_controle).length>0?this.props.choice_controle:{...choice.elements}
 		let choice_controle = new_choice?{...props_choice_controle,...new_choice}:{...props_choice_controle}
+
 
 	/*==============dabord les elements dynamiques==================*/
 		Object.keys(choice_controle).forEach(cc=>{
@@ -468,7 +476,9 @@ class Devis extends Component {
 					let eltlq = element.logiques
 					let dynamique = element.dynamique
 					let saufclicked = new_choice?element._id!==Object.keys(new_choice)[0]:true
+	
 					if(saufclicked&&dynamique){
+
 						let lqs = [...eltlq].reduce((total,lq_id,i)=>{
 						let lalogique = logiques.find(lq=>lq_id===lq._id)
 						if(lalogique===undefined){
@@ -482,6 +492,7 @@ class Devis extends Component {
 
 					lqs.forEach(lq=>{
 							let comp = this.comprendre(lq,choice_controle);
+							console.log("comp", comp);
 							
 						if(typeof comp === "number"){
 							val = comp
@@ -506,9 +517,11 @@ class Devis extends Component {
 				}else{
 					let val = 0
 					let eltlq = element.logiques
+					console.log("eltlq", eltlq);
 					let dynamique = !element.dynamique
 					let saufclicked = element._id!==Object.keys(new_choice)[0]
 					if(saufclicked&&dynamique){
+
 						let lqs = [...eltlq].reduce((total,lq_id,i)=>{
 						let lalogique = logiques.find(lq=>lq_id===lq._id)
 						if(lalogique===undefined){
@@ -520,6 +533,7 @@ class Devis extends Component {
 					},[])
 
 
+console.log("lqs", lqs);
 					lqs.forEach(lq=>{
 							let comp = this.comprendre(lq,choice_controle);
 							
@@ -536,9 +550,12 @@ class Devis extends Component {
 					}
 				}
 		})
+
+
 			choiceControle({...choice_controle})
 	}
 	_choiceControle(obj) {
+		console.log("obj", obj);
 		
 		let { choiceControle } = this.props;
 

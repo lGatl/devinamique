@@ -314,12 +314,12 @@ export function extendAction(CONST_NAME) {
       dispatch(
         delStart({ data, instate})
       );
-    	Meteor.call('rm' + CONST_NAME, data ,(err)=>{
+    	Meteor.call('rm' + CONST_NAME, data ,(err,res)=>{
 					if(err){
 					console.log("%c"+CONSTANTE.DEL+" - ACTION ERROR!!!!!",styleLog("red"), err)
 				}else{
 					console.log("%c"+CONSTANTE.DEL+" - ",styleLog("orange"),{ data, instate})
-					cbk()
+					cbk(res)
           dispatch(
             delT({ data, instate})
           );

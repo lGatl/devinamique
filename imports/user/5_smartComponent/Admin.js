@@ -9,8 +9,12 @@ import {
 	TextArea,
 	Button,
 	Checkbox,
-	Poppup
+	Poppup,
+	Input
 } from '../../_common/4_dumbComponent';
+import { 
+	DEVIS,ELEMENTS,LOGIQUES,CHOIX
+} from './feature';
 
 	const BDD = ["devis", "element", "logique", "entreprise", "choice", "user"]
 	const COMMON_ACTION = ["Controle","Get1","Get","Post","Up","Del" ]
@@ -67,13 +71,112 @@ import {
 class Admin extends Component {
 	constructor(){
 		super()
-		this.state = {bdd:"devis",action:"Get",data:"{}",show:"",wrap:false,dispached:true, poppup:false, ssl:'{"sort":{"created_at":1},"skip":0,"limit":50}'}
+		this.state = {
+			bdd:"devis",
+			action:"Get",
+			data:"{}",
+			show:"",
+			wrap:false,
+			dispached:true, 
+			poppup:false, 
+			ssl:'{"sort":{"created_at":1},"skip":0,"limit":50}',
+			copy:false,
+			user_id:""
+		}
 		this._onChange = this._onChange.bind(this) 
 		this._submit = this._submit.bind(this) 
 		this._annule = this._annule.bind(this)
 		this._submit2 = this._submit2.bind(this)
+		this._createDevisFeature = this._createDevisFeature.bind(this)
 	}
+	componentDidUpdate(prevProps, prevState){
+		let { devis, newchoice,
+			devis_loading, newchoice_loading,
+			elementPost, elementUp, logiquePost, devisUp,choiceUp } = this.props;
+		let { copy, user_id } = this.state;
 
+		user_id = user_id !== undefined && typeof user_id === "string" && user_id.length>0 ? user_id : this.props.user_id
+		devis = devis !== undefined && typeof devis === "object" && Object.keys(devis).length > 0 ? {...devis} :false
+		let choice = CHOIX
+		newchoice = newchoice !== undefined && typeof newchoice === "object" && Object.keys(newchoice).length > 0 ? {...newchoice} :false
+		let elements = ELEMENTS
+		let logiques = LOGIQUES
+
+		if(devis && newchoice &&
+			 !devis_loading && !newchoice_loading && copy===true){
+			
+			this.setState({copy:false})
+			let annvelt = {}
+			elements.forEach((element,i)=>{
+				element = element !== undefined && typeof element === "object" && Object.keys(element).length > 0 ? {...element} :false
+				if(element){
+					let _id = element._id
+					delete element._id
+					delete element.created_at
+					elementPost({data:{...element,devis_id:devis._id,user_id},cbk:(_nvid)=>{
+						annvelt = {...annvelt,[_id]:_nvid}
+						
+						if(i === (elements.length-1)){
+							logiques.forEach((logique,j)=>{
+									logique = logique !== undefined && typeof logique === "object" && Object.keys(logique).length > 0 ? {...logique} :false
+									if(logique){
+										let _idlog = logique._id
+										delete logique._id
+										delete logique.created_at
+										logiquePost({data:{...logique,devis_id:devis._id,element_id:annvelt[logique.element_id],user_id},cbk:(_newidlog)=>{
+											annvlog = {...annvlog,[_id]:_nvid}
+											if(j === (elements.length-1)){
+												elements.forEach((element,i)=>{
+													let tablogiques = [...element.logiques]
+													tablogiques = tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]])
+													elementUp({data:{...element,_id:_nvid,devis_id:devis._id,user_id,logiques:[...tablogiques]}})
+												})
+											}
+										}})
+									}
+							})		
+							let delts = devis.elements !== undefined && typeof devis.elements === "object" && devis.elements instanceof Array ? [...devis.elements]:false
+							if(delts){
+								delts = delts.map(delt=>annvelt[delt])
+								devisUp({data:{...devis, elements:[...delts]}})
+							}
+
+							let celts = choice.elements !== undefined && typeof choice.elements === "object" && Object.keys(choice.elements).length > 0 ? {...choice.elements}:false
+							if(celts){
+								celts = Object.keys(celts).reduce((total,celtkey)=>{return {...total,[annvelt[celtkey]]:celts[celtkey]}},{})
+
+								choiceUp({data:{ ...newchoice, elements:{...celts}}})
+							}
+						}
+					}})
+				}
+			})
+
+		}
+	}
+	_createDevisFeature(){
+		let { user_id } = this.state;
+		let { devisPost, choiceGet1, devisGet1, choicePost } = this.props;
+
+		let { controle } = this.props;
+
+		let devis = DEVIS
+
+		user_id = user_id !== undefined && typeof user_id === "string" && user_id.length>0 ? user_id : this.props.user_id
+
+		if(devis){
+			delete devis._id
+			delete devis.created_at
+			this.setState({copy:true})
+
+			devisPost({data:{...devis, user_id},cbk:(_id)=>{
+				devisGet1({data:{_id}})
+				choicePost({data:{user_id,devis_id:_id,elements:{}},cbk:(_idc)=>{
+					choiceGet1({data:{_id:_idc},instate:"newchoice"})
+				}})
+			}})
+		}
+	}
 	_onChange({ name, value, checked }) {
 			let { onChange } = this.props;
 		value =
@@ -86,10 +189,12 @@ class Admin extends Component {
 			this.setState({ [name]: value });
 	}
 	LigneComp(ligne,wrap,arr,j){
+		let tab = ligne.split(":")
+		let first = tab.shift()
 		return ligne.indexOf(":")>-1 ? 
 				<div key={j} style = {{whiteSpace:wrap?"normal":"nowrap",marginLeft:arr.length*30, boxSizing:"border-box"}}>
-					<span style = {{wordBreak: "break-all", color:"green"}}>{ligne.split(":")[0]}</span>
-					<span style={{ wordBreak: "break-all"}}>:{ligne.split(":")[1]}</span>
+					<span style = {{wordBreak: "break-all", color:"green"}}>{first}</span>
+					<span style={{ wordBreak: "break-all"}}>:{tab.join("")}</span>
 				</div>
 				:
 				<span style = {{whiteSpace:wrap?"normal":"nowrap",wordBreak: "break-all", marginLeft:arr.length*30}}key={j}>{ligne}</span>
@@ -189,7 +294,7 @@ class Admin extends Component {
 	}
 	render(){
 		let {active_user} = this.props;
-		let {bdd,action,data, show, wrap, dispached, ssl} = this.state
+		let {bdd,action,data, show, wrap, dispached, ssl, user_id} = this.state
 
 		let active_user_admin = active_user !== undefined && typeof active_user === "object" && Object.keys(active_user).length>0 && 
 		active_user.roles !== undefined && typeof active_user.roles === "object" && active_user.roles instanceof Array && 
@@ -235,6 +340,16 @@ class Admin extends Component {
 								onChange = {this._onChange }
 								active = {true}
 							/>
+							<Input
+
+								label="user_id"
+								placeholder="user_id"
+								name="user_id"
+								onChange={this._onChange}
+								value={user_id}
+								active={true}
+							/>
+							<Button style={{width:200}} onClick={this._createDevisFeature}>Create Devis Feature</Button>
 					</div>
 						<TextArea
 							style={{flex:1,width:"100%"}}
@@ -287,7 +402,12 @@ class Admin extends Component {
 function mapStateToProps( state ){
 	return (
 		{
-			active_user : state.user.active_user
+			user_id : state.user.user_id,
+			active_user : state.user.active_user,
+			devis: state.devis.got1.data,
+			devis_loading: state.devis.got1.data_loading,
+			newchoice: state.choice.got1.newchoice,
+			newchoice_loading: state.choice.got1.newchoice_loading,
 		}
 	);
 

@@ -50,7 +50,7 @@ class DevisList extends Component {
 	componentDidUpdate(prevProps, prevState){
 		let { elements, choice, devis, logiques, newchoice,
 			devis_loading, elements_loading, logiques_loading,choice_loading, newchoice_loading,
-			elementPost, logiquePost, devisUp,choiceUp } = this.props;
+			elementPost, elementUp, logiquePost, devisUp,choiceUp } = this.props;
 		let { copy } = this.state;
 
 		devis = devis !== undefined && typeof devis === "object" && Object.keys(devis).length > 0 ? {...devis} :false
@@ -64,6 +64,7 @@ class DevisList extends Component {
 			
 			this.setState({copy:false})
 			let annvelt = {}
+			let annvlog = {}
 			elements.forEach((element,i)=>{
 				element = element !== undefined && typeof element === "object" && Object.keys(element).length > 0 ? {...element} :false
 				if(element){
@@ -72,16 +73,28 @@ class DevisList extends Component {
 					delete element.created_at
 					elementPost({data:{...element,devis_id:devis._id},cbk:(_nvid)=>{
 						annvelt = {...annvelt,[_id]:_nvid}
+						
 						if(i === (elements.length-1)){
-							logiques.forEach((logique,i)=>{
+							logiques.forEach((logique,j)=>{
 									logique = logique !== undefined && typeof logique === "object" && Object.keys(logique).length > 0 ? {...logique} :false
 									if(logique){
+										let _idlog = logique._id
 										delete logique._id
 										delete logique.created_at
-										logiquePost({data:{...logique,devis_id:devis._id,element_id:annvelt[logique.element_id]}})
+										logiquePost({data:{...logique,devis_id:devis._id,element_id:annvelt[logique.element_id]},cbk:(_newidlog)=>{
+											annvlog = {...annvlog,[_idlog]:_newidlog}
+											if(j === (logiques.length-1)){
+
+												elements.forEach((elemento,l)=>{
+													let tablogiques = [...elemento.logiques]
+													tablogiques = tablogiques.length>0?tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]],[]):tablogiques;
+													console.log("tablogiques", tablogiques);
+													elementUp({data:{...elemento,_id:annvelt[elemento._id],devis_id:devis._id,logiques:[...tablogiques]}})
+												})
+											}
+										}})
 									}
 							})		
-						
 							let delts = devis.elements !== undefined && typeof devis.elements === "object" && devis.elements instanceof Array ? [...devis.elements]:false
 							if(delts){
 								delts = delts.map(delt=>annvelt[delt])
@@ -90,16 +103,13 @@ class DevisList extends Component {
 
 							let celts = choice.elements !== undefined && typeof choice.elements === "object" && Object.keys(choice.elements).length > 0 ? {...choice.elements}:false
 							if(celts){
-								celts = Object.keys(celts).reduce((total,celtkey)=>{return {...total,[annvelt[celtkey]]:celts[celtkey]}},{})
+								celts = Object.keys(celts).reduce((total,celtkey)=>{return annvelt[celtkey]?{...total,[annvelt[celtkey]]:celts[celtkey]}:{...total}},{})
 
 								choiceUp({data:{ ...newchoice, elements:{...celts}}})
 							}
 						}
-						
 					}})
-
 				}
-
 			})
 
 		}
@@ -175,7 +185,6 @@ class DevisList extends Component {
 				}})
 			}})
 			elementGet({data:{devis_id:did}})
-			logiqueGet({data:{devis_id:did}})
 			logiqueGet({data:{devis_id:did}})
 			choiceGet1({data:{devis_id:did}})
 		}
@@ -263,6 +272,7 @@ function mapDispatchToProps(dispatch){
 			devisDel: devis.del,
 
 			elementGet:element.get,
+			elementUp:element.up,
 			elementDel:element.del,
 			elementPost:element.post,
 			logiqueGet:logique.get,
