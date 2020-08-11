@@ -107,6 +107,7 @@ class Admin extends Component {
 			
 			this.setState({copy:false})
 			let annvelt = {}
+			let annvlog = {}
 			elements.forEach((element,i)=>{
 				element = element !== undefined && typeof element === "object" && Object.keys(element).length > 0 ? {...element} :false
 				if(element){
@@ -123,13 +124,15 @@ class Admin extends Component {
 										let _idlog = logique._id
 										delete logique._id
 										delete logique.created_at
-										logiquePost({data:{...logique,devis_id:devis._id,element_id:annvelt[logique.element_id],user_id},cbk:(_newidlog)=>{
-											annvlog = {...annvlog,[_id]:_nvid}
-											if(j === (elements.length-1)){
-												elements.forEach((element,i)=>{
-													let tablogiques = [...element.logiques]
-													tablogiques = tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]])
-													elementUp({data:{...element,_id:_nvid,devis_id:devis._id,user_id,logiques:[...tablogiques]}})
+										logiquePost({data:{...logique,devis_id:devis._id,user_id,element_id:annvelt[logique.element_id]},cbk:(_newidlog)=>{
+											annvlog = {...annvlog,[_idlog]:_newidlog}
+											if(j === (logiques.length-1)){
+
+												elements.forEach((elemento,l)=>{
+													let tablogiques = [...elemento.logiques]
+													tablogiques = tablogiques.length>0?tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]],[]):tablogiques;
+													console.log("tablogiques", tablogiques);
+													elementUp({data:{...elemento,_id:annvelt[elemento._id],devis_id:devis._id,logiques:[...tablogiques]}})
 												})
 											}
 										}})
@@ -143,7 +146,7 @@ class Admin extends Component {
 
 							let celts = choice.elements !== undefined && typeof choice.elements === "object" && Object.keys(choice.elements).length > 0 ? {...choice.elements}:false
 							if(celts){
-								celts = Object.keys(celts).reduce((total,celtkey)=>{return {...total,[annvelt[celtkey]]:celts[celtkey]}},{})
+								celts = Object.keys(celts).reduce((total,celtkey)=>{return annvelt[celtkey]?{...total,[annvelt[celtkey]]:celts[celtkey]}:{...total}},{})
 
 								choiceUp({data:{ ...newchoice, elements:{...celts}}})
 							}
