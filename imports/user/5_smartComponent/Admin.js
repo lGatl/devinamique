@@ -96,6 +96,7 @@ class Admin extends Component {
 		let { copy, user_id } = this.state;
 
 		user_id = user_id !== undefined && typeof user_id === "string" && user_id.length>0 ? user_id : this.props.user_id
+		console.log("user_id", user_id);
 		devis = devis !== undefined && typeof devis === "object" && Object.keys(devis).length > 0 ? {...devis} :false
 		let choice = CHOIX
 		newchoice = newchoice !== undefined && typeof newchoice === "object" && Object.keys(newchoice).length > 0 ? {...newchoice} :false
@@ -103,7 +104,7 @@ class Admin extends Component {
 		let logiques = LOGIQUES
 
 		if(devis && newchoice &&
-			 !devis_loading && !newchoice_loading && copy===true){
+			 !devis_loading && !newchoice_loading && copy===true){//false
 			
 			this.setState({copy:false})
 			let annvelt = {}
@@ -131,8 +132,7 @@ class Admin extends Component {
 												elements.forEach((elemento,l)=>{
 													let tablogiques = [...elemento.logiques]
 													tablogiques = tablogiques.length>0?tablogiques.reduce((ttotal,eltt,k)=>[...ttotal,annvlog[eltt]],[]):tablogiques;
-													console.log("tablogiques", tablogiques);
-													elementUp({data:{...elemento,_id:annvelt[elemento._id],devis_id:devis._id,logiques:[...tablogiques]}})
+													elementUp({data:{...elemento,_id:annvelt[elemento._id],devis_id:devis._id,user_id,logiques:[...tablogiques]}})
 												})
 											}
 										}})
