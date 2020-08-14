@@ -19,9 +19,15 @@ class Home extends Component {
 	render(){
 		let { active_user } = this.props;
 		return (
-			<div style={{marginTop:0, width:"100%",display:"flex", alignItems:"center",flexDirection:"column"}}>
+			<div style={{marginTop:0, width:"100%",display:"flex", alignItems:"center",flexDirection:"column", flex:1}}>
 				
-				{active_user?<div onClick={()=>{this.props.logOut()}} style={{flex:1, cursor:"pointer"}}>Deconnexion</div> : 
+				{active_user?<div style={{marginTop:0, width:"100%",display:"flex", alignItems:"center",flexDirection:"column", flex:1}}>
+					<div onClick={()=>{this.props.logOut()}} style={{ cursor:"pointer"}}>Deconnexion</div>
+
+					Salut {active_user !== undefined && active_user.profile !== undefined &&
+						typeof active_user.profile === "object" && active_user.profile.firstname !== undefined &&
+					 typeof active_user.profile.firstname === "string" &&  active_user.profile.firstname.length >0 ? active_user.profile.firstname : active_user.username }
+				</div> : 
 					<div style={{ width:"100%", display:"flex"}}>
 						<div onClick={()=>{this.setState({menu:0})}} style={{flex:1, cursor:"pointer"}}>Inscription</div>
 						<div onClick={()=>{this.setState({menu:1})}} style={{flex:1, cursor:"pointer"}}>Connexion</div>
@@ -33,8 +39,8 @@ class Home extends Component {
 						{this.state.menu?<ConnexionForm/>:<InscriptionForm/>}
 					</div>
 				}
-				
-
+				<div style={{flex:1}}></div>
+				<div style = {{height: "30%", width:"50%", background:"url('/image/icon-textsup200.png')no-repeat center", backgroundSize: "contain"}}>developed by</div>
 			</div>
 		);
 	}
