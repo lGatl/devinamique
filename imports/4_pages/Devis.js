@@ -221,7 +221,7 @@ class Devis extends Component {
     if(inputs!==null){
  			let count=inputs.length;
  			let total=count;
- 			const pdf = new jsPDF();
+ 			const pdf = new jsPDF({compress: true});
  			let img_datas={}
 
  			for (let i = 1;i<=inputs.length;i++){

@@ -152,11 +152,11 @@ export default class DevisShow extends Component {
 				
 				<div style={{border:"1px solid black",borderTop:"none"}}>
 				{eltt.map((element,i)=><div key={i} style={{
-					color:choice_controle[element._id]!==0?"black":"rgb(200,200,200)",
+					color:choice_controle[element._id]!==0?"black":"rgb(175,175,175)",
 					fontSize:element.titre_lvl?((5*element.titre_lvl+14)+"px"):"14px",
 					fontWeight:element.titre_lvl?(50*element.titre_lvl+400):"normal",
 					display:"flex",padding:"2px 5px",borderTop:"none" }}>
-					{dsactif?<div style={{flex:1,justifyContent:"center",display:"flex",color:"rgb(200,200,200)"}}><span>{element.id}</span></div>:""}
+					{dsactif?<div style={{flex:1,justifyContent:"center",display:"flex",color:"rgb(175,175,175)"}}><span>{element.id}</span></div>:""}
 					<div style={{flex:5,display:"flex",alignItems:"center",justifyContent:"flex-start"}}><span>{element.libelle}</span></div>
 					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}><span>{element.prix}</span></div>
 					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>	
