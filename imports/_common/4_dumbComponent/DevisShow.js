@@ -152,6 +152,7 @@ export default class DevisShow extends Component {
 				
 				<div style={{border:"1px solid black",borderTop:"none"}}>
 				{eltt.map((element,i)=><div key={i} style={{
+					color:choice_controle[element._id]!==0?"black":"rgb(200,200,200)",
 					fontSize:element.titre_lvl?((5*element.titre_lvl+14)+"px"):"14px",
 					fontWeight:element.titre_lvl?(50*element.titre_lvl+400):"normal",
 					display:"flex",padding:"2px 5px",borderTop:"none" }}>

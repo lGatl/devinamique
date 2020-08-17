@@ -72,16 +72,17 @@ class Devis extends Component {
 	
 	componentDidMount() {
 		let { devis_id, devisGet1, entrepriseGet, elementGet, logiqueGet, 
-			choiceGet1, choicePost, edit, user_id, choiceControle,controleSet, elements,
+			choiceGet1, choicePost, edit, user_id, choiceControle, choiceUpControle, controleSet, elements,
 		 devisUp
 		} = this.props;
-
 
 		document.addEventListener('mouseup', this._mouseup);
 		document.addEventListener('mousemove', this._mousemove);
 		document.addEventListener('touchstart', this._mousemove);
 		document.addEventListener('touchmove', this._mousemove);
 		document.addEventListener('touchend', this._mouseup);
+
+		choiceUpControle({})
 
 		controleSet({
 			premierup:true,
@@ -117,6 +118,7 @@ class Devis extends Component {
 	
 
 	componentWillUnmount() {
+
 	    document.removeEventListener('mouseup', this._mouseup);
 			document.removeEventListener('mousemove', this._mousemove);
 			document.removeEventListener('touchmove', this._mousemove);
@@ -125,7 +127,7 @@ class Devis extends Component {
 	}
 	componentDidUpdate(prevProps, prevState){
 
-		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle, choicePost, choiceGet1, user_id, set,
+		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle,choiceUpControle, choicePost, choiceGet1, user_id, set,
 					elements, devis, entreprises, choice, logiques,
 					elements_loading, devis_loading, entreprises_loading, choice_loading, logiques_loading} = this.props
 
@@ -136,23 +138,6 @@ class Devis extends Component {
 					
 					logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : false; 
 
-					if (elements&& devis&& entreprises&& logiques&& set.premierup===true&&
-							!elements_loading&&!devis_loading&& !entreprises_loading&& !logiques_loading){
-
-						/*	choicePost({
-								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
-								cbk:()=>{
-									console.log("-----choice réparé-----")
-									choiceGet1({
-										data:{devis_id: devis._id},
-										cbk:(res)=>{
-											choiceControle({...res.elements})
-										}
-									})
-								}
-							}) 
-*/
-					}
 					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
 							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
 
@@ -170,6 +155,18 @@ class Devis extends Component {
 							console.log("ANOMALIE")
 							console.log("elements.length", elements.length);
 							console.log("Object.keys(choice).length", Object.keys(choice.elements).length);
+							
+							let elts = {...choice.elements}
+							console.log("elts", elts);
+							elts = Object.keys(elts).reduce((total,elt_id)=>elements.findIndex(elt=>elt_id===elt._id)>=0?{...total,[elt_id]:elts[elt_id]}:{...total},{})
+							elts = elements.reduce((total,elt)=>
+							 	Object.keys(elts).findIndex(elt_id=>elt_id===elt._id)>=0?{...total,[elt._id]:elts[elt._id]}:{...total,[elt._id]:0},{})
+
+							 choiceUp({data:{
+							 	...choice, elements:{...elts}
+							 }})
+							 choiceUpControle({...elts})
+
 							/*choicePost({
 								data:{user_id,devis_id:devis._id,elements:elements.reduce((total,elt)=>{return{...total,[elt._id]:0}},{})},
 								cbk:()=>{
@@ -239,7 +236,6 @@ class Devis extends Component {
 	        			pdf.addPage()
 	        		}else{
 	        			pdf.save(devis&&devis.titre?"devis_"+devis.titre.trim()+".pdf":"devis.pdf");
-	        			console.log("devis_"+devis.titre.trim()+".pdf");
 	        			controleSet({print:false,dsactif:true})
 	        		}
 	        	})
@@ -995,6 +991,7 @@ function mapDispatchToProps(dispatch){
 			choicePost: choice.post,
 			choiceGet1: choice.get1,
 			choiceUp: choice.up,
+			choiceUpControle: choice.upcontrole,
 			choiceDel: choice.del,
 			
 			entrepriseGet: entreprise.get,
