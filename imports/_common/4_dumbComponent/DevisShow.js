@@ -86,7 +86,7 @@ export default class DevisShow extends Component {
 			        height:"29.7cm",
 			        position: "absolute",
 			        zIndex:80,
-			        padding:"50px 100px 70px 100px",
+			        padding:"60px 100px 70px 100px",
 			        backgroundColor:"white",
 			        fontSize:12
 						}}>

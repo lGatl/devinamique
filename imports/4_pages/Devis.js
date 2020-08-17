@@ -215,37 +215,40 @@ class Devis extends Component {
 		let {controleSet} = this.props
 		controleSet({dsactif:false, print:true})
 	}
-	recurshtml2can(pdf,inputs,count){
-		let {controleSet,devis} = this.props
-		html2canvas(inputs[inputs.length-count])
-	      .then((canvas) => {
-	        const imgData = canvas.toDataURL('image/png');
-	        
-	        pdf.addImage(imgData, 'JPEG', 0, 0,210,297);
-	       count=count-1
-	       	if(count>0){
-	       		pdf.addPage()
-						this.recurshtml2can(pdf,inputs,count)
-	       	}else{
-	       		pdf.save(devis&&devis.titre?"devis_"+devis.titre+".pdf":"devis.pdf");
-	        	controleSet({print:false,dsactif:true})
-	       	}
-	        
-	      })
-	}
-	_printDocument() {
+	
+  	_printDocument() {
 		let {controleSet,devis} = this.props
 		let inputs = document.getElementsByClassName("divToPrint")
 
+			
     if(inputs!==null){
- 			var count=inputs.length;
+ 			let count=inputs.length;
+ 			let total=count;
  			const pdf = new jsPDF();
+ 			let img_datas={}
 
- 			this.recurshtml2can(pdf,inputs,count,devis)
-	    
-    }
+ 			for (let i = 1;i<=inputs.length;i++){
+ 				html2canvas(inputs[inputs.length-count])
+	      .then((canvas) => {
+	        img_datas = {...img_datas,[i]:canvas.toDataURL('image/png')};	
+
+	        if(img_datas!==undefined&&typeof img_datas==="object"&&Object.keys(img_datas).length===total){
+	        	Object.keys(img_datas).forEach((img,j)=>{
+	        		pdf.addImage(img_datas[img], 'JPEG', 0, 0,210,297);
+	        		if(j<(total-1)){
+	        			pdf.addPage()
+	        		}else{
+	        			pdf.save(devis&&devis.titre?"devis_"+devis.titre.trim()+".pdf":"devis.pdf");
+	        			console.log("devis_"+devis.titre.trim()+".pdf");
+	        			controleSet({print:false,dsactif:true})
+	        		}
+	        	})
+	        }
+				})
+	       count--
+	    }
+ 		} 
   }
-
   _onShowLogq({_id}){
   	let {controleSet} = this.props
   	this.props.set.show_logq===_id ? controleSet({show_logq:false}):controleSet({show_logq:_id})
