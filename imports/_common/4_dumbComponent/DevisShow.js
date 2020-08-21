@@ -54,18 +54,18 @@ export default class DevisShow extends Component {
 				display:"flex", 
 				flexDirection:"column", 
 				flex:1,
-				alignItems:"center",
-				justifyContent:"center",
+
+				alignItems:"flex-start",
+				justifyContent:"flex-start",
 				overflow:"scroll",
-				position: "relative",
 				zIndex:50,
 				...this.props.style
 			}}
 			>
+			<div style={{display:"flex", flexDirection:"column",top:0}}>
+				
 			
 			{elements.map((eltt,i)=><div key={i} style={{
-
-				transform:"translateY("+i*34+"cm)",
 				transition:"0.5s",
 				width:"100%",
 				display:"flex",
@@ -73,9 +73,6 @@ export default class DevisShow extends Component {
 				alignItems:"center",
 			  minHeight:"36cm",
 			  minWidth:"30cm",
-			  position: "absolute",
-			 	left:0,
-			  top:0,
 			  zIndex:60
 			}}>
 
@@ -84,24 +81,14 @@ export default class DevisShow extends Component {
 			        flexDirection:"column",
 			        width:"21cm",
 			        height:"29.7cm",
-			        position: "absolute",
+							background:contractuel?"":"center/80% no-repeat url('/image/non_contractuel.png') ",
 			        zIndex:80,
 			        padding:"60px 100px 70px 100px",
 			        backgroundColor:"white",
 			        fontSize:12
 						}}>
 			
-			<div style={{
-				position: "absolute",
-				display:"flex",
-			  flexDirection:"column",
-				zIndex:70,
-			 	left:0,
-			  top:0,
-				width:"100%",
-				height:"100%",
-				background:"center/80% no-repeat url('/image/non_contractuel.png')",
-				opacity:contractuel?0:0.5}}></div>
+	
 				{/*adresse de l'entreprise*/}
 				<div style={{display:"flex",flexDirection:"column",width:"100%",height:"100%"}}>
 				{i<1?<div>
@@ -182,6 +169,16 @@ export default class DevisShow extends Component {
 									
 								</div>
 							</div>
+							{devis.delais?<div style={{display:"flex",justifyContent:"space-between",marginLeft:"10px", flex:1}}>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
+									<span>Delais</span>
+								</div>
+								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
+									<div><span style={{fontWeight:"bold"}}>{((prix_total/(devis.tjm?devis.tjm:1))*(devis.delais?devis.delais:1)).toFixed(2)}</span> 
+									<span style={{}}>{" "+(devis.unitedelais?devis.unitedelais:devis.unite)}</span></div>
+								</div>
+							</div>:""}
+
 							<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
 								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 									<span>Prix d'un {devis.unite}</span>
@@ -199,6 +196,7 @@ export default class DevisShow extends Component {
 								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 									<span>Prix</span>
 								</div>
+
 								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
 									<span style={{fontWeight:"bold"}}>{prix_total} HT</span>
 									<span>{prix_total} TTC</span>
@@ -224,15 +222,16 @@ export default class DevisShow extends Component {
 						<span></span>
 					</div>
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
-						<span>lkmk</span>
-						<span>lkml</span>
+						<span></span>
+						<span></span>
 					</div>
 			</div>:""}
 			</div>
 			
 			</div>
 				
-			</div>)}		
+			</div>)}
+			</div>	
 		</div>
 			
 		);

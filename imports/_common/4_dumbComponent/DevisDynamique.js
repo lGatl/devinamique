@@ -42,34 +42,30 @@ export default class DevisDynamique extends Component {
 				transition:"0.5s",
 				display:"flex", 
 				flexDirection:"column", 
-				flex:1,
 				alignItems:"center",
-				overflow:"scroll",
-				zIndex:50,
+				minHeight:"100%",
 				...this.props.style
 			}}
 			>
-				{/*adresse de l'entreprise*/}
-
-				<div style={{display:"flex", flexDirection:"column",alignItems:"center",flex:1, width:"100%",maxWidth:800}}>
-				<div style={{display:"flex", flexDirection:"column",alignItems:"center",width:"100%"}}>
-				<span style={{fontSize:"18px",fontWeight:"bold"}}>
-								{devis.titre}
-				</span>
-				</div>
-				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
-				<div style={{display:"flex",flex:1,padding:"5px",border:"1px solid black",margin:"10px 10px 0px 10px"}}>
-					{dsactif?<div style={{flex:1}}><span style={{color:"rgb(200,200,200)"}}>ID</span></div>:""}
-					<span style={{flex:5}}>prestation</span>
-					<div style={{flex:1}}><span>choix</span></div>
-				</div>
-				</div>
-				<div style={{display:"flex",width:"100%",flexDirection:"row"}}>
-				<div style={{border:"1px solid black",flex:1,borderTop:"none",margin:"0px 10px 0px 10px"}}>
+				<div style={{display:"flex", flexDirection:"column",alignItems:"center", width:"100%",maxWidth:800,flex:1}}>
+					<div style={{alignItems:"center",width:"100%"}}>
+						<span style={{fontSize:"18px",fontWeight:"bold"}}>
+										{devis.titre}
+						</span>
+					</div>
+					<div style={{width:"100%"}}>
+						<div style={{display:"flex",flex:"1 1 auto",padding:"5px",border:"1px solid black",margin:"10px 10px 0px 10px"}}>
+							{dsactif?<div style={{flex:"1 1 auto"}}><span style={{color:"rgb(200,200,200)"}}>ID</span></div>:""}
+							<span style={{flex:"5 1 auto"}}>prestation</span>
+							<div style={{flex:"1 1 auto"}}><span>choix</span></div>
+						</div>
+					</div>
+			<div style={{width:"100%",flex:1}}>
+				<div style={{border:"1px solid black",borderTop:"none",margin:"0px 10px 0px 10px"}}>
 				{elements.map((element,i)=><div key={i} style={{fontSize:element.titre_lvl?((5*element.titre_lvl+14)+"px"):"14px",fontWeight:element.titre_lvl?(50*element.titre_lvl+400):"normal",display:"flex",padding:"2px 5px",borderTop:"none" }}>
-					{dsactif?<div style={{flex:1}}><span style={{color:"rgb(200,200,200)"}}>{i}</span></div>:""}
+					{dsactif?<div style={{flex:"1 1 auto"}}><span style={{color:"rgb(200,200,200)"}}>{i}</span></div>:""}
 					<span style={{flex:5}}>{element.libelle}</span>
-					<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>	
+					<div style={{flex:"1 1 auto",display:"flex",alignItems:"center",justifyContent:"center"}}>	
 						{!element.sans_interaction?!element.numerique?<Checkbox
 									label = ""
 									name = {element._id}
@@ -90,11 +86,11 @@ export default class DevisDynamique extends Component {
 					</div>
 				</div>)}
 				</div>
-				</div>
+			</div>
 				
-			<div style={{display:"flex",width:"100%",justifyContent:"flex-end", marginTop:"10px"}}>
-				<div style={{display:"flex",justifyContent:"space-between", flex:1}}>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px",margin:"0px 0px 0px 10px"}}>
+			<div style={{width:"100%"}}>
+				<div style={{display:"flex", padding:10,paddingBottom:0}}>
+					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 						<span>Prix</span>
 					</div>
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
@@ -102,11 +98,11 @@ export default class DevisDynamique extends Component {
 						<span>{prix_total} TTC</span>
 					</div>
 				</div>
-				<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
+				<div style={{display:"flex", padding:10,paddingTop:0}}>
 					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-start",border:"1px solid black",padding:"5px"}}>
 						<span>TVA</span>
 					</div>
-					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none",margin:"0px 10px 0px 0px"}}>
+					<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
 						<span>20% HT</span>
 						<span>{prix_total*20/100} TTC</span>
 					</div>

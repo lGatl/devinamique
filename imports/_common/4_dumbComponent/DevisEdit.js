@@ -18,7 +18,7 @@ import {
 class DevisEdit extends Component {
 	
 	render(){
-		let { active_user, active_devis, active_element,active_logique,draged,
+		let { active_user, active_devis, active_element,active_logique,draged, 
 			devis,devis_controle,element_controle,logique_controle, 
 			elements, logiques,entreprises } = this.props;
 		let {controleSet,view1,view2} = this.props
@@ -26,7 +26,7 @@ class DevisEdit extends Component {
 			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
 	
 			let { libelle,prix,numerique, dynamique,sans_interaction,titre_lvl } = element_controle;
-			let { titre,entreprise,client,contractuel, tjm, unite, password} = devis_controle;
+			let { titre,entreprise,client,contractuel, tjm, unite, unitedelais, password, delais} = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
 			let D_elements = elements.filter(elt=>elt.dynamique===true)
@@ -68,8 +68,10 @@ class DevisEdit extends Component {
 							client = {active_devis ? client: devis?devis.client:""}
 							contractuel = {active_devis ? contractuel: devis?devis.contractuel:false}
 							tjm = {active_devis ? tjm : devis?devis.tjm:""}
+							delais = {active_devis ? delais : devis?devis.delais:""}
 							password = {active_devis ? password : devis?devis.password:""}
 							unite = {active_devis ? unite : devis?devis.unite:""}
+							unitedelais = {active_devis ? unitedelais : devis?devis.unitedelais:""}
 							/>
 
 					
@@ -95,14 +97,14 @@ class DevisEdit extends Component {
 						display:"flex",
 						flexDirection:"column" }}>
 						
-						<Button onClick={this.props.elementAdd} dynamique= {true}>Ajouter une élément</Button>
+						<Button style={{minHeight:28}} onClick={this.props.elementAdd} dynamique= {true}>Ajouter une élément</Button>
 						<div style={{display:"flex",flexDirection:"row", paddingLeft:12,paddingRight:17,backgroundColor:"white"}}>
 							<div style={{flex:1,overflow:"hidden"}}>ID</div>
-							<div style={{flex:7,display:"flex",flexDirection:"row",}}>
-								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Libellé</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Titre</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Sans interaction</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Numerique</div>		
+							<div style={{flex:7,display:"flex",flexDirection:"row",minHeight:24}}>
+								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Numerique</div>		
 							</div>
 							<div style={{width:"50px"}}></div>
 							<div style={{width:"50px"}}></div>
@@ -194,15 +196,15 @@ class DevisEdit extends Component {
 						overflowY:"hidden",
 						display:"flex",
 						flexDirection:"column" }}>
-						<Button onClick={this.props.elementAdd}>Ajouter une élément</Button>
+						<Button style={{minHeight:28}} onClick={this.props.elementAdd}>Ajouter une élément</Button>
 						<div style={{display:"flex",flexDirection:"row", paddingLeft:15,paddingRight:20,backgroundColor:"white"}}>
 							<div style={{flex:1,overflow:"hidden"}}>ID</div>
-							<div style={{flex:8,display:"flex",flexDirection:"row",}}>
-								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Libellé</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>{devis.unite}</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Titre</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Sans interaction</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wordWrap: "break-word"}}>Numerique</div>		
+							<div style={{flex:8,display:"flex",flexDirection:"row",minHeight:24}}>
+								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>{devis.unite}</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
+								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Numerique</div>		
 							</div>
 							
 							<div style={{width:"50px"}}></div>

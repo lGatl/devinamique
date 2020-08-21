@@ -231,7 +231,7 @@ class Devis extends Component {
 
 	        if(img_datas!==undefined&&typeof img_datas==="object"&&Object.keys(img_datas).length===total){
 	        	Object.keys(img_datas).forEach((img,j)=>{
-	        		pdf.addImage(img_datas[img], 'JPEG', 0, 0,210,297);
+	        		pdf.addImage(img_datas[img], 'JPEG', 0, 0,210,297, undefined, 'FAST');
 	        		if(j<(total-1)){
 	        			pdf.addPage()
 	        		}else{
@@ -257,11 +257,11 @@ class Devis extends Component {
 			devisControle(obj);
 	}
 
-	_devisEdit({_id,titre,entreprise,client,contractuel, tjm, unite,password}){
+	_devisEdit({_id,titre,entreprise,client,contractuel, tjm, unite,password,delais, unitedelais}){
 		let { devisControle } = this.props;
 		let {controleSet} = this.props
 
-			devisControle({_id,titre,entreprise,client,contractuel, tjm, unite,password});
+			devisControle({_id,titre,entreprise,client,contractuel, tjm, unite,password,delais,unitedelais});
 			controleSet({active_devis:true,active_element:-1,active_logique:-1})
 	}
 	_devisSave({_id}){

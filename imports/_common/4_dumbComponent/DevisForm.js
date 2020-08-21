@@ -66,7 +66,7 @@ export default class DevisForm extends Component {
 	
 	render() {
 			let {
-				titre,entreprise,client,contractuel,options, tjm, unite,password,
+				titre,entreprise,client,contractuel,options, tjm, unite,password, delais, unitedelais,
 				onChange,
 				active
 			} = this.props;
@@ -84,10 +84,7 @@ export default class DevisForm extends Component {
 			}}>
 				<div onClick={!active?this._onEdit:()=>{}}
 				style={{
-					width:"100%",
-					flex:1,
-					display:"flex", 
-					flexDirection:"column"
+					width:"100%"
 				}}>
 						<div 
 						 style={{display:"flex", justifyContent:"flex-end", height: "40px" }}>
@@ -134,11 +131,11 @@ export default class DevisForm extends Component {
 						/>
 
 						<Input
-							style={{flex:1, maxWidth:160}}
+							style={{flex:1, maxWidth:80}}
 							type="number"
 							min="0"
 							label="prix d'une unitée"
-							placeholder="450"
+							placeholder="480"
 							name="tjm"
 							onChange={this._onChange}
 							value={tjm||""}
@@ -146,7 +143,7 @@ export default class DevisForm extends Component {
 						/>
 
 						<Input
-							style={{flex:1, maxWidth:160}}
+							style={{flex:1, maxWidth:80}}
 							label="Unite"
 							placeholder="1/2 jour"
 							name="unite"
@@ -154,9 +151,34 @@ export default class DevisForm extends Component {
 							value={unite||""}
 							active={active}
 						/>
+						<Input
+							style={{flex:1, maxWidth:80}}
+							step="0.01"
+							type="number"
+							min="0"
+							label="Multiplicateur de delais"
+							placeholder="1"
+							name="delais"
+							onChange={this._onChange}
+							value={delais}
+							active = {active}
+						/>
+
+						
+						</div>
+						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10}}>
 
 						<Input
-							style={{flex:1, maxWidth:160}}
+							style={{flex:1, maxWidth:80}}
+							label="Unite du delais"
+							placeholder="mois"
+							name="unitedelais"
+							onChange={this._onChange}
+							value={unitedelais||""}
+							active={active}
+						/>
+						<Input
+							style={{flex:1, maxWidth:80}}
 							label="Password"
 							placeholder=""
 							name="password"
@@ -166,11 +188,10 @@ export default class DevisForm extends Component {
 						/>
 						</div>
 						</div>
-						
 				
 						
 					</div>
-					{active?<Button
+					{active?<Button style={{minHeight:28}}
 							onClick={this._onSave}
 							>Sauvegarder</Button>:""}
 					</div>

@@ -40,6 +40,8 @@ class Home extends Component {
 					</div>
 				}
 				<div style={{flex:1}}></div>
+				<div>Cette application est encore en phase de test, nous ne garentissons pas encore le maintient des données, toute remarque sera la bienvenue <a href="https://lgatl.fr/contact">lgatl.fr/contact</a></div>
+				<div>This application is still in the testing phase, we do not yet guarantee the maintenance of data, any comments will be welcome <a href="https://lgatl.fr/contact">lgatl.fr/contact</a></div>
 				<div style = {{height: "30%", width:"50%", background:"url('/image/icon-textsup200.png')no-repeat center", backgroundSize: "contain"}}>developed by</div>
 			</div>
 		);
