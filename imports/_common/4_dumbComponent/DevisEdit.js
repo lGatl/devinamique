@@ -89,7 +89,7 @@ class DevisEdit extends Component {
 					</div>
 					</div>
 					<div style={{
-						height:"auto",			
+									
 						flex:view2 ===2||view1 ===2? 0:1,
 						overflowY:"hidden",
 						transition: "0.3s",
@@ -97,14 +97,14 @@ class DevisEdit extends Component {
 						display:"flex",
 						flexDirection:"column" }}>
 						
-						<Button style={{minHeight:28}} onClick={this.props.elementAdd} dynamique= {true}>Ajouter une élément</Button>
-						<div style={{display:"flex",flexDirection:"row", paddingLeft:12,paddingRight:17,backgroundColor:"white"}}>
-							<div style={{flex:1,overflow:"hidden"}}>ID</div>
-							<div style={{flex:7,display:"flex",flexDirection:"row",minHeight:24}}>
-								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Numerique</div>		
+						<Button  onClick={this.props.elementAdd} dynamique= {true}><span>Ajouter une élément</span></Button>
+						<div style={{display:"flex",flexDirection:"row", paddingLeft:12,paddingRight:17,backgroundColor:"white",minHeight:22}}>
+							<div style={{flex:1,overflow:"hidden",height:26}}>ID</div>
+							<div style={{flex:7,display:"flex",flexDirection:"row",height:"100%"}}>
+								<div style={{height:"100%",flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
+								<div style={{height:"100%",flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
+								<div style={{height:"100%",flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
+								<div style={{height:"100%",flex:1,overflow:"visible",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>  Numerique</div>		
 							</div>
 							<div style={{width:"50px"}}></div>
 							<div style={{width:"50px"}}></div>
@@ -196,15 +196,15 @@ class DevisEdit extends Component {
 						overflowY:"hidden",
 						display:"flex",
 						flexDirection:"column" }}>
-						<Button style={{minHeight:28}} onClick={this.props.elementAdd}>Ajouter une élément</Button>
-						<div style={{display:"flex",flexDirection:"row", paddingLeft:15,paddingRight:20,backgroundColor:"white"}}>
+						<Button style={{height:26}} onClick={this.props.elementAdd}>Ajouter une élément</Button>
+						<div style={{display:"flex",flexDirection:"row", paddingLeft:15,paddingRight:20,backgroundColor:"white",minHeight:22}}>
 							<div style={{flex:1,overflow:"hidden"}}>ID</div>
-							<div style={{flex:8,display:"flex",flexDirection:"row",minHeight:24}}>
-								<div style={{flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>{devis.unite}</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
-								<div style={{flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Numerique</div>		
+							<div style={{flex:8,display:"flex",flexDirection:"row",height:26}}>
+								<div style={{height:"100%",flex:4,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Libellé</div>
+								<div style={{height:"100%",flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>{devis.unite}</div>
+								<div style={{height:"100%",flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Titre</div>
+								<div style={{height:"100%",flex:1,overflow:"hidden",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word",textDecoration: "line-through"}}>Interaction</div>
+								<div style={{height:"100%",flex:1,overflow:"visible",padding:"0px 5px",wightSpace:"nowrap",wordWrap: "keepall-word"}}>Numerique</div>		
 							</div>
 							
 							<div style={{width:"50px"}}></div>
