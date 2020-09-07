@@ -705,7 +705,7 @@ class Devis extends Component {
 	render(){
 		let { edit, active_user, devis,
 			devis_controle,element_controle,logique_controle,choice_controle, 
-			elements, logiques,entreprises,choice,set,windowheight } = this.props;
+			elements, logiques,entreprises,choice,set,windowheight, windowwidth } = this.props;
 		let {controleSet} = this.props
 		let	{menu, draged, souris_x,souris_y, dsactif}=set;
 
@@ -754,7 +754,7 @@ class Devis extends Component {
 
 				return total+choice * (element.prix?element.prix:0)*(devis.tjm?devis.tjm:1)
 		},0)
-
+		menu = windowwidth < 600?menu===1?0:menu:menu
 		// POUR L'AFFICHAGE => à la fin !!!
 		elements_to_show = this.elts_to_nb_page({elements:elements_to_show})
 		return (
@@ -850,7 +850,7 @@ class Devis extends Component {
 											backgroundColor:"rgba(230,230,230)"
 										}}>
 											{menu!==0?<div className="imgbutt" onClick={()=>{controleSet({menu:0})}}> {">>"} </div>:""}
-											{menu!==1?<div className="imgbutt" onClick={()=>{controleSet({menu:1})}}> {menu===0?"<":">"} </div>:""}
+											{menu!==1&&windowwidth > 600?<div className="imgbutt" onClick={()=>{controleSet({menu:1})}}> {menu===0?"<":">"} </div>:""}
 											{menu!==2?<div className="imgbutt" onClick={()=>{controleSet({menu:2})}}> {"<<"} </div>:""}
 								</div>:""}
 					<div style={{
@@ -960,6 +960,7 @@ function mapStateToProps( state ){
 			choice:state.choice.got1.data,
 			choice_loading:state.choice.got1.data_loading,
 			windowheight:state.controle.resize.windowheight,
+			windowwidth:state.controle.resize.windowwidth,
 			set:state.controle.set
 		}
 	);
