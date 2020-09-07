@@ -62,7 +62,7 @@ export default class DevisShow extends Component {
 				...this.props.style
 			}}
 			>
-			<div style={{display:"flex", flexDirection:"column",top:0}}>
+			<div style={{display:"flex", flexDirection:"column",top:0,width:"100%"}}>
 				
 			
 			{elements.map((eltt,i)=><div key={i} style={{
