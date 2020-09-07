@@ -754,7 +754,7 @@ class Devis extends Component {
 
 				return total+choice * (element.prix?element.prix:0)*(devis.tjm?devis.tjm:1)
 		},0)
-		menu = windowwidth < 600?menu===1?0:menu:menu
+		menu = windowwidth < 600&&menu===1?0:menu
 		// POUR L'AFFICHAGE => à la fin !!!
 		elements_to_show = this.elts_to_nb_page({elements:elements_to_show})
 		return (

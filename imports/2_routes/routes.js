@@ -47,9 +47,9 @@ export default class Routes extends Component {
 					/>
 					
 					<Route
-						path="/devis/:id/:edit"
+						path="/devis/:id/edit"
 						component={() => (
-								Meteor.userId()?<Devis edit={useParams().edit==="edit"} devis_id={useParams().id} user_id={Meteor.userId()}/>: <Redirect to="/" />
+								Meteor.userId()?<Devis edit={true} devis_id={useParams().id} user_id={Meteor.userId()}/>: <Redirect to="/" />
 						)}
 					/>
 					<Route
