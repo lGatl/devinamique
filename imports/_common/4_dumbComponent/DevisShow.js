@@ -81,10 +81,10 @@ export default class DevisShow extends Component {
 			        flexDirection:"column",
 			        width:"21cm",
 			        height:"29.7cm",
-							background:contractuel?"":"center/80% no-repeat url('/image/non_contractuel.png') ",
+			        
+							background:contractuel?"white":"center/80% no-repeat url('/image/non_contractuel.png') white",
 			        zIndex:80,
 			        padding:"60px 100px 70px 100px",
-			        backgroundColor:"white",
 			        fontSize:12
 						}}>
 			
