@@ -82,7 +82,7 @@ export default class Logique extends Component {
 						<div style={{display:"flex", flexDirection:"row",flex:1, backgroundColor:"rgb(150,200,150)"}}>
 							<div onClick = {this._onEdit} style={{flex:1, display:"flex", flexDirection:"row", cursor:active?"default":"pointer"}}>
 							<div style={{flex:4, display:"flex", alignItems:"center",padding:"0px 5px"}}>
-							si
+							<span style={{marginRight:5}}> si </span>
 							<Input
 								style={{backgroundColor:error2?"red":error1?"orange":"rgba(0,0,0,0)"}}
 								label=""
