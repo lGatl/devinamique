@@ -199,7 +199,7 @@ export default class DevisShow extends Component {
 
 								<div style={{display:"flex",flex:1, flexDirection:"column",alignItems:"flex-end",border:"1px solid black",padding:"5px",borderLeft:"none"}}>
 									<span style={{fontWeight:"bold"}}>{prix_total} HT</span>
-									<span>{prix_total} TTC</span>
+									<span>{prix_total+prix_total*20/100} TTC</span>
 								</div>
 							</div>
 							<div style={{display:"flex",flex:1,justifyContent:"space-between",marginLeft:"10px"}}>
