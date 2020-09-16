@@ -2,6 +2,7 @@
 import Ball from './Ball';
 import Basket from './Basket';
 import Button from './Button';
+import Calendar from './Calendar';
 import Checkbox from './Checkbox';
 import DevisCard from './DevisCard';
 import DevisDynamique from './DevisDynamique';
@@ -24,5 +25,5 @@ import TextArea from './TextArea';
 
 
 export {
-	Ball, Basket, Button, Checkbox, DevisCard, DevisDynamique, DevisEdit, DevisForm, DevisShow,Dropable, Dropdown, Element,ElementCard, ElementDyn, Entreprise, Input, Logique, LogiqueDD, Poppup, ShortButton, TextArea
+	Ball, Basket, Button, Calendar, Checkbox, DevisCard, DevisDynamique, DevisEdit, DevisForm, DevisShow,Dropable, Dropdown, Element,ElementCard, ElementDyn, Entreprise, Input, Logique, LogiqueDD, Poppup, ShortButton, TextArea
 };

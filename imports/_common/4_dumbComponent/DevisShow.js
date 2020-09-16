@@ -42,11 +42,11 @@ export default class DevisShow extends Component {
 		return tx
 	}
 	render() {
-			let {entreprise, client,devis, elements, choice_controle, prix_total, menu, contractuel, dsactif} = this.props;
+			let {entreprise, client,devis, elements, choice_controle, prix_total, menu, contractuel,faitle, dsactif} = this.props;
 			entreprise=typeof entreprise !== "undefined" && typeof entreprise === "object"?entreprise:{};
 			let {nom,telephone,courriel,adresse,site_internet,siret,tva_intracom}=entreprise;
 
-
+			let laDate = faitle?new Date(faitle):new Date(Date.now())
 		return (
 			<div style={{
 				transition:"0.5s",
@@ -121,7 +121,7 @@ export default class DevisShow extends Component {
 						</div>
 					<div style={{display:"flex", flexDirection:"column",alignItems:"flex-start", flex:1, border:"1px solid black",padding:5}}>
 							<span style={{marginBottom:"10px",fontSize:"16px"}}>
-								le {"12/23/2334"}
+								le {laDate.getDate()+"/"+(laDate.getMonth()+1)+"/"+laDate.getFullYear()}
 							</span>
 							<span>
 								{client?client.nom:""}

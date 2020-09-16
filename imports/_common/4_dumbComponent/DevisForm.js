@@ -8,6 +8,7 @@ import {
 	Button,
 	ShortButton,
 	Dropdown,
+	Calendar,
 	Checkbox
 } from '../../_common/4_dumbComponent';
 
@@ -66,7 +67,7 @@ export default class DevisForm extends Component {
 	
 	render() {
 			let {
-				titre,entreprise,client,contractuel,options, tjm, unite,password, delais, unitedelais,
+				titre,entreprise,client,contractuel,options, tjm, unite,password, delais, unitedelais,faitle,
 				onChange,
 				active
 			} = this.props;
@@ -91,9 +92,8 @@ export default class DevisForm extends Component {
 							{active?<ShortButton onClick={this._onClose}
 							style={{width:"40px",height:"100%"}}>x</ShortButton>:""}
 						</div>
-						DEVIS
 						<div style={{display:"flex", flexDirection:"column",padding:5}}>
-						<div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+						<div style={{display:"flex", justifyContent:"center", alignItems:"center", flexWrap:"wrap"}}>
 							<Input
 							label="Titre"
 							placeholder="Titre"
@@ -102,6 +102,17 @@ export default class DevisForm extends Component {
 							value={titre||""}
 							active={active}
 						/>
+							<Calendar
+							type="date"
+							label="Fait le"
+							name="faitle"
+							onChange={this._onChange}
+							value={faitle||""}
+							active={active}
+						/>
+					
+						</div>
+						<div style={{display:"flex", justifyContent:"center", alignItems:"center", flexWrap:"wrap"}}>
 						<Dropdown
 							active={active}
 			        label = "entreprise"
@@ -120,8 +131,6 @@ export default class DevisForm extends Component {
 			        options = { options }
 			        value = { client||"" }
 			      />
-						</div>
-						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10}}>
 			      <Checkbox
 							label = "Contractuel"
 							name = "contractuel"
@@ -129,9 +138,12 @@ export default class DevisForm extends Component {
 							onChange = {this._onChange }
 							active = {active}
 						/>
+						</div>
+						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10, flexWrap:"wrap"}}>
+			      
 
 						<Input
-							style={{flex:1, maxWidth:80}}
+							style={{ width:80}}
 							type="number"
 							min="0"
 							label="prix d'une unitée"
@@ -143,7 +155,7 @@ export default class DevisForm extends Component {
 						/>
 
 						<Input
-							style={{flex:1, maxWidth:80}}
+							style={{ width:80}}
 							label="Unite"
 							placeholder="1/2 jour"
 							name="unite"
@@ -152,7 +164,7 @@ export default class DevisForm extends Component {
 							active={active}
 						/>
 						<Input
-							style={{flex:1, maxWidth:80}}
+							style={{ width:80}}
 							step="0.01"
 							type="number"
 							min="0"
@@ -163,11 +175,6 @@ export default class DevisForm extends Component {
 							value={delais}
 							active = {active}
 						/>
-
-						
-						</div>
-						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10}}>
-
 						<Input
 							style={{flex:1, maxWidth:80}}
 							label="Unite du delais"
@@ -177,6 +184,11 @@ export default class DevisForm extends Component {
 							value={unitedelais||""}
 							active={active}
 						/>
+						
+						</div>
+						<div style={{display:"flex", justifyContent:"space-around", alignItems:"center",marginTop:10, flexWrap:"wrap"}}>
+
+						
 						<Input
 							style={{flex:1, maxWidth:80}}
 							label="Password"

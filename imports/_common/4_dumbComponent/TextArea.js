@@ -25,7 +25,7 @@ export default class TextArea extends Component {
 						value={value||""}
 						onChange={this.onChange.bind(this)}
 						className="textarea"
-					/>: <span>{value===""?"-":value}</span>
+					/>: <span style={{color:value===""?"grey":"default"}}>{value===""?"-":value}</span>
 					}
 				</div>
 				

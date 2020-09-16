@@ -127,9 +127,9 @@ class Devis extends Component {
 	}
 	componentDidUpdate(prevProps, prevState){
 
-		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle,choiceUpControle, choicePost, choiceGet1, user_id, set,
+		let {controleSet, choiceUp, devisUp, choice_controle, choiceControle,choiceUpControle, choicePost, choiceGet1, user_id, set, devisGet1, entrepriseGet, elementGet, logiqueGet, 
 					elements, devis, entreprises, choice, logiques,
-					elements_loading, devis_loading, entreprises_loading, choice_loading, logiques_loading} = this.props
+					elements_loading, devis_loading, entreprises_loading, choice_loading, logiques_loading,devis_id} = this.props
 
 					elements = typeof elements === "object" && elements instanceof Array ? elements : false; 
 					devis = typeof devis === "object"  ? devis : false;
@@ -137,10 +137,18 @@ class Devis extends Component {
 					choice =  typeof choice === "object" ?choice : false;
 					
 					logiques = typeof logiques === "object" && logiques instanceof Array ? logiques : false; 
+					if(devis_id!==prevProps.devis_id||user_id!==prevProps.user_id){
+						devisGet1({data:{_id:devis_id,user_id}})
+						entrepriseGet({data:{user_id}})
+						elementGet({data:{devis_id,user_id}})
+						choiceGet1({data:{devis_id,user_id}})
+						logiqueGet({data:{devis_id,user_id}})
+						controleSet({premierup:true})
+					}
 
 					if (elements&& devis&& entreprises&& choice&& logiques&& set.premierup===true&&
 							!elements_loading&&!devis_loading&& !entreprises_loading&& !choice_loading&& !logiques_loading){
-
+						console.log("checked")
 						controleSet({premierup:false})
 						choiceControle({...choice.elements})
 						this.checkLogq({logiques,save:true})
@@ -929,6 +937,7 @@ class Devis extends Component {
 									client={entreprises.find((entreprise)=>devis.client===entreprise._id)}
 									elements={elements_to_show}
 									contractuel={devis.contractuel}
+									faitle={devis.faitle}
 									choices={""}
 									choice_controle={choice_controle}
 									/>

@@ -148,7 +148,7 @@ class DevisList extends Component {
 		let { active_user, deviss } = this.props;
 		let { devisPost, devisControle, choicePost } = this.props;
 		let { controle } = this.props;
-		devisPost({data:{...this.init(),user_id:active_user._id,contractuel:false},cbk:(_id)=>{
+		devisPost({data:{...this.init(),user_id:active_user._id,contractuel:false,faitle:Date.parse(new Date(Date.now()))},cbk:(_id)=>{
 			choicePost({data:{user_id:active_user._id,devis_id:_id}})
 			history.push("/devis/"+_id+"/edit")
 		}});

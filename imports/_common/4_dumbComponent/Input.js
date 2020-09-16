@@ -26,7 +26,18 @@ export default class Input extends Component {
 					placeholder={this.props.placeholder}
 					onChange={this.onChange.bind(this)}
 					value={value||""}
-				/>: <div style={{width:"100%",overflow:"hidden" }} htmlFor=""> <label style={{width:"100%",lineHeight:"21px",cursor:"inherit",textAlign:"center",wordWrap:"break-word",wordBreak:"break-word", }}> {value===""?"-":value}</label></div>||""}
+				/>: <div style={{width:"100%",overflow:"hidden" }} htmlFor=""> 
+					<label style={{
+						width:"100%",
+						lineHeight:"21px",
+						cursor:"inherit",
+						textAlign:"center",
+						wordWrap:"break-word",
+						wordBreak:"break-word",
+						color:value===""?"grey":"initial" }}> 
+						{value===""?"-":value}
+					</label>
+				</div>||""}
 			</div>
 		);
 	}

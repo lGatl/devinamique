@@ -26,7 +26,7 @@ class DevisEdit extends Component {
 			logiques = typeof logiques !== undefined && typeof logiques === "object" && logiques instanceof Array ? logiques:[]
 	
 			let { libelle,prix,numerique, dynamique,sans_interaction,titre_lvl } = element_controle;
-			let { titre,entreprise,client,contractuel, tjm, unite, unitedelais, password, delais} = devis_controle;
+			let { titre,entreprise,client,contractuel, tjm, unite, unitedelais,faitle, password, delais} = devis_controle;
 			let { libelle_log,prix_log,numerique_log } = logique_controle;
 
 			let D_elements = elements.filter(elt=>elt.dynamique===true)
@@ -72,6 +72,7 @@ class DevisEdit extends Component {
 							password = {active_devis ? password : devis?devis.password:""}
 							unite = {active_devis ? unite : devis?devis.unite:""}
 							unitedelais = {active_devis ? unitedelais : devis?devis.unitedelais:""}
+							faitle = {active_devis ? faitle : devis?devis.faitle:""}
 							/>
 
 					
